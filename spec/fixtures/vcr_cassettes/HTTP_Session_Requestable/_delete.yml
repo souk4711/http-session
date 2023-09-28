@@ -1,0 +1,43 @@
+---
+http_interactions:
+- request:
+    method: delete
+    uri: https://httpbin.org/delete
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Connection:
+      - close
+      Host:
+      - httpbin.org
+      User-Agent:
+      - http.rb/5.1.1
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Thu, 28 Sep 2023 04:50:20 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '303'
+      Connection:
+      - close
+      Server:
+      - gunicorn/19.9.0
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Credentials:
+      - 'true'
+    body:
+      encoding: UTF-8
+      string: "{\n  \"args\": {}, \n  \"data\": \"\", \n  \"files\": {}, \n  \"form\":
+        {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"User-Agent\":
+        \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6515060c-03ade21b252dbfcd3a20604c\"\n
+        \ }, \n  \"json\": null, \n  \"origin\": \"113.118.114.167\", \n  \"url\":
+        \"https://httpbin.org/delete\"\n}\n"
+  recorded_at: Thu, 28 Sep 2023 04:50:21 GMT
+recorded_with: VCR 6.2.0

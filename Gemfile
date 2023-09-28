@@ -14,6 +14,8 @@ gem "standard", "~> 1.3"
 
 # test
 gem "rspec", "~> 3.0"
+gem "vcr"
+gem "webmock"
 
 # doc
 gem "yard", "~> 0.9"

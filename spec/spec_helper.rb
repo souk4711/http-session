@@ -1,4 +1,5 @@
 require "http-session"
+require_relative "support"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

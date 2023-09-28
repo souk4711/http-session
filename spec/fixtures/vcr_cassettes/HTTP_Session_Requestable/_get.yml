@@ -1,0 +1,41 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://httpbin.org/get
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Connection:
+      - close
+      Host:
+      - httpbin.org
+      User-Agent:
+      - http.rb/5.1.1
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Thu, 28 Sep 2023 04:50:17 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '237'
+      Connection:
+      - close
+      Server:
+      - gunicorn/19.9.0
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Credentials:
+      - 'true'
+    body:
+      encoding: UTF-8
+      string: "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\",
+        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-65150609-21f17d43258984b130c3b851\"\n
+        \ }, \n  \"origin\": \"113.118.114.167\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
+  recorded_at: Thu, 28 Sep 2023 04:50:18 GMT
+recorded_with: VCR 6.2.0

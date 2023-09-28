@@ -1,0 +1,39 @@
+---
+http_interactions:
+- request:
+    method: head
+    uri: https://httpbin.org/get
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Connection:
+      - close
+      Host:
+      - httpbin.org
+      User-Agent:
+      - http.rb/5.1.1
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Thu, 28 Sep 2023 04:50:17 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '237'
+      Connection:
+      - close
+      Server:
+      - gunicorn/19.9.0
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Credentials:
+      - 'true'
+    body:
+      encoding: UTF-8
+      string: ''
+  recorded_at: Thu, 28 Sep 2023 04:50:17 GMT
+recorded_with: VCR 6.2.0
