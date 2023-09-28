@@ -159,6 +159,36 @@ RSpec.describe HTTP::Session, vcr: true do
         expect(resp.code).to eq(200)
         expect(resp.request.headers["Cookie"]).to eq("b=2; a=1")
       end
+
+      it "Session#cookies & :cookies & set" do
+        sub = subject.cookies(b: 2)
+
+        resp = sub.get("https://httpbin.org/cookies/set?a=1", cookies: {_: "c=3"})
+        expect(resp.request.headers["Cookie"]).to eq("c=3")
+
+        resp = sub.get("https://httpbin.org/anything", cookies: {_: "d=4"})
+        expect(resp.code).to eq(200)
+        expect(resp.request.headers["Cookie"]).to eq("d=4; a=1")
+
+        resp = sub.get("https://httpbin.org/anything")
+        expect(resp.code).to eq(200)
+        expect(resp.request.headers["Cookie"]).to eq("b=2; a=1")
+      end
+
+      it "Session#headers & :headers & set" do
+        sub = subject.headers("Cookie" => "b=2")
+
+        resp = sub.get("https://httpbin.org/cookies/set?a=1", headers: {"Cookie" => "c=3"})
+        expect(resp.request.headers["Cookie"]).to eq("c=3")
+
+        resp = sub.get("https://httpbin.org/anything", headers: {"Cookie" => "d=4"})
+        expect(resp.code).to eq(200)
+        expect(resp.request.headers["Cookie"]).to eq("d=4; a=1")
+
+        resp = sub.get("https://httpbin.org/anything")
+        expect(resp.code).to eq(200)
+        expect(resp.request.headers["Cookie"]).to eq("b=2; a=1")
+      end
     end
   end
 end
