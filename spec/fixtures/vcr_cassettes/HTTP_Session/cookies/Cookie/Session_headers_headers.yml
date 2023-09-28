@@ -8,7 +8,7 @@ http_interactions:
       string: ''
     headers:
       Cookie:
-      - a=1
+      - b=2
       Connection:
       - close
       Host:
@@ -21,7 +21,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Thu, 28 Sep 2023 16:17:19 GMT
+      - Thu, 28 Sep 2023 16:17:25 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -37,9 +37,9 @@ http_interactions:
     body:
       encoding: UTF-8
       string: "{\n  \"args\": {}, \n  \"data\": \"\", \n  \"files\": {}, \n  \"form\":
-        {}, \n  \"headers\": {\n    \"Cookie\": \"a=1\", \n    \"Host\": \"httpbin.org\",
-        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6515a70f-7a1be42e468c1ed420c916a1\"\n
+        {}, \n  \"headers\": {\n    \"Cookie\": \"b=2\", \n    \"Host\": \"httpbin.org\",
+        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6515a715-123901082622d99674f6162f\"\n
         \ }, \n  \"json\": null, \n  \"method\": \"GET\", \n  \"origin\": \"113.118.114.167\",
         \n  \"url\": \"https://httpbin.org/anything\"\n}\n"
-  recorded_at: Thu, 28 Sep 2023 16:17:19 GMT
+  recorded_at: Thu, 28 Sep 2023 16:17:25 GMT
 recorded_with: VCR 6.2.0

@@ -7,8 +7,12 @@ http_interactions:
       encoding: ASCII-8BIT
       string: ''
     headers:
-      Cookie:
-      - a=1
+      A:
+      - A
+      B:
+      - b
+      C:
+      - C
       Connection:
       - close
       Host:
@@ -21,11 +25,11 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Thu, 28 Sep 2023 16:17:19 GMT
+      - Thu, 28 Sep 2023 15:24:33 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '347'
+      - '370'
       Connection:
       - close
       Server:
@@ -37,9 +41,10 @@ http_interactions:
     body:
       encoding: UTF-8
       string: "{\n  \"args\": {}, \n  \"data\": \"\", \n  \"files\": {}, \n  \"form\":
-        {}, \n  \"headers\": {\n    \"Cookie\": \"a=1\", \n    \"Host\": \"httpbin.org\",
-        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6515a70f-7a1be42e468c1ed420c916a1\"\n
+        {}, \n  \"headers\": {\n    \"A\": \"A\", \n    \"B\": \"b\", \n    \"C\":
+        \"C\", \n    \"Host\": \"httpbin.org\", \n    \"User-Agent\": \"http.rb/5.1.1\",
+        \n    \"X-Amzn-Trace-Id\": \"Root=1-65159ab1-499032012b85fa7d2649b7ec\"\n
         \ }, \n  \"json\": null, \n  \"method\": \"GET\", \n  \"origin\": \"113.118.114.167\",
         \n  \"url\": \"https://httpbin.org/anything\"\n}\n"
-  recorded_at: Thu, 28 Sep 2023 16:17:19 GMT
+  recorded_at: Thu, 28 Sep 2023 15:24:33 GMT
 recorded_with: VCR 6.2.0
