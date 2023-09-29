@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: https://httpbin.org/redirect/1
+    uri: https://httpbin.org/cookies/set/a/1
     body:
       encoding: ASCII-8BIT
       string: ''
@@ -19,17 +19,19 @@ http_interactions:
       message: Found
     headers:
       Date:
-      - Fri, 29 Sep 2023 02:50:14 GMT
+      - Fri, 29 Sep 2023 00:30:38 GMT
       Content-Type:
       - text/html; charset=utf-8
       Content-Length:
-      - '215'
+      - '223'
       Connection:
       - close
       Server:
       - gunicorn/19.9.0
       Location:
-      - "/get"
+      - "/cookies"
+      Set-Cookie:
+      - a=1; Path=/
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Allow-Credentials:
@@ -40,11 +42,11 @@ http_interactions:
         <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
         <title>Redirecting...</title>
         <h1>Redirecting...</h1>
-        <p>You should be redirected automatically to target URL: <a href="/get">/get</a>.  If not click the link.
-  recorded_at: Fri, 29 Sep 2023 02:50:14 GMT
+        <p>You should be redirected automatically to target URL: <a href="/cookies">/cookies</a>.  If not click the link.
+  recorded_at: Fri, 29 Sep 2023 00:30:38 GMT
 - request:
     method: get
-    uri: https://httpbin.org/get
+    uri: https://httpbin.org/cookies
     body:
       encoding: ASCII-8BIT
       string: ''
@@ -55,17 +57,19 @@ http_interactions:
       - http.rb/5.1.1
       Host:
       - httpbin.org
+      Cookie:
+      - a=1
   response:
     status:
       code: 200
       message: OK
     headers:
       Date:
-      - Fri, 29 Sep 2023 02:50:15 GMT
+      - Fri, 29 Sep 2023 00:30:39 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '236'
+      - '36'
       Connection:
       - close
       Server:
@@ -76,13 +80,16 @@ http_interactions:
       - 'true'
     body:
       encoding: UTF-8
-      string: "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\",
-        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-65163b67-44fc05ca573e384a6d622761\"\n
-        \ }, \n  \"origin\": \"113.118.103.78\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
-  recorded_at: Fri, 29 Sep 2023 02:50:15 GMT
+      string: |
+        {
+          "cookies": {
+            "a": "1"
+          }
+        }
+  recorded_at: Fri, 29 Sep 2023 00:30:39 GMT
 - request:
     method: get
-    uri: https://httpbin.org/redirect/1
+    uri: https://httpbin.org/anything
     body:
       encoding: ASCII-8BIT
       string: ''
@@ -95,31 +102,29 @@ http_interactions:
       - http.rb/5.1.1
   response:
     status:
-      code: 302
-      message: Found
+      code: 200
+      message: OK
     headers:
       Date:
-      - Fri, 29 Sep 2023 02:50:15 GMT
+      - Fri, 29 Sep 2023 00:30:40 GMT
       Content-Type:
-      - text/html; charset=utf-8
+      - application/json
       Content-Length:
-      - '215'
+      - '324'
       Connection:
       - close
       Server:
       - gunicorn/19.9.0
-      Location:
-      - "/get"
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Allow-Credentials:
       - 'true'
     body:
       encoding: UTF-8
-      string: |-
-        <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-        <title>Redirecting...</title>
-        <h1>Redirecting...</h1>
-        <p>You should be redirected automatically to target URL: <a href="/get">/get</a>.  If not click the link.
-  recorded_at: Fri, 29 Sep 2023 02:50:16 GMT
+      string: "{\n  \"args\": {}, \n  \"data\": \"\", \n  \"files\": {}, \n  \"form\":
+        {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"User-Agent\":
+        \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-65161ab0-2f4fe8ab7741bcca46647d90\"\n
+        \ }, \n  \"json\": null, \n  \"method\": \"GET\", \n  \"origin\": \"113.118.103.78\",
+        \n  \"url\": \"https://httpbin.org/anything\"\n}\n"
+  recorded_at: Fri, 29 Sep 2023 00:30:40 GMT
 recorded_with: VCR 6.2.0

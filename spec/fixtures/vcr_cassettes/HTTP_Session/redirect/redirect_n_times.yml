@@ -1,0 +1,197 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://httpbin.org/redirect/4
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Connection:
+      - close
+      Host:
+      - httpbin.org
+      User-Agent:
+      - http.rb/5.1.1
+  response:
+    status:
+      code: 302
+      message: Found
+    headers:
+      Date:
+      - Fri, 29 Sep 2023 04:58:45 GMT
+      Content-Type:
+      - text/html; charset=utf-8
+      Content-Length:
+      - '247'
+      Connection:
+      - close
+      Server:
+      - gunicorn/19.9.0
+      Location:
+      - "/relative-redirect/3"
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Credentials:
+      - 'true'
+    body:
+      encoding: UTF-8
+      string: |-
+        <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+        <title>Redirecting...</title>
+        <h1>Redirecting...</h1>
+        <p>You should be redirected automatically to target URL: <a href="/relative-redirect/3">/relative-redirect/3</a>.  If not click the link.
+  recorded_at: Fri, 29 Sep 2023 04:58:45 GMT
+- request:
+    method: get
+    uri: https://httpbin.org/relative-redirect/3
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Connection:
+      - close
+      User-Agent:
+      - http.rb/5.1.1
+      Host:
+      - httpbin.org
+  response:
+    status:
+      code: 302
+      message: Found
+    headers:
+      Date:
+      - Fri, 29 Sep 2023 04:58:46 GMT
+      Content-Type:
+      - text/html; charset=utf-8
+      Content-Length:
+      - '0'
+      Connection:
+      - close
+      Server:
+      - gunicorn/19.9.0
+      Location:
+      - "/relative-redirect/2"
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Credentials:
+      - 'true'
+    body:
+      encoding: UTF-8
+      string: ''
+  recorded_at: Fri, 29 Sep 2023 04:58:46 GMT
+- request:
+    method: get
+    uri: https://httpbin.org/relative-redirect/2
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Connection:
+      - close
+      User-Agent:
+      - http.rb/5.1.1
+      Host:
+      - httpbin.org
+  response:
+    status:
+      code: 302
+      message: Found
+    headers:
+      Date:
+      - Fri, 29 Sep 2023 04:58:47 GMT
+      Content-Type:
+      - text/html; charset=utf-8
+      Content-Length:
+      - '0'
+      Connection:
+      - close
+      Server:
+      - gunicorn/19.9.0
+      Location:
+      - "/relative-redirect/1"
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Credentials:
+      - 'true'
+    body:
+      encoding: UTF-8
+      string: ''
+  recorded_at: Fri, 29 Sep 2023 04:58:47 GMT
+- request:
+    method: get
+    uri: https://httpbin.org/relative-redirect/1
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Connection:
+      - close
+      User-Agent:
+      - http.rb/5.1.1
+      Host:
+      - httpbin.org
+  response:
+    status:
+      code: 302
+      message: Found
+    headers:
+      Date:
+      - Fri, 29 Sep 2023 04:58:48 GMT
+      Content-Type:
+      - text/html; charset=utf-8
+      Content-Length:
+      - '0'
+      Connection:
+      - close
+      Server:
+      - gunicorn/19.9.0
+      Location:
+      - "/get"
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Credentials:
+      - 'true'
+    body:
+      encoding: UTF-8
+      string: ''
+  recorded_at: Fri, 29 Sep 2023 04:58:48 GMT
+- request:
+    method: get
+    uri: https://httpbin.org/get
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Connection:
+      - close
+      User-Agent:
+      - http.rb/5.1.1
+      Host:
+      - httpbin.org
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 29 Sep 2023 04:58:49 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '236'
+      Connection:
+      - close
+      Server:
+      - gunicorn/19.9.0
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Credentials:
+      - 'true'
+    body:
+      encoding: UTF-8
+      string: "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\",
+        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-65165989-716bf374224083257ba8f845\"\n
+        \ }, \n  \"origin\": \"113.118.103.78\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
+  recorded_at: Fri, 29 Sep 2023 04:58:49 GMT
+recorded_with: VCR 6.2.0

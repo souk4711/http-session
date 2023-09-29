@@ -1,12 +1,14 @@
 RSpec.describe HTTP::Session, vcr: true do
-  let(:subject) { HTTP::Session.new }
+  let(:subject) { described_class.new }
 
   describe "#request" do
     describe "opts" do
       it "override session options" do
-        resp = subject.encoding("gbk").get("https://httpbin.org/anything", encoding: "utf-8")
+        resp = subject.follow(false).get("https://httpbin.org/redirect/1", follow: true)
         expect(resp.code).to eq(200)
-        expect(resp.body.instance_variable_get("@encoding")).to eq(Encoding::UTF_8)
+
+        resp = subject.follow(true).get("https://httpbin.org/redirect/1", follow: false)
+        expect(resp.code).to eq(302)
       end
 
       it "merge session options" do
@@ -60,10 +62,8 @@ RSpec.describe HTTP::Session, vcr: true do
 
     describe "Set-Cookie" do
       it "set" do
-        subject.get("https://httpbin.org/cookies/set/a/1")
-        jar = subject.instance_variable_get("@jar")
-        expect(jar.cookies.count).to eq(1)
-        expect(jar.cookies[0].cookie_value).to eq("a=1")
+        resp = subject.get("https://httpbin.org/cookies/set/a/1")
+        expect(resp.code).to eq(302)
 
         resp = subject.get("https://httpbin.org/anything")
         expect(resp.code).to eq(200)
@@ -71,16 +71,12 @@ RSpec.describe HTTP::Session, vcr: true do
       end
 
       it "multiple" do
-        subject.get("https://httpbin.org/cookies/set/a/1")
-        jar = subject.instance_variable_get("@jar")
-        expect(jar.cookies.count).to eq(1)
-        expect(jar.cookies[0].cookie_value).to eq("a=1")
+        resp = subject.get("https://httpbin.org/cookies/set/a/1")
+        expect(resp.code).to eq(302)
 
-        subject.get("https://httpbin.org/cookies/set/b/2")
-        jar = subject.instance_variable_get("@jar")
-        expect(jar.cookies.count).to eq(2)
-        expect(jar.cookies[0].cookie_value).to eq("a=1")
-        expect(jar.cookies[1].cookie_value).to eq("b=2")
+        resp = subject.get("https://httpbin.org/cookies/set/b/2")
+        expect(resp.code).to eq(302)
+        expect(resp.request.headers["Cookie"]).to eq("a=1")
 
         resp = subject.get("https://httpbin.org/anything")
         expect(resp.code).to eq(200)
@@ -88,15 +84,12 @@ RSpec.describe HTTP::Session, vcr: true do
       end
 
       it "override" do
-        subject.get("https://httpbin.org/cookies/set/a/1")
-        jar = subject.instance_variable_get("@jar")
-        expect(jar.cookies.count).to eq(1)
-        expect(jar.cookies[0].cookie_value).to eq("a=1")
+        resp = subject.get("https://httpbin.org/cookies/set/a/1")
+        expect(resp.code).to eq(302)
 
-        subject.get("https://httpbin.org/cookies/set/a/2")
-        jar = subject.instance_variable_get("@jar")
-        expect(jar.cookies.count).to eq(1)
-        expect(jar.cookies[0].cookie_value).to eq("a=2")
+        resp = subject.get("https://httpbin.org/cookies/set/a/2")
+        expect(resp.code).to eq(302)
+        expect(resp.request.headers["Cookie"]).to eq("a=1")
 
         resp = subject.get("https://httpbin.org/anything")
         expect(resp.code).to eq(200)
@@ -104,14 +97,12 @@ RSpec.describe HTTP::Session, vcr: true do
       end
 
       it "delete" do
-        subject.get("https://httpbin.org/cookies/set?a=1")
-        jar = subject.instance_variable_get("@jar")
-        expect(jar.cookies.count).to eq(1)
-        expect(jar.cookies[0].cookie_value).to eq("a=1")
+        resp = subject.get("https://httpbin.org/cookies/set?a=1")
+        expect(resp.code).to eq(302)
 
-        subject.get("https://httpbin.org/cookies/delete?a=")
-        jar = subject.instance_variable_get("@jar")
-        expect(jar.cookies.count).to eq(0)
+        resp = subject.get("https://httpbin.org/cookies/delete?a=")
+        expect(resp.code).to eq(302)
+        expect(resp.request.headers["Cookie"]).to eq("a=1")
 
         resp = subject.get("https://httpbin.org/anything")
         expect(resp.code).to eq(200)
@@ -122,6 +113,7 @@ RSpec.describe HTTP::Session, vcr: true do
     describe "Cookie & Set-Cookie" do
       it ":cookies & set" do
         resp = subject.get("https://httpbin.org/cookies/set?a=1", cookies: {_: "b=2"})
+        expect(resp.code).to eq(302)
         expect(resp.request.headers["Cookie"]).to eq("b=2")
 
         resp = subject.get("https://httpbin.org/anything", cookies: {_: "b=2"})
@@ -131,6 +123,7 @@ RSpec.describe HTTP::Session, vcr: true do
 
       it ":headers & set" do
         resp = subject.get("https://httpbin.org/cookies/set?a=1", headers: {"Cookie" => "b=2"})
+        expect(resp.code).to eq(302)
         expect(resp.request.headers["Cookie"]).to eq("b=2")
 
         resp = subject.get("https://httpbin.org/anything", headers: {"Cookie" => "b=2"})
@@ -142,6 +135,7 @@ RSpec.describe HTTP::Session, vcr: true do
         sub = subject.cookies(b: 2)
 
         resp = sub.get("https://httpbin.org/cookies/set?a=1")
+        expect(resp.code).to eq(302)
         expect(resp.request.headers["Cookie"]).to eq("b=2")
 
         resp = sub.get("https://httpbin.org/anything")
@@ -153,6 +147,7 @@ RSpec.describe HTTP::Session, vcr: true do
         sub = subject.headers("Cookie" => "b=2")
 
         resp = sub.get("https://httpbin.org/cookies/set?a=1")
+        expect(resp.code).to eq(302)
         expect(resp.request.headers["Cookie"]).to eq("b=2")
 
         resp = sub.get("https://httpbin.org/anything")
@@ -164,6 +159,7 @@ RSpec.describe HTTP::Session, vcr: true do
         sub = subject.cookies(b: 2)
 
         resp = sub.get("https://httpbin.org/cookies/set?a=1", cookies: {_: "c=3"})
+        expect(resp.code).to eq(302)
         expect(resp.request.headers["Cookie"]).to eq("c=3")
 
         resp = sub.get("https://httpbin.org/anything", cookies: {_: "d=4"})
@@ -179,6 +175,7 @@ RSpec.describe HTTP::Session, vcr: true do
         sub = subject.headers("Cookie" => "b=2")
 
         resp = sub.get("https://httpbin.org/cookies/set?a=1", headers: {"Cookie" => "c=3"})
+        expect(resp.code).to eq(302)
         expect(resp.request.headers["Cookie"]).to eq("c=3")
 
         resp = sub.get("https://httpbin.org/anything", headers: {"Cookie" => "d=4"})
@@ -189,6 +186,28 @@ RSpec.describe HTTP::Session, vcr: true do
         expect(resp.code).to eq(200)
         expect(resp.request.headers["Cookie"]).to eq("b=2; a=1")
       end
+    end
+
+    describe "Redirect" do
+      it "keep Set-Cookie" do
+        resp = subject.get("https://httpbin.org/cookies/set/a/1", follow: true)
+        expect(resp.code).to eq(200)
+
+        resp = subject.get("https://httpbin.org/anything")
+        expect(resp.code).to eq(200)
+        expect(resp.request.headers["Cookie"]).to eq("a=1")
+      end
+    end
+  end
+
+  describe "redirect" do
+    it "redirect n times" do
+      count = 0
+      resp = subject.get("https://httpbin.org/redirect/4", follow: {
+        on_redirect: ->(_, _) { count += 1 }
+      })
+      expect(resp.code).to eq(200)
+      expect(count).to eq(4)
     end
   end
 end
