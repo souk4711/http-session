@@ -1,5 +1,5 @@
 RSpec.describe HTTP::Session::Requestable, vcr: true do
-  let(:subject) { HTTP::Session.new }
+  let(:subject) { HTTP::Session.new.freeze }
 
   it "#head" do
     r = subject.head("https://httpbin.org/get")

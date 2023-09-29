@@ -70,4 +70,10 @@ RSpec.describe HTTP::Session::Configurable do
     expect(opts.http.follow).to eq({})
     expect(opts.http.encoding).to eq(Encoding::GBK)
   end
+
+  it "can't modify options after frozen" do
+    expect {
+      subject.freeze.timeout(2)
+    }.to raise_error(FrozenError)
+  end
 end
