@@ -2,11 +2,11 @@ require "http"
 require "monitor"
 
 require_relative "session/configurable"
-require_relative "session/exceptions"
 require_relative "session/options"
 require_relative "session/requestable"
 require_relative "session/version"
 
+# Use session to manage cookies and cache across requests.
 class HTTP::Session
   include MonitorMixin
   include HTTP::Session::Configurable

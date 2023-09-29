@@ -1,7 +1,10 @@
-# See https://github.com/httprb/http/blob/main/lib/http/chainable.rb
-
 class HTTP::Session
+  # Provides the same configure API interfaces as HTTP::Client.
+  #
+  # @see https://github.com/httprb/http/blob/main/lib/http/chainable.rb
   module Configurable
+    # Set timeout on request.
+    #
     # @overload timeout(options = {})
     #   Adds per operation timeouts to the request.
     #   @param [Hash] options
