@@ -4,42 +4,42 @@ RSpec.describe HTTP::Session, vcr: true do
   describe "#request" do
     describe "opts" do
       it "override session options" do
-        resp = subject.dup.follow(false).get("https://httpbin.org/redirect/1", follow: true)
-        expect(resp.code).to eq(200)
+        res = subject.dup.follow(false).get("https://httpbin.org/redirect/1", follow: true)
+        expect(res.code).to eq(200)
 
-        resp = subject.dup.follow(true).get("https://httpbin.org/redirect/1", follow: false)
-        expect(resp.code).to eq(302)
+        res = subject.dup.follow(true).get("https://httpbin.org/redirect/1", follow: false)
+        expect(res.code).to eq(302)
       end
 
       it "merge session options" do
-        resp = subject.dup.headers("A" => "A", "B" => "B").get("https://httpbin.org/anything", headers: {"B" => "b", "C" => "C"})
-        expect(resp.code).to eq(200)
-        expect(resp.request.headers["A"]).to eq("A")
-        expect(resp.request.headers["B"]).to eq("b")
-        expect(resp.request.headers["C"]).to eq("C")
+        res = subject.dup.headers("A" => "A", "B" => "B").get("https://httpbin.org/anything", headers: {"B" => "b", "C" => "C"})
+        expect(res.code).to eq(200)
+        expect(res.request.headers["A"]).to eq("A")
+        expect(res.request.headers["B"]).to eq("b")
+        expect(res.request.headers["C"]).to eq("C")
       end
     end
 
     describe "return" do
       it "a HTTP::Session::Response" do
-        resp = subject.get("https://httpbin.org/anything")
-        expect(resp.code).to eq(200)
-        expect(resp).to be_an_instance_of(HTTP::Session::Response)
-        expect(resp.request).to be_an_instance_of(HTTP::Session::Request)
+        res = subject.get("https://httpbin.org/anything")
+        expect(res.code).to eq(200)
+        expect(res).to be_an_instance_of(HTTP::Session::Response)
+        expect(res.request).to be_an_instance_of(HTTP::Session::Request)
 
-        resp = subject.get("https://httpbin.org/redirect/1", follow: true)
-        expect(resp.code).to eq(200)
-        expect(resp).to be_an_instance_of(HTTP::Session::Response)
-        expect(resp.request).to be_an_instance_of(HTTP::Session::Request)
+        res = subject.get("https://httpbin.org/redirect/1", follow: true)
+        expect(res.code).to eq(200)
+        expect(res).to be_an_instance_of(HTTP::Session::Response)
+        expect(res.request).to be_an_instance_of(HTTP::Session::Request)
 
-        resp = subject.get(
+        res = subject.get(
           "https://httpbin.org/redirect/1",
           follow: true,
           features: {logging: {logger: HTTP::Features::Logging::NullLogger.new}}
         )
-        expect(resp.code).to eq(200)
-        expect(resp).to be_instance_of(HTTP::Session::Response)
-        expect(resp.request).to be_an_instance_of(HTTP::Session::Request)
+        expect(res.code).to eq(200)
+        expect(res).to be_instance_of(HTTP::Session::Response)
+        expect(res.request).to be_an_instance_of(HTTP::Session::Request)
       end
     end
   end
@@ -47,190 +47,190 @@ RSpec.describe HTTP::Session, vcr: true do
   describe "cookies" do
     describe "Cookie" do
       it ":cookies" do
-        resp = subject.get("https://httpbin.org/anything", cookies: {_: "a=1"})
-        expect(resp.code).to eq(200)
-        expect(resp.request.headers["Cookie"]).to eq("a=1")
+        res = subject.get("https://httpbin.org/anything", cookies: {_: "a=1"})
+        expect(res.code).to eq(200)
+        expect(res.request.headers["Cookie"]).to eq("a=1")
       end
 
       it ":headers" do
-        resp = subject.get("https://httpbin.org/anything", headers: {"Cookie" => "a=1"})
-        expect(resp.code).to eq(200)
-        expect(resp.request.headers["Cookie"]).to eq("a=1")
+        res = subject.get("https://httpbin.org/anything", headers: {"Cookie" => "a=1"})
+        expect(res.code).to eq(200)
+        expect(res.request.headers["Cookie"]).to eq("a=1")
       end
 
       it "Session#cookies" do
-        resp = subject.dup.cookies(a: 1).get("https://httpbin.org/anything")
-        expect(resp.code).to eq(200)
-        expect(resp.request.headers["Cookie"]).to eq("a=1")
+        res = subject.dup.cookies(a: 1).get("https://httpbin.org/anything")
+        expect(res.code).to eq(200)
+        expect(res.request.headers["Cookie"]).to eq("a=1")
       end
 
       it "Session#headers" do
-        resp = subject.dup.headers("Cookie" => "a=1").get("https://httpbin.org/anything")
-        expect(resp.code).to eq(200)
-        expect(resp.request.headers["Cookie"]).to eq("a=1")
+        res = subject.dup.headers("Cookie" => "a=1").get("https://httpbin.org/anything")
+        expect(res.code).to eq(200)
+        expect(res.request.headers["Cookie"]).to eq("a=1")
       end
 
       it "Session#cookies & :cookies" do
-        resp = subject.dup.cookies(a: 1).get("https://httpbin.org/anything", cookies: {_: "b=2"})
-        expect(resp.code).to eq(200)
-        expect(resp.request.headers["Cookie"]).to eq("b=2")
+        res = subject.dup.cookies(a: 1).get("https://httpbin.org/anything", cookies: {_: "b=2"})
+        expect(res.code).to eq(200)
+        expect(res.request.headers["Cookie"]).to eq("b=2")
       end
 
       it "Session#headers & :headers" do
-        resp = subject.dup.headers("Cookie" => "a=1").get("https://httpbin.org/anything", headers: {"Cookie" => "b=2"})
-        expect(resp.code).to eq(200)
-        expect(resp.request.headers["Cookie"]).to eq("b=2")
+        res = subject.dup.headers("Cookie" => "a=1").get("https://httpbin.org/anything", headers: {"Cookie" => "b=2"})
+        expect(res.code).to eq(200)
+        expect(res.request.headers["Cookie"]).to eq("b=2")
       end
     end
 
     describe "Set-Cookie" do
       it "set" do
-        resp = subject.get("https://httpbin.org/cookies/set/a/1")
-        expect(resp.code).to eq(302)
+        res = subject.get("https://httpbin.org/cookies/set/a/1")
+        expect(res.code).to eq(302)
 
-        resp = subject.get("https://httpbin.org/anything")
-        expect(resp.code).to eq(200)
-        expect(resp.request.headers["Cookie"]).to eq("a=1")
+        res = subject.get("https://httpbin.org/anything")
+        expect(res.code).to eq(200)
+        expect(res.request.headers["Cookie"]).to eq("a=1")
       end
 
       it "multiple" do
-        resp = subject.get("https://httpbin.org/cookies/set/a/1")
-        expect(resp.code).to eq(302)
+        res = subject.get("https://httpbin.org/cookies/set/a/1")
+        expect(res.code).to eq(302)
 
-        resp = subject.get("https://httpbin.org/cookies/set/b/2")
-        expect(resp.code).to eq(302)
-        expect(resp.request.headers["Cookie"]).to eq("a=1")
+        res = subject.get("https://httpbin.org/cookies/set/b/2")
+        expect(res.code).to eq(302)
+        expect(res.request.headers["Cookie"]).to eq("a=1")
 
-        resp = subject.get("https://httpbin.org/anything")
-        expect(resp.code).to eq(200)
-        expect(resp.request.headers["Cookie"]).to eq("a=1; b=2")
+        res = subject.get("https://httpbin.org/anything")
+        expect(res.code).to eq(200)
+        expect(res.request.headers["Cookie"]).to eq("a=1; b=2")
       end
 
       it "override" do
-        resp = subject.get("https://httpbin.org/cookies/set/a/1")
-        expect(resp.code).to eq(302)
+        res = subject.get("https://httpbin.org/cookies/set/a/1")
+        expect(res.code).to eq(302)
 
-        resp = subject.get("https://httpbin.org/cookies/set/a/2")
-        expect(resp.code).to eq(302)
-        expect(resp.request.headers["Cookie"]).to eq("a=1")
+        res = subject.get("https://httpbin.org/cookies/set/a/2")
+        expect(res.code).to eq(302)
+        expect(res.request.headers["Cookie"]).to eq("a=1")
 
-        resp = subject.get("https://httpbin.org/anything")
-        expect(resp.code).to eq(200)
-        expect(resp.request.headers["Cookie"]).to eq("a=2")
+        res = subject.get("https://httpbin.org/anything")
+        expect(res.code).to eq(200)
+        expect(res.request.headers["Cookie"]).to eq("a=2")
       end
 
       it "delete" do
-        resp = subject.get("https://httpbin.org/cookies/set?a=1")
-        expect(resp.code).to eq(302)
+        res = subject.get("https://httpbin.org/cookies/set?a=1")
+        expect(res.code).to eq(302)
 
-        resp = subject.get("https://httpbin.org/cookies/delete?a=")
-        expect(resp.code).to eq(302)
-        expect(resp.request.headers["Cookie"]).to eq("a=1")
+        res = subject.get("https://httpbin.org/cookies/delete?a=")
+        expect(res.code).to eq(302)
+        expect(res.request.headers["Cookie"]).to eq("a=1")
 
-        resp = subject.get("https://httpbin.org/anything")
-        expect(resp.code).to eq(200)
-        expect(resp.request.headers["Cookie"]).to eq(nil)
+        res = subject.get("https://httpbin.org/anything")
+        expect(res.code).to eq(200)
+        expect(res.request.headers["Cookie"]).to eq(nil)
       end
     end
 
     describe "Cookie & Set-Cookie" do
       it ":cookies & set" do
-        resp = subject.get("https://httpbin.org/cookies/set?a=1", cookies: {_: "b=2"})
-        expect(resp.code).to eq(302)
-        expect(resp.request.headers["Cookie"]).to eq("b=2")
+        res = subject.get("https://httpbin.org/cookies/set?a=1", cookies: {_: "b=2"})
+        expect(res.code).to eq(302)
+        expect(res.request.headers["Cookie"]).to eq("b=2")
 
-        resp = subject.get("https://httpbin.org/anything", cookies: {_: "b=2"})
-        expect(resp.code).to eq(200)
-        expect(resp.request.headers["Cookie"]).to eq("b=2; a=1")
+        res = subject.get("https://httpbin.org/anything", cookies: {_: "b=2"})
+        expect(res.code).to eq(200)
+        expect(res.request.headers["Cookie"]).to eq("b=2; a=1")
       end
 
       it ":headers & set" do
-        resp = subject.get("https://httpbin.org/cookies/set?a=1", headers: {"Cookie" => "b=2"})
-        expect(resp.code).to eq(302)
-        expect(resp.request.headers["Cookie"]).to eq("b=2")
+        res = subject.get("https://httpbin.org/cookies/set?a=1", headers: {"Cookie" => "b=2"})
+        expect(res.code).to eq(302)
+        expect(res.request.headers["Cookie"]).to eq("b=2")
 
-        resp = subject.get("https://httpbin.org/anything", headers: {"Cookie" => "b=2"})
-        expect(resp.code).to eq(200)
-        expect(resp.request.headers["Cookie"]).to eq("b=2; a=1")
+        res = subject.get("https://httpbin.org/anything", headers: {"Cookie" => "b=2"})
+        expect(res.code).to eq(200)
+        expect(res.request.headers["Cookie"]).to eq("b=2; a=1")
       end
 
       it "Session#cookies & set" do
         sub = subject.dup.cookies(b: 2)
 
-        resp = sub.get("https://httpbin.org/cookies/set?a=1")
-        expect(resp.code).to eq(302)
-        expect(resp.request.headers["Cookie"]).to eq("b=2")
+        res = sub.get("https://httpbin.org/cookies/set?a=1")
+        expect(res.code).to eq(302)
+        expect(res.request.headers["Cookie"]).to eq("b=2")
 
-        resp = sub.get("https://httpbin.org/anything")
-        expect(resp.code).to eq(200)
-        expect(resp.request.headers["Cookie"]).to eq("b=2; a=1")
+        res = sub.get("https://httpbin.org/anything")
+        expect(res.code).to eq(200)
+        expect(res.request.headers["Cookie"]).to eq("b=2; a=1")
       end
 
       it "Session#headers & set" do
         sub = subject.dup.headers("Cookie" => "b=2")
 
-        resp = sub.get("https://httpbin.org/cookies/set?a=1")
-        expect(resp.code).to eq(302)
-        expect(resp.request.headers["Cookie"]).to eq("b=2")
+        res = sub.get("https://httpbin.org/cookies/set?a=1")
+        expect(res.code).to eq(302)
+        expect(res.request.headers["Cookie"]).to eq("b=2")
 
-        resp = sub.get("https://httpbin.org/anything")
-        expect(resp.code).to eq(200)
-        expect(resp.request.headers["Cookie"]).to eq("b=2; a=1")
+        res = sub.get("https://httpbin.org/anything")
+        expect(res.code).to eq(200)
+        expect(res.request.headers["Cookie"]).to eq("b=2; a=1")
       end
 
       it "Session#cookies & :cookies & set" do
         sub = subject.dup.cookies(b: 2)
 
-        resp = sub.get("https://httpbin.org/cookies/set?a=1", cookies: {_: "c=3"})
-        expect(resp.code).to eq(302)
-        expect(resp.request.headers["Cookie"]).to eq("c=3")
+        res = sub.get("https://httpbin.org/cookies/set?a=1", cookies: {_: "c=3"})
+        expect(res.code).to eq(302)
+        expect(res.request.headers["Cookie"]).to eq("c=3")
 
-        resp = sub.get("https://httpbin.org/anything", cookies: {_: "d=4"})
-        expect(resp.code).to eq(200)
-        expect(resp.request.headers["Cookie"]).to eq("d=4; a=1")
+        res = sub.get("https://httpbin.org/anything", cookies: {_: "d=4"})
+        expect(res.code).to eq(200)
+        expect(res.request.headers["Cookie"]).to eq("d=4; a=1")
 
-        resp = sub.get("https://httpbin.org/anything")
-        expect(resp.code).to eq(200)
-        expect(resp.request.headers["Cookie"]).to eq("b=2; a=1")
+        res = sub.get("https://httpbin.org/anything")
+        expect(res.code).to eq(200)
+        expect(res.request.headers["Cookie"]).to eq("b=2; a=1")
       end
 
       it "Session#headers & :headers & set" do
         sub = subject.dup.headers("Cookie" => "b=2")
 
-        resp = sub.get("https://httpbin.org/cookies/set?a=1", headers: {"Cookie" => "c=3"})
-        expect(resp.code).to eq(302)
-        expect(resp.request.headers["Cookie"]).to eq("c=3")
+        res = sub.get("https://httpbin.org/cookies/set?a=1", headers: {"Cookie" => "c=3"})
+        expect(res.code).to eq(302)
+        expect(res.request.headers["Cookie"]).to eq("c=3")
 
-        resp = sub.get("https://httpbin.org/anything", headers: {"Cookie" => "d=4"})
-        expect(resp.code).to eq(200)
-        expect(resp.request.headers["Cookie"]).to eq("d=4; a=1")
+        res = sub.get("https://httpbin.org/anything", headers: {"Cookie" => "d=4"})
+        expect(res.code).to eq(200)
+        expect(res.request.headers["Cookie"]).to eq("d=4; a=1")
 
-        resp = sub.get("https://httpbin.org/anything")
-        expect(resp.code).to eq(200)
-        expect(resp.request.headers["Cookie"]).to eq("b=2; a=1")
+        res = sub.get("https://httpbin.org/anything")
+        expect(res.code).to eq(200)
+        expect(res.request.headers["Cookie"]).to eq("b=2; a=1")
       end
     end
 
     describe "Redirect" do
       it "keep Set-Cookie" do
-        resp = subject.get("https://httpbin.org/cookies/set/a/1", follow: true)
-        expect(resp.code).to eq(200)
+        res = subject.get("https://httpbin.org/cookies/set/a/1", follow: true)
+        expect(res.code).to eq(200)
 
-        resp = subject.get("https://httpbin.org/anything")
-        expect(resp.code).to eq(200)
-        expect(resp.request.headers["Cookie"]).to eq("a=1")
+        res = subject.get("https://httpbin.org/anything")
+        expect(res.code).to eq(200)
+        expect(res.request.headers["Cookie"]).to eq("a=1")
       end
     end
   end
 
   describe "redirect" do
     it "redirect n times" do
-      count = 0
-      resp = subject.get("https://httpbin.org/redirect/4", follow: {
-        on_redirect: ->(_, _) { count += 1 }
+      cnt = 0
+      res = subject.get("https://httpbin.org/redirect/4", follow: {
+        on_redirect: ->(_, _) { cnt += 1 }
       })
-      expect(resp.code).to eq(200)
-      expect(count).to eq(4)
+      expect(res.code).to eq(200)
+      expect(cnt).to eq(4)
     end
   end
 end
