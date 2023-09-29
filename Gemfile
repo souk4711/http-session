@@ -20,6 +20,7 @@ gem "webmock"
 # doc
 gem "yard", "~> 0.9"
 gem "redcarpet", "~> 3.5"
+gem "webrick"
 
 # lsp
 gem "solargraph"

@@ -22,6 +22,7 @@ class HTTP::Session
     @jar = HTTP::CookieJar.new
   end
 
+  # @return [Response]
   def request(verb, uri, opts = {})
     c = HTTP::Session::Client.new(@options.http)
     c.request(verb, uri, opts, self).tap do |res|

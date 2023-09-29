@@ -25,36 +25,44 @@ class HTTP::Session
       )
     end
 
-    def merge(*args)
-      tap { @http = @http.merge(*args) }
+    # @return [Options]
+    def merge(other)
+      tap { @http = @http.merge(other) }
     end
 
-    def with_cookies(*args)
-      tap { @http = @http.with_cookies(*args) }
+    # @return [Options]
+    def with_cookies(cookies)
+      tap { @http = @http.with_cookies(cookies) }
     end
 
-    def with_encoding(*args)
-      tap { @http = @http.with_encoding(*args) }
+    # @return [Options]
+    def with_encoding(encoding)
+      tap { @http = @http.with_encoding(encoding) }
     end
 
-    def with_features(*args)
-      tap { @http = @http.with_features(*args) }
+    # @return [Options]
+    def with_features(features)
+      tap { @http = @http.with_features(features) }
     end
 
-    def with_follow(*args)
-      tap { @http = @http.with_follow(*args) }
+    # @return [Options]
+    def with_follow(follow)
+      tap { @http = @http.with_follow(follow) }
     end
 
-    def with_headers(*args)
-      tap { @http = @http.with_headers(*args) }
+    # @return [Options]
+    def with_headers(headers)
+      tap { @http = @http.with_headers(headers) }
     end
 
-    def with_nodelay(*args)
-      tap { @http = @http.with_nodelay(*args) }
+    # @return [Options]
+    def with_nodelay(nodelay)
+      tap { @http = @http.with_nodelay(nodelay) }
     end
 
-    def with_proxy(*args)
-      tap { @http = @http.with_proxy(*args) }
+    # @return [Options]
+    def with_proxy(proxy)
+      tap { @http = @http.with_proxy(proxy) }
     end
   end
 end

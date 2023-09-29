@@ -11,10 +11,12 @@ class HTTP::Session
     #   @option options [Float] :read Read timeout
     #   @option options [Float] :write Write timeout
     #   @option options [Float] :connect Connect timeout
+    #   @return [Session]
     #
     # @overload timeout(global_timeout)
     #   Adds a global timeout to the full request.
     #   @param [Numeric] global_timeout
+    #   @return [Session]
     def timeout(options)
       klass, options =
         case options
@@ -38,7 +40,7 @@ class HTTP::Session
     # Make a request through an HTTP proxy.
     #
     # @param [Array] proxy
-    # @raise [Request::Error] if HTTP proxy is invalid
+    # @return [Session]
     def via(*proxy)
       proxy_hash = {}
       proxy_hash[:proxy_address] = proxy[0] if proxy[0].is_a?(String)
@@ -56,6 +58,7 @@ class HTTP::Session
     # Make client follow redirects.
     #
     # @param options
+    # @return [Session]
     def follow(options = {})
       branch default_options.with_follow options
     end
@@ -63,16 +66,23 @@ class HTTP::Session
     # Make a request with the given headers.
     #
     # @param headers
+    # @return [Session]
     def headers(headers)
       branch default_options.with_headers(headers)
     end
 
     # Make a request with the given cookies.
+    #
+    # @param cookies
+    # @return [Session]
     def cookies(cookies)
       branch default_options.with_cookies(cookies)
     end
 
     # Force a specific encoding for response body.
+    #
+    # @param encoding
+    # @return [Session]
     def encoding(encoding)
       branch default_options.with_encoding(encoding)
     end
@@ -80,6 +90,7 @@ class HTTP::Session
     # Accept the given MIME type(s).
     #
     # @param type
+    # @return [Session]
     def accept(type)
       headers HTTP::Headers::ACCEPT => HTTP::MimeType.normalize(type)
     end
@@ -87,6 +98,7 @@ class HTTP::Session
     # Make a request with the given Authorization header.
     #
     # @param [#to_s] value Authorization header value
+    # @return [Session]
     def auth(value)
       headers HTTP::Headers::AUTHORIZATION => value.to_s
     end
@@ -97,6 +109,7 @@ class HTTP::Session
     # @param [#fetch] opts
     # @option opts [#to_s] :user
     # @option opts [#to_s] :pass
+    # @return [Session]
     def basic_auth(opts)
       user = opts.fetch(:user)
       pass = opts.fetch(:pass)
@@ -106,11 +119,15 @@ class HTTP::Session
     end
 
     # Set TCP_NODELAY on the socket.
+    #
+    # @return [Session]
     def nodelay
       branch default_options.with_nodelay(true)
     end
 
     # Turn on given features.
+    #
+    # @return [Session]
     def use(*features)
       branch default_options.with_features(features)
     end

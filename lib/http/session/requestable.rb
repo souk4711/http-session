@@ -7,6 +7,7 @@ class HTTP::Session
     #
     # @param uri
     # @option options [Hash]
+    # @return [Response]
     def head(uri, options = {})
       request :head, uri, options
     end
@@ -15,6 +16,7 @@ class HTTP::Session
     #
     # @param uri
     # @option options [Hash]
+    # @return [Response]
     def get(uri, options = {})
       request :get, uri, options
     end
@@ -23,6 +25,7 @@ class HTTP::Session
     #
     # @param uri
     # @option options [Hash]
+    # @return [Response]
     def post(uri, options = {})
       request :post, uri, options
     end
@@ -31,6 +34,7 @@ class HTTP::Session
     #
     # @param uri
     # @option options [Hash]
+    # @return [Response]
     def put(uri, options = {})
       request :put, uri, options
     end
@@ -39,6 +43,7 @@ class HTTP::Session
     #
     # @param uri
     # @option options [Hash]
+    # @return [Response]
     def delete(uri, options = {})
       request :delete, uri, options
     end
@@ -47,6 +52,7 @@ class HTTP::Session
     #
     # @param uri
     # @option options [Hash]
+    # @return [Response]
     def trace(uri, options = {})
       request :trace, uri, options
     end
@@ -55,6 +61,7 @@ class HTTP::Session
     #
     # @param uri
     # @option options [Hash]
+    # @return [Response]
     def options(uri, options = {})
       request :options, uri, options
     end
@@ -63,6 +70,7 @@ class HTTP::Session
     #
     # @param uri
     # @option options [Hash]
+    # @return [Response]
     def connect(uri, options = {})
       request :connect, uri, options
     end
@@ -71,6 +79,7 @@ class HTTP::Session
     #
     # @param uri
     # @option options [Hash]
+    # @return [Response]
     def patch(uri, options = {})
       request :patch, uri, options
     end

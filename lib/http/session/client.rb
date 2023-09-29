@@ -1,11 +1,12 @@
 class HTTP::Session
   class Client < HTTP::Client
+    # @return [Response]
     def request(verb, uri, opts, session)
-      hist = []
       data = session.make_http_request_data
+      hist = []
 
       opts = @default_options.merge(opts)
-      opts = _hs_handle_http_request_options_cookies(opts, data)
+      opts = _hs_handle_http_request_options_cookies(opts, data[:cookies])
       opts = _hs_handle_http_request_options_follow(opts, hist)
 
       req = build_request(verb, uri, opts)
@@ -22,11 +23,9 @@ class HTTP::Session
     private
 
     # Add session cookie to the request's :cookies.
-    def _hs_handle_http_request_options_cookies(opts, data)
-      session_cookies = data[:cookies]
-      return opts if session_cookies.nil?
-
-      opts.with_cookies(session_cookies)
+    def _hs_handle_http_request_options_cookies(opts, cookies)
+      return opts if cookies.nil?
+      opts.with_cookies(cookies)
     end
 
     # Wrap the :on_redirect method in the request's :follow.
