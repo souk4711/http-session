@@ -1,0 +1,45 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://httpbin.org/redirect/2
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Connection:
+      - close
+      Host:
+      - httpbin.org
+      User-Agent:
+      - http.rb/5.1.1
+  response:
+    status:
+      code: 302
+      message: Found
+    headers:
+      Date:
+      - Fri, 29 Sep 2023 17:14:04 GMT
+      Content-Type:
+      - text/html; charset=utf-8
+      Content-Length:
+      - '247'
+      Connection:
+      - close
+      Server:
+      - gunicorn/19.9.0
+      Location:
+      - "/relative-redirect/1"
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Credentials:
+      - 'true'
+    body:
+      encoding: UTF-8
+      string: |-
+        <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+        <title>Redirecting...</title>
+        <h1>Redirecting...</h1>
+        <p>You should be redirected automatically to target URL: <a href="/relative-redirect/1">/relative-redirect/1</a>.  If not click the link.
+  recorded_at: Fri, 29 Sep 2023 17:14:04 GMT
+recorded_with: VCR 6.2.0
