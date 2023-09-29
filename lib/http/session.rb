@@ -1,6 +1,7 @@
 require "http"
 require "monitor"
 
+require_relative "session/cache/cache_control"
 require_relative "session/client"
 require_relative "session/configurable"
 require_relative "session/options"
