@@ -15,6 +15,16 @@
 #
 # Uncomment the following lines to make the configuration take effect.
 
+CommitMsg:
+  CapitalizedSubject:
+    enabled: false
+
+  MessageFormat:
+    enabled: true
+    pattern: '(.+): (.+)'
+    expected_pattern_message: '<type>: <description>'
+    sample_message: 'feat: Handle cookies'
+
 PreCommit:
   RuboCop:
     enabled: true
