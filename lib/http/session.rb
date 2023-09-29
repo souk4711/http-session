@@ -1,9 +1,12 @@
 require "http"
 require "monitor"
 
+require_relative "session/client"
 require_relative "session/configurable"
 require_relative "session/options"
+require_relative "session/request"
 require_relative "session/requestable"
+require_relative "session/response"
 require_relative "session/version"
 
 # Use session to manage cookies and cache across requests.
@@ -20,19 +23,19 @@ class HTTP::Session
   end
 
   def request(verb, uri, opts = {})
-    data = build_http_request_data
+    data = make_http_request_data
     handle_http_request_options_cookies(@options.http, opts, data)
     handle_http_request_options_follow(@options.http, opts, data)
 
-    c = HTTP::Client.new(@options.http)
-    c.request(verb, uri, opts).tap do |resp|
+    c = HTTP::Session::Client.new(@options.http)
+    c.request(verb, uri, opts, self).tap do |resp|
       handle_http_response(resp, data)
     end
   end
 
   private
 
-  def build_http_request_data
+  def make_http_request_data
     synchronize do
       {
         cookies: extract_cookie_from_jar, # session cookies

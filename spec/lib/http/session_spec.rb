@@ -19,6 +19,29 @@ RSpec.describe HTTP::Session, vcr: true do
         expect(resp.request.headers["C"]).to eq("C")
       end
     end
+
+    describe "return" do
+      it "a HTTP::Session::Response" do
+        resp = subject.get("https://httpbin.org/anything")
+        expect(resp.code).to eq(200)
+        expect(resp).to be_an_instance_of(HTTP::Session::Response)
+        expect(resp.request).to be_an_instance_of(HTTP::Session::Request)
+
+        resp = subject.get("https://httpbin.org/redirect/1", follow: true)
+        expect(resp.code).to eq(200)
+        expect(resp).to be_an_instance_of(HTTP::Session::Response)
+        expect(resp.request).to be_an_instance_of(HTTP::Session::Request)
+
+        resp = subject.get(
+          "https://httpbin.org/redirect/1",
+          follow: true,
+          features: {logging: {logger: HTTP::Features::Logging::NullLogger.new}}
+        )
+        expect(resp.code).to eq(200)
+        expect(resp).to be_instance_of(HTTP::Session::Response)
+        expect(resp.request).to be_an_instance_of(HTTP::Session::Request)
+      end
+    end
   end
 
   describe "cookies" do

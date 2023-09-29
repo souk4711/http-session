@@ -29,7 +29,7 @@ class HTTP::Session
         options["#{k}_timeout".to_sym] = options.delete k
       end
 
-      branch default_options.http.merge(
+      branch default_options.merge(
         timeout_class: klass,
         timeout_options: options
       )
@@ -124,7 +124,7 @@ class HTTP::Session
 
     # :nodoc:
     def branch(options)
-      tap { @options = HTTP::Session::Options.new(options) }
+      tap { @options = options }
     end
   end
 end

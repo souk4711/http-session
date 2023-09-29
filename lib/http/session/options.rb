@@ -1,23 +1,6 @@
 class HTTP::Session
   class Options
-    extend Forwardable
-
-    class << self
-      def new(options = {})
-        options.is_a?(self) ? options : super
-      end
-    end
-
     attr_reader :http
-
-    def_delegators :http,
-      :with_cookies,
-      :with_encoding,
-      :with_features,
-      :with_follow,
-      :with_headers,
-      :with_nodelay,
-      :with_proxy
 
     def initialize(options = {})
       options = options.to_hash
@@ -40,6 +23,38 @@ class HTTP::Session
           :timeout_options
         )
       )
+    end
+
+    def merge(*args)
+      tap { @http = @http.merge(*args) }
+    end
+
+    def with_cookies(*args)
+      tap { @http = @http.with_cookies(*args) }
+    end
+
+    def with_encoding(*args)
+      tap { @http = @http.with_encoding(*args) }
+    end
+
+    def with_features(*args)
+      tap { @http = @http.with_features(*args) }
+    end
+
+    def with_follow(*args)
+      tap { @http = @http.with_follow(*args) }
+    end
+
+    def with_headers(*args)
+      tap { @http = @http.with_headers(*args) }
+    end
+
+    def with_nodelay(*args)
+      tap { @http = @http.with_nodelay(*args) }
+    end
+
+    def with_proxy(*args)
+      tap { @http = @http.with_proxy(*args) }
     end
   end
 end
