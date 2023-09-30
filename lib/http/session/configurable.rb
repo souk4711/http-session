@@ -135,13 +135,8 @@ class HTTP::Session
     private
 
     # :nodoc:
-    def default_options
-      @options
-    end
-
-    # :nodoc:
-    def branch(options)
-      tap { @options = options }
+    def branch(default_options)
+      tap { @default_options = default_options }
     end
   end
 end

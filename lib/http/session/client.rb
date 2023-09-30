@@ -1,9 +1,9 @@
 class HTTP::Session
   class Client < HTTP::Client
-    # @param [Hash] options
+    # @param [Hash] default_options
     # @param [Session] session
-    def initialize(options, session)
-      super(options)
+    def initialize(default_options, session)
+      super(default_options)
 
       @session = session
     end
@@ -32,7 +32,11 @@ class HTTP::Session
 
     # @return [Response]
     def perform(req, opts)
-      req.cacheable? ? _hs_cache_lookup(req, opts) : _hs_cache_pass(req, opts)
+      if @session.default_options.cache.enabled?
+        req.cacheable? ? _hs_cache_lookup(req, opts) : _hs_cache_pass(req, opts)
+      else
+        _hs_perform(req, opts)
+      end
     end
 
     # @return [Response]

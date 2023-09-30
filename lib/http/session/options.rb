@@ -1,13 +1,23 @@
 class HTTP::Session
   class Options
+    # @!attribute [r] cookies
+    #   @return [CookiesOption]
+    attr_reader :cookies
+
+    # @!attribute [r] cache
+    #   @return [CacheOption]
+    attr_reader :cache
+
+    # @!attribute [r] http
+    #   @return [HTTP::Options]
     attr_reader :http
 
     # @param [Hash] options
     def initialize(options)
-      options = options.to_hash
-
+      @cookies = HTTP::Session::Options::CookiesOption.new(options.fetch(:cookies, false))
+      @cache = HTTP::Session::Options::CacheOption.new(options.fetch(:cache, false))
       @http = HTTP::Options.new(
-        options.slice(
+        options.fetch(:http, {}).slice(
           :cookies,
           :encoding,
           :features,

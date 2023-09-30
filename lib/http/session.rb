@@ -4,6 +4,8 @@ require "monitor"
 require_relative "session/cache/cache_control"
 require_relative "session/client"
 require_relative "session/configurable"
+require_relative "session/options/cache_option"
+require_relative "session/options/cookies_option"
 require_relative "session/options"
 require_relative "session/request"
 require_relative "session/requestable"
@@ -16,17 +18,24 @@ class HTTP::Session
   include HTTP::Session::Configurable
   include HTTP::Session::Requestable
 
-  # @param [Hash] options
-  def initialize(options = {})
+  # @!attribute [r] default_options
+  #   @return [Options]
+  attr_reader :default_options
+
+  # @param [Hash] default_options
+  # @option default_options [Boolean, Hash] :cookies session cookies option
+  # @option default_options [Boolean, Hash] :cache session cache option
+  # @option default_options [Hash] :http http client options
+  def initialize(default_options = {})
     super()
 
-    @options = HTTP::Session::Options.new(options)
+    @default_options = HTTP::Session::Options.new(default_options)
     @jar = HTTP::CookieJar.new
   end
 
   # @return [Response]
   def request(verb, uri, opts = {})
-    c = HTTP::Session::Client.new(@options.http, self)
+    c = HTTP::Session::Client.new(@default_options.http, self)
     c.request(verb, uri, opts).tap do |res|
       handle_http_response(res)
     end
@@ -50,11 +59,15 @@ class HTTP::Session
   end
 
   def extract_cookie_from_jar
+    return unless @default_options.cookies.enabled?
+
     return if @jar.empty?
     @jar.cookies.each_with_object({}) { |c, h| h[c.name] = c.value }
   end
 
   def extract_cookie_to_jar(res)
+    return unless @default_options.cookies.enabled?
+
     all = ([] << res.history << res).flatten
     all.each do |r|
       req = r.request

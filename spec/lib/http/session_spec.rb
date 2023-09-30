@@ -1,7 +1,7 @@
 RSpec.describe HTTP::Session, vcr: true do
-  let(:subject) { described_class.new.freeze }
-
   describe "#request" do
+    let(:subject) { described_class.new.freeze }
+
     describe "opts" do
       it "override session options" do
         res = subject.dup.follow(false).get("https://httpbin.org/redirect/1", follow: true)
@@ -50,7 +50,22 @@ RSpec.describe HTTP::Session, vcr: true do
     end
   end
 
+  describe "redirect" do
+    let(:subject) { described_class.new.freeze }
+
+    it "redirect n times" do
+      cnt = 0
+      res = subject.get("https://httpbin.org/redirect/4", follow: {
+        on_redirect: ->(_, _) { cnt += 1 }
+      })
+      expect(res.code).to eq(200)
+      expect(cnt).to eq(4)
+    end
+  end
+
   describe "cookies" do
+    let(:subject) { described_class.new(cookies: true).freeze }
+
     describe "Cookie" do
       it ":cookies" do
         res = subject.get("https://httpbin.org/anything", cookies: {_: "a=1"})
@@ -226,17 +241,6 @@ RSpec.describe HTTP::Session, vcr: true do
         expect(res.code).to eq(200)
         expect(res.request.headers["Cookie"]).to eq("a=1")
       end
-    end
-  end
-
-  describe "redirect" do
-    it "redirect n times" do
-      cnt = 0
-      res = subject.get("https://httpbin.org/redirect/4", follow: {
-        on_redirect: ->(_, _) { cnt += 1 }
-      })
-      expect(res.code).to eq(200)
-      expect(cnt).to eq(4)
     end
   end
 end
