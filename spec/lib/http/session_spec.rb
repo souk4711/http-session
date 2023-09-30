@@ -26,11 +26,15 @@ RSpec.describe HTTP::Session, vcr: true do
         expect(res.code).to eq(200)
         expect(res).to be_an_instance_of(HTTP::Session::Response)
         expect(res.request).to be_an_instance_of(HTTP::Session::Request)
+        expect(res.__getobj__).to be_an_instance_of(HTTP::Response)
+        expect(res.request.__getobj__).to be_an_instance_of(HTTP::Request)
 
         res = subject.get("https://httpbin.org/redirect/1", follow: true)
         expect(res.code).to eq(200)
         expect(res).to be_an_instance_of(HTTP::Session::Response)
         expect(res.request).to be_an_instance_of(HTTP::Session::Request)
+        expect(res.__getobj__).to be_an_instance_of(HTTP::Response)
+        expect(res.request.__getobj__).to be_an_instance_of(HTTP::Request)
 
         res = subject.get(
           "https://httpbin.org/redirect/1",
@@ -40,6 +44,8 @@ RSpec.describe HTTP::Session, vcr: true do
         expect(res.code).to eq(200)
         expect(res).to be_instance_of(HTTP::Session::Response)
         expect(res.request).to be_an_instance_of(HTTP::Session::Request)
+        expect(res.__getobj__).to be_an_instance_of(HTTP::Response)
+        expect(res.request.__getobj__).to be_an_instance_of(HTTP::Request)
       end
     end
   end

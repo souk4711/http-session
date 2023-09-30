@@ -2,6 +2,12 @@ class HTTP::Session
   # @author [rack/rack-cache](https://github.com/rack/rack-cache)
   # @author [souk4711/http-session](https://github.com/souk4711/http-session)
   class Response < SimpleDelegator
+    class << self
+      def new(*args)
+        args[0].is_a?(self) ? args[0] : super
+      end
+    end
+
     # Status codes of responses that MAY be stored by a cache or used in reply
     # to a subsequent request.
     #
@@ -47,9 +53,10 @@ class HTTP::Session
     #
     # Responses with neither a freshness lifetime (expires, max-age) nor cache
     # validator (last-modified, etag) are considered uncacheable.
-    def cacheable?
+    def cacheable?(in_private_caches:)
       return false unless CACHEABLE_RESPONSE_CODES.include?(status)
-      return false if cache_control.no_store? || cache_control.private?
+      return false if cache_control.no_store?
+      return false if cache_control.private? && !in_private_caches
       validateable? || fresh?
     end
 

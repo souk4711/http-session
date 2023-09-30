@@ -2,7 +2,8 @@ class HTTP::Session
   class Options
     attr_reader :http
 
-    def initialize(options = {})
+    # @param [Hash] options
+    def initialize(options)
       options = options.to_hash
 
       @http = HTTP::Options.new(

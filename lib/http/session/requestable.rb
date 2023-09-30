@@ -6,7 +6,7 @@ class HTTP::Session
     # Request a get sans response body.
     #
     # @param uri
-    # @option options [Hash]
+    # @option [Hash] options
     # @return [Response]
     def head(uri, options = {})
       request :head, uri, options
@@ -15,7 +15,7 @@ class HTTP::Session
     # Get a resource.
     #
     # @param uri
-    # @option options [Hash]
+    # @option [Hash] options
     # @return [Response]
     def get(uri, options = {})
       request :get, uri, options
@@ -24,7 +24,7 @@ class HTTP::Session
     # Post to a resource.
     #
     # @param uri
-    # @option options [Hash]
+    # @option [Hash] options
     # @return [Response]
     def post(uri, options = {})
       request :post, uri, options
@@ -33,7 +33,7 @@ class HTTP::Session
     # Put to a resource.
     #
     # @param uri
-    # @option options [Hash]
+    # @option [Hash] options
     # @return [Response]
     def put(uri, options = {})
       request :put, uri, options
@@ -42,7 +42,7 @@ class HTTP::Session
     # Delete a resource.
     #
     # @param uri
-    # @option options [Hash]
+    # @option [Hash] options
     # @return [Response]
     def delete(uri, options = {})
       request :delete, uri, options
@@ -51,7 +51,7 @@ class HTTP::Session
     # Echo the request back to the client.
     #
     # @param uri
-    # @option options [Hash]
+    # @option [Hash] options
     # @return [Response]
     def trace(uri, options = {})
       request :trace, uri, options
@@ -60,7 +60,7 @@ class HTTP::Session
     # Return the methods supported on the given URI.
     #
     # @param uri
-    # @option options [Hash]
+    # @option [Hash] options
     # @return [Response]
     def options(uri, options = {})
       request :options, uri, options
@@ -69,7 +69,7 @@ class HTTP::Session
     # Convert to a transparent TCP/IP tunnel.
     #
     # @param uri
-    # @option options [Hash]
+    # @option [Hash] options
     # @return [Response]
     def connect(uri, options = {})
       request :connect, uri, options
@@ -78,7 +78,7 @@ class HTTP::Session
     # Apply partial modifications to a resource.
     #
     # @param uri
-    # @option options [Hash]
+    # @option [Hash] options
     # @return [Response]
     def patch(uri, options = {})
       request :patch, uri, options

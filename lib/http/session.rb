@@ -16,6 +16,7 @@ class HTTP::Session
   include HTTP::Session::Configurable
   include HTTP::Session::Requestable
 
+  # @param [Hash] options
   def initialize(options = {})
     super()
 
@@ -25,8 +26,8 @@ class HTTP::Session
 
   # @return [Response]
   def request(verb, uri, opts = {})
-    c = HTTP::Session::Client.new(@options.http)
-    c.request(verb, uri, opts, self).tap do |res|
+    c = HTTP::Session::Client.new(@options.http, self)
+    c.request(verb, uri, opts).tap do |res|
       handle_http_response(res)
     end
   end
