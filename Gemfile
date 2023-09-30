@@ -19,11 +19,11 @@ gem "webmock"
 
 # doc
 gem "yard", "~> 0.9"
-gem "redcarpet", "~> 3.5"
+gem "redcarpet", "~> 3.5", platforms: :ruby
 gem "webrick"
 
 # lsp
-gem "solargraph"
+gem "solargraph", platforms: :ruby
 
 # misc
 gem "overcommit", "~> 0.59"

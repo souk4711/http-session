@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     http-session (0.0.1)
-      http (~> 5.1)
+      http (~> 5.1, >= 5.1.1)
 
 GEM
   remote: https://rubygems.org/
@@ -21,6 +21,7 @@ GEM
       unf (>= 0.0.5, < 1.0.0)
     e2mmap (0.1.0)
     ffi (1.16.2)
+    ffi (1.16.2-java)
     ffi-compiler (1.0.1)
       ffi (>= 1.0.0)
       rake
@@ -36,6 +37,7 @@ GEM
     iniparse (1.5.0)
     jaro_winkler (1.5.6)
     json (2.6.3)
+    json (2.6.3-java)
     kramdown (2.4.0)
       rexml
     kramdown-parser-gfm (1.1.0)
@@ -57,6 +59,7 @@ GEM
       racc
     public_suffix (5.0.3)
     racc (1.7.1)
+    racc (1.7.1-java)
     rainbow (3.1.1)
     rake (13.0.6)
     rbs (2.8.4)
@@ -128,6 +131,7 @@ GEM
     tilt (2.3.0)
     unf (0.1.4)
       unf_ext
+    unf (0.1.4-java)
     unf_ext (0.0.8.2)
     unicode-display_width (2.4.2)
     vcr (6.2.0)
@@ -139,6 +143,7 @@ GEM
     yard (0.9.34)
 
 PLATFORMS
+  universal-java-21
   x86_64-linux
 
 DEPENDENCIES
