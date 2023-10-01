@@ -42,4 +42,16 @@ RSpec.describe HTTP::Session::Options::CacheOption do
       }.to raise_error(ArgumentError, /cannot be used at the same time/)
     end
   end
+
+  it "#cache" do
+    sub = described_class.new(enabled: false)
+    expect(sub.store).to eq(nil)
+
+    sub = described_class.new(enabled: true)
+    expect(sub.store).to be_a(ActiveSupport::Cache::Store)
+
+    store = Object.new
+    sub = described_class.new(store:)
+    expect(sub.store).to eq(store)
+  end
 end

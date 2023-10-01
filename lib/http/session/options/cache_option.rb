@@ -1,7 +1,13 @@
 class HTTP::Session
   class Options
     class CacheOption
+      # @!attribute [r] store
+      attr_reader :store
+
       # @param [Hash] options
+      # @option options [Boolean] :private set true if it is a private cache
+      # @option options [Boolean] :shared set true if it is a shared cache
+      # @option options [Object] :store which supports the basic cache methods of #fetch, #write, #read, #exist?, and #delete
       def initialize(options)
         options =
           case options
@@ -10,10 +16,10 @@ class HTTP::Session
           else options
           end
 
-        # Enabled/Disabled
+        # Enabled / Disabled
         @enabled = options.fetch(:enabled, true)
 
-        # Private Cache/Shared Cache
+        # Private Cache / Shared Cache
         @private =
           if options.key?(:private)
             raise ArgumentError, ":private and :shared cannot be used at the same time" if options.key?(:shared)
@@ -22,6 +28,15 @@ class HTTP::Session
             !options[:shared]
           else
             false
+          end
+
+        # Cache Store
+        @store =
+          if options.key?(:store)
+            options[:store]
+          elsif @enabled
+            require "active_support/cache"
+            ActiveSupport::Cache::MemoryStore.new
           end
       end
 

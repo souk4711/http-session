@@ -2,8 +2,11 @@
 
 source "https://rubygems.org"
 
-# Specify your gem's dependencies in rubsh.gemspec
+# Specify your gem's dependencies in http-session.gemspec
 gemspec
+
+# optonal dependencies
+gem "activesupport", "~> 7.0"
 
 # rake
 gem "rake", "~> 13.0"

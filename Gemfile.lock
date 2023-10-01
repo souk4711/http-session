@@ -7,6 +7,11 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
+    activesupport (7.0.8)
+      concurrent-ruby (~> 1.0, >= 1.0.2)
+      i18n (>= 1.6, < 2)
+      minitest (>= 5.1)
+      tzinfo (~> 2.0)
     addressable (2.8.5)
       public_suffix (>= 2.0.2, < 6.0)
     ast (2.4.2)
@@ -14,6 +19,7 @@ GEM
     base64 (0.1.1)
     benchmark (0.2.1)
     childprocess (4.1.0)
+    concurrent-ruby (1.2.2)
     crack (0.4.5)
       rexml
     diff-lcs (1.5.0)
@@ -34,6 +40,8 @@ GEM
     http-cookie (1.0.5)
       domain_name (~> 0.5)
     http-form_data (2.3.0)
+    i18n (1.14.1)
+      concurrent-ruby (~> 1.0)
     iniparse (1.5.0)
     jaro_winkler (1.5.6)
     json (2.6.3)
@@ -47,6 +55,7 @@ GEM
     llhttp-ffi (0.4.0)
       ffi-compiler (~> 1.0)
       rake (~> 13.0)
+    minitest (5.20.0)
     nokogiri (1.15.4-x86_64-linux)
       racc (~> 1.4)
     overcommit (0.60.0)
@@ -129,6 +138,8 @@ GEM
       rubocop-performance (~> 1.19.0)
     thor (1.2.2)
     tilt (2.3.0)
+    tzinfo (2.0.6)
+      concurrent-ruby (~> 1.0)
     unf (0.1.4)
       unf_ext
     unf (0.1.4-java)
@@ -147,6 +158,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  activesupport (~> 7.0)
   http-session!
   overcommit (~> 0.59)
   rake (~> 13.0)
