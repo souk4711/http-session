@@ -66,6 +66,19 @@ RSpec.describe HTTP::Session, vcr: true do
   describe "cookies" do
     let(:subject) { described_class.new(cookies: true).freeze }
 
+    describe "Disabled" do
+      it "can't use cookies across requests" do
+        sub = described_class.new.freeze
+
+        res = sub.get("https://httpbin.org/cookies/set/a/1")
+        expect(res.code).to eq(302)
+
+        res = sub.get("https://httpbin.org/anything")
+        expect(res.code).to eq(200)
+        expect(res.request.headers["Cookie"]).to eq(nil)
+      end
+    end
+
     describe "Cookie" do
       it ":cookies" do
         res = subject.get("https://httpbin.org/anything", cookies: {_: "a=1"})
