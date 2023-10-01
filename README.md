@@ -1,6 +1,6 @@
 # HTTP::Session
 
-A Ruby library to handle HTTP session for http.rb.
+HTTP::Session - a session abstraction for http.rb in order to support cookies and caching.
 
 
 ## Installation
