@@ -1,7 +1,8 @@
 class HTTP::Session
   class Cache
-    def initialize(session)
-      @session = session
+    # @param [Options::CacheOption] options
+    def initialize(options)
+      @options = options
     end
 
     # @param [Request] req
@@ -16,18 +17,18 @@ class HTTP::Session
 
     # True when it is a private cache.
     def private?
-      @session.default_options.cache.private_cache?
+      @options.private_cache?
     end
 
     # True when it is a shared cache.
     def shared?
-      @session.default_options.cache.shared_cache?
+      @options.shared_cache?
     end
 
     private
 
     def store
-      @session.default_options.cache.store
+      @options.store
     end
   end
 end

@@ -76,4 +76,17 @@ RSpec.describe HTTP::Session::Configurable do
       subject.freeze.timeout(2)
     }.to raise_error(FrozenError)
   end
+
+  it "donot change cookies/cache options" do
+    sub = HTTP::Session.new(cookies: true, cache: {private: true}).timeout(2).nodelay
+
+    opts = sub.default_options
+    expect(opts.cookies.enabled?).to eq(true)
+    expect(opts.cache.enabled?).to eq(true)
+    expect(opts.cache.private_cache?).to eq(true)
+    expect(opts.cache.shared_cache?).to eq(false)
+
+    expect(sub.cache.private?).to eq(true)
+    expect(sub.cache.shared?).to eq(false)
+  end
 end

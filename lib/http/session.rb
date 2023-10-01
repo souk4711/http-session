@@ -36,7 +36,7 @@ class HTTP::Session
     super()
 
     @default_options = HTTP::Session::Options.new(default_options)
-    @cache = HTTP::Session::Cache.new(self)
+    @cache = HTTP::Session::Cache.new(@default_options.cache)
     @jar = HTTP::CookieJar.new
   end
 
