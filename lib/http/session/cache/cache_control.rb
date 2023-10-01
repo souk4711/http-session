@@ -1,5 +1,5 @@
 class HTTP::Session
-  module Cache
+  class Cache
     # Parses a cache-control header and exposes the directives as a Hash.
     # Directives that do not have values are set to +true+.
     #

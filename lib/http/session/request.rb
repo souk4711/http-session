@@ -26,12 +26,5 @@ class HTTP::Session
     def no_cache?
       cache_control.no_cache?
     end
-
-    # Set HTTP request method.
-    #
-    # @return [Symbol]
-    def verb=(verb)
-      @verb = verb.to_s.downcase.to_sym
-    end
   end
 end

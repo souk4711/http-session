@@ -86,46 +86,54 @@ class HTTP::Session
     #     entry with the backend using conditional GET.
     #   * When no matching cache entry is found, trigger miss processing.
     def _hs_cache_lookup(req, opts)
-      entry = nil
+      entry = @session.cache.read(req)
       if entry.nil?
-        _hs_cache_trace :miss
         _hs_cache_fetch(req, opts)
       elsif entry.fresh? && !req.no_cache?
-        _hs_cache_trace :fresh
-        entry
+        _hs_cache_reuse(req, opts, entry)
       else
-        _hs_cache_trace :stale
         _hs_cache_validate(req, opts, entry)
       end
     end
 
-    # The cache missed or a reload is required. Forward the request to the
-    # backend and determine whether the response should be stored.
+    # The cache entry is missing. Forward the request to the backend and determine
+    # whether the response should be stored.
     def _hs_cache_fetch(req, opts)
-      req.verb = :get if req.verb == :head
-      _hs_perform(req, opts)
+      res = _hs_perform(req, opts)
+
+      _hs_cache_entry_store(req, res)
+      res
     end
 
-    # Validate that the cache entry is fresh. The original request is used
+    # The cache entry is fresh, reuse it.
+    def _hs_cache_reuse(req, opts, entry)
+      entry.to_response(req)
+    end
+
+    # The cache entry is stale, revalidate it. The original request is used
     # as a template for a conditional GET request with the backend.
     def _hs_cache_validate(req, opts, entry)
-      req.verb = :get if req.verb == :head
-
       req.headers[HTTP::Headers::IF_MODIFIED_SINCE] = entry.last_modified if entry.last_modified
       req.headers[HTTP::Headers::IF_NONE_MATCH] = entry.etag if entry.etag
-      _hs_perform(req, opts)
+
+      res = _hs_perform(req, opts)
+      return entry.to_response(req) if res.status.not_modified?
+
+      _hs_cache_entry_store(req, res)
+      res
     end
 
-    # The request is sent to the backend, and the backend's response is sent
-    # to the client, but is not entered into the cache.
+    # The request is not cacheable. So the request is sent to the backend, and the
+    # backend's response is sent to the client, but is not entered into the cache.
     def _hs_cache_pass(req, opts)
-      _hs_cache_trace :pass
       _hs_perform(req, opts)
     end
 
-    # Trace that an event took place.
-    def _hs_cache_trace(event)
-      p event
+    # Store the response to cache.
+    def _hs_cache_entry_store(req, res)
+      if res.cacheable?(in_private_caches: @session.cache.private?)
+        @session.cache.write(req, res)
+      end
     end
 
     # Delegate the request to the backend and create the response.

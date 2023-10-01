@@ -2,6 +2,8 @@ require "http"
 require "monitor"
 
 require_relative "session/cache/cache_control"
+require_relative "session/cache/entry"
+require_relative "session/cache"
 require_relative "session/client"
 require_relative "session/configurable"
 require_relative "session/options/cache_option"
@@ -22,6 +24,10 @@ class HTTP::Session
   #   @return [Options]
   attr_reader :default_options
 
+  # @!attribute [r] cache
+  #   @return [Cache]
+  attr_reader :cache
+
   # @param [Hash] default_options
   # @option default_options [Boolean, Hash] :cookies session cookies option
   # @option default_options [Boolean, Hash] :cache session cache option
@@ -30,6 +36,7 @@ class HTTP::Session
     super()
 
     @default_options = HTTP::Session::Options.new(default_options)
+    @cache = HTTP::Session::Cache.new(self)
     @jar = HTTP::CookieJar.new
   end
 

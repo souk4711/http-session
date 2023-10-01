@@ -51,7 +51,7 @@ RSpec.describe HTTP::Session::Options::CacheOption do
     expect(sub.store).to be_a(ActiveSupport::Cache::Store)
 
     store = Object.new
-    sub = described_class.new(store:)
+    sub = described_class.new(store: store)
     expect(sub.store).to eq(store)
   end
 end
