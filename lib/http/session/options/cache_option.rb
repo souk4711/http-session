@@ -2,12 +2,13 @@ class HTTP::Session
   class Options
     class CacheOption
       # @!attribute [r] store
+      #   @return [ActiveSupport::Cache::Store]
       attr_reader :store
 
       # @param [Hash] options
       # @option options [Boolean] :private set true if it is a private cache
       # @option options [Boolean] :shared set true if it is a shared cache
-      # @option options [Object] :store which supports the basic cache methods of #fetch, #write, #read, #exist?, and #delete
+      # @option options [ActiveSupport::Cache::Store] :store
       def initialize(options)
         options =
           case options

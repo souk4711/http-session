@@ -131,16 +131,6 @@ class HTTP::Session
       headers[HTTP::Headers::LAST_MODIFIED]
     end
 
-    # The literal value of the Vary header, or nil when no header is present.
-    def vary
-      headers[HTTP::Headers::VARY]
-    end
-
-    # Does the response include a vary header?
-    def vary?
-      !vary.nil?
-    end
-
     private
 
     # When no Date header is present or is unparseable, set the Date header to Time.now.

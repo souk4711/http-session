@@ -40,6 +40,9 @@ class HTTP::Session
     @jar = HTTP::CookieJar.new
   end
 
+  # @param verb
+  # @param uri
+  # @param [Hash] opts
   # @return [Response]
   def request(verb, uri, opts = {})
     c = HTTP::Session::Client.new(@default_options.http, self)
