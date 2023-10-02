@@ -73,6 +73,7 @@ RSpec.describe HTTP::Session, vcr: true do
         expect(res1.etag).to be_a(String)
         expect(res1.last_modified).to be_a(String)
         expect(res1.validateable?).to eq(true)
+        expect(subject.cache.store.instance_variable_get("@data").size).to eq(1)
 
         res2 = subject.get(httpbin("/cache"))
         expect(res2.from_cache?).to eq(true)
@@ -89,6 +90,7 @@ RSpec.describe HTTP::Session, vcr: true do
         expect(res1.etag).to be_a(String)
         expect(res1.last_modified).to be_a(String)
         expect(res1.validateable?).to eq(true)
+        expect(sub.cache.store).to eq(nil)
 
         res2 = sub.get(httpbin("/cache"))
         expect(res2.from_cache?).to eq(false)
@@ -109,6 +111,7 @@ RSpec.describe HTTP::Session, vcr: true do
         expect(res1.max_age(shared: true)).to eq(60)
         expect(res1.age).to eq(0)
         expect(res1.fresh?(shared: true)).to eq(true)
+        expect(subject.cache.store.instance_variable_get("@data").size).to eq(1)
 
         res2 = subject.get(httpbin("/response-headers"), params: {"Cache-Control" => "public, max-age=60"})
         expect(res2.from_cache?).to eq(true)
@@ -125,6 +128,7 @@ RSpec.describe HTTP::Session, vcr: true do
         expect(res1.max_age(shared: true)).to eq(60)
         expect(res1.age).to eq(0)
         expect(res1.fresh?(shared: true)).to eq(true)
+        expect(subject.cache.store.instance_variable_get("@data").size).to eq(1)
 
         res2 = subject.get(httpbin("/response-headers"), params: {"Cache-Control" => "public, s-maxage=60"})
         expect(res2.from_cache?).to eq(true)
@@ -141,14 +145,172 @@ RSpec.describe HTTP::Session, vcr: true do
         expect(res1.max_age(shared: true)).to eq(60)
         expect(res1.age).to eq(0)
         expect(res1.fresh?(shared: true)).to eq(true)
+        expect(subject.cache.store.instance_variable_get("@data").size).to eq(1)
 
         res2 = subject.get(httpbin("/response-headers"), params: {"Cache-Control" => "public, max-age=60, no-cache"})
         expect(res2.from_cache?).to eq(false)
         expect(res2.code).to eq(200)
       end
+
+      it "Cache-Control: no-store" do
+        res = subject.get(httpbin("/cache/0"))
+        Timecop.freeze(res.date)
+
+        res1 = subject.get(httpbin("/response-headers"), params: {"Cache-Control" => "public, max-age=60, no-store"})
+        expect(res1.from_cache?).to eq(false)
+        expect(res1.code).to eq(200)
+        expect(res1.max_age(shared: true)).to eq(60)
+        expect(res1.age).to eq(0)
+        expect(res1.fresh?(shared: true)).to eq(true)
+        expect(subject.cache.store.instance_variable_get("@data").size).to eq(0)
+      end
+
+      it "Cache-Control: private" do
+        res = subject.get(httpbin("/cache/0"))
+        Timecop.freeze(res.date)
+
+        res1 = subject.get(httpbin("/response-headers"), params: {"Cache-Control" => "public, max-age=60, private"})
+        expect(res1.from_cache?).to eq(false)
+        expect(res1.code).to eq(200)
+        expect(res1.max_age(shared: true)).to eq(60)
+        expect(res1.age).to eq(0)
+        expect(res1.fresh?(shared: true)).to eq(true)
+        expect(subject.cache.store.instance_variable_get("@data").size).to eq(0)
+      end
+
+      describe "Vary" do
+        it "use '*' to indicate that the response is uncacheable" do
+          res = subject.get(httpbin("/cache/0"))
+          Timecop.freeze(res.date)
+
+          res1 = subject.get(
+            httpbin("/response-headers"),
+            params: {"Cache-Control" => "public, max-age=60", "Vary" => "*"},
+            headers: {"Accept" => "text/html"}
+          )
+          expect(res1.from_cache?).to eq(false)
+          expect(res1.code).to eq(200)
+          expect(res1.max_age(shared: true)).to eq(60)
+          expect(res1.age).to eq(0)
+          expect(res1.fresh?(shared: true)).to eq(true)
+          expect(subject.cache.store.instance_variable_get("@data").size).to eq(1)
+
+          res2 = subject.get(
+            httpbin("/response-headers"),
+            params: {"Cache-Control" => "public, max-age=60", "Vary" => "*"},
+            headers: {"Accept" => "application/xml"}
+          )
+          expect(res2.from_cache?).to eq(false)
+          expect(res2.code).to eq(200)
+        end
+
+        it "use '' to ignore content negotiation" do
+          res = subject.get(httpbin("/cache/0"))
+          Timecop.freeze(res.date)
+
+          res1 = subject.get(
+            httpbin("/response-headers"),
+            params: {"Cache-Control" => "public, max-age=60", "Vary" => ""},
+            headers: {"Accept" => "text/html"}
+          )
+          expect(res1.from_cache?).to eq(false)
+          expect(res1.code).to eq(200)
+          expect(res1.max_age(shared: true)).to eq(60)
+          expect(res1.age).to eq(0)
+          expect(res1.fresh?(shared: true)).to eq(true)
+          expect(subject.cache.store.instance_variable_get("@data").size).to eq(1)
+
+          res2 = subject.get(
+            httpbin("/response-headers"),
+            params: {"Cache-Control" => "public, max-age=60", "Vary" => ""},
+            headers: {"Accept" => "application/xml"}
+          )
+          expect(res2.from_cache?).to eq(true)
+          expect(res2.code).to eq(200)
+        end
+
+        it "headers matched" do
+          res = subject.get(httpbin("/cache/0"))
+          Timecop.freeze(res.date)
+
+          res1 = subject.get(
+            httpbin("/response-headers"),
+            params: {"Cache-Control" => "public, max-age=60", "Vary" => "Accept"},
+            headers: {"Accept" => "text/html"}
+          )
+          expect(res1.from_cache?).to eq(false)
+          expect(res1.code).to eq(200)
+          expect(res1.max_age(shared: true)).to eq(60)
+          expect(res1.age).to eq(0)
+          expect(res1.fresh?(shared: true)).to eq(true)
+          expect(subject.cache.store.instance_variable_get("@data").size).to eq(1)
+
+          res2 = subject.get(
+            httpbin("/response-headers"),
+            params: {"Cache-Control" => "public, max-age=60", "Vary" => "Accept"},
+            headers: {"Accept" => "text/html"}
+          )
+          expect(res2.from_cache?).to eq(true)
+          expect(res2.code).to eq(200)
+        end
+
+        it "headers unmatched" do
+          res = subject.get(httpbin("/cache/0"))
+          Timecop.freeze(res.date)
+
+          res1 = subject.get(
+            httpbin("/response-headers"),
+            params: {"Cache-Control" => "public, max-age=60", "Vary" => "Accept"},
+            headers: {"Accept" => "text/html"}
+          )
+          expect(res1.from_cache?).to eq(false)
+          expect(res1.code).to eq(200)
+          expect(res1.max_age(shared: true)).to eq(60)
+          expect(res1.age).to eq(0)
+          expect(res1.fresh?(shared: true)).to eq(true)
+          expect(subject.cache.store.instance_variable_get("@data").size).to eq(1)
+
+          res2 = subject.get(
+            httpbin("/response-headers"),
+            params: {"Cache-Control" => "public, max-age=60", "Vary" => "Accept"},
+            headers: {"Accept" => "application/xml"}
+          )
+          expect(res2.from_cache?).to eq(false)
+          expect(res2.code).to eq(200)
+        end
+      end
     end
 
     describe "Request Directives" do
+      it "Cache-Control: no-cache" do
+        res = subject.get(httpbin("/cache/0"))
+        Timecop.freeze(res.date)
+
+        res1 = subject.get(httpbin("/response-headers"), params: {"Cache-Control" => "public, max-age=60"})
+        expect(res1.from_cache?).to eq(false)
+        expect(res1.code).to eq(200)
+        expect(res1.max_age(shared: true)).to eq(60)
+        expect(res1.age).to eq(0)
+        expect(res1.fresh?(shared: true)).to eq(true)
+        expect(subject.cache.store.instance_variable_get("@data").size).to eq(1)
+
+        res2 = subject.get(httpbin("/response-headers"), params: {"Cache-Control" => "public, max-age=60"}, headers: {"Cache-Control" => "no-cache"})
+        expect(res2.from_cache?).to eq(false)
+        expect(res2.code).to eq(200)
+      end
+
+      it "Cache-Control: no-store" do
+        res = subject.get(httpbin("/cache/0"))
+        Timecop.freeze(res.date)
+
+        res1 = subject.get(httpbin("/response-headers"), params: {"Cache-Control" => "public, max-age=60"}, headers: {"Cache-Control" => "no-store"})
+        expect(res1.from_cache?).to eq(false)
+        expect(res1.code).to eq(200)
+        expect(res1.max_age(shared: true)).to eq(60)
+        expect(res1.age).to eq(0)
+        expect(res1.fresh?(shared: true)).to eq(true)
+        expect(subject.cache.store.instance_variable_get("@data").size).to eq(0)
+      end
     end
   end
 

@@ -43,6 +43,11 @@ class HTTP::Session
       @options.private_cache?
     end
 
+    # @!visibility private
+    def store
+      @options.store
+    end
+
     private
 
     def entry_matched?(entry, req)
@@ -69,10 +74,6 @@ class HTTP::Session
 
     def write_entries(key, entries)
       store.write(key, entries.map { |e| e.serialize })
-    end
-
-    def store
-      @options.store
     end
 
     def cache_key_for(req)
