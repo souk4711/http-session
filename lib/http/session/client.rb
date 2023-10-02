@@ -94,7 +94,9 @@ class HTTP::Session
       entry = @session.cache.read(req)
       if entry.nil?
         _hs_cache_fetch(req, opts)
-      elsif entry.response.fresh?(shared: @session.cache.shared?) && !req.no_cache?
+      elsif entry.response.fresh?(shared: @session.cache.shared?) &&
+          !entry.response.no_cache? &&
+          !req.no_cache?
         _hs_cache_reuse(req, opts, entry)
       else
         _hs_cache_validate(req, opts, entry)

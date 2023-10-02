@@ -15,16 +15,16 @@ class HTTP::Session
       @cache_control ||= HTTP::Session::Cache::CacheControl.new(headers[HTTP::Headers::CACHE_CONTROL])
     end
 
+    # True when the cache-control/no-cache directive is present.
+    def no_cache?
+      cache_control.no_cache?
+    end
+
     # Determine if the request is worth caching under any circumstance.
     def cacheable?
       return false if verb != :get && verb != :head
       return false if cache_control.no_store?
       true
-    end
-
-    # True when the cache-control/no-cache directive is present.
-    def no_cache?
-      cache_control.no_cache?
     end
   end
 end

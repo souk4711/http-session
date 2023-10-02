@@ -27,14 +27,6 @@ class HTTP::Session
         @response = res
       end
 
-      # Serializes to a JSON primitive type.
-      def serialize
-        {
-          req: serialize_request,
-          res: serialize_response
-        }
-      end
-
       # @param [Request] req                                                 │
       # @return [Response]
       def to_response(req)
@@ -43,6 +35,14 @@ class HTTP::Session
         res = HTTP::Session::Response.new(res)
         res.from_cache = @response.from_cache?
         res
+      end
+
+      # Serializes to a JSON primitive type.
+      def serialize
+        {
+          req: serialize_request,
+          res: serialize_response
+        }
       end
 
       private
