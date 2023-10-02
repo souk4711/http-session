@@ -1,6 +1,11 @@
 require "http-session"
-require_relative "support"
 
+RSPEC_ROOT = Pathname.new(__dir__)
+
+# Requires supporting ruby files with custom matchers and macros, etc.
+Dir[RSPEC_ROOT.join("support", "**", "*.rb")].sort.each { |f| require f }
+
+# Congigure RSpec
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
   config.example_status_persistence_file_path = ".rspec_status"
