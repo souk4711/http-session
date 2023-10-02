@@ -1,0 +1,87 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://httpbin.org/cache
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Connection:
+      - close
+      Host:
+      - httpbin.org
+      User-Agent:
+      - http.rb/5.1.1
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 02 Oct 2023 03:37:41 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '238'
+      Connection:
+      - close
+      Server:
+      - gunicorn/19.9.0
+      Last-Modified:
+      - Mon, 02 Oct 2023 03:37:41 GMT
+      Etag:
+      - 8704742a43714c14b2c5ea0c2c5e71eb
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Credentials:
+      - 'true'
+    body:
+      encoding: UTF-8
+      string: "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\",
+        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-651a3b05-731784993ea4138c778b96a7\"\n
+        \ }, \n  \"origin\": \"113.116.31.156\", \n  \"url\": \"https://httpbin.org/cache\"\n}\n"
+  recorded_at: Mon, 02 Oct 2023 03:37:41 GMT
+- request:
+    method: get
+    uri: https://httpbin.org/cache
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Connection:
+      - close
+      Host:
+      - httpbin.org
+      User-Agent:
+      - http.rb/5.1.1
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 02 Oct 2023 03:37:42 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '238'
+      Connection:
+      - close
+      Server:
+      - gunicorn/19.9.0
+      Last-Modified:
+      - Mon, 02 Oct 2023 03:37:42 GMT
+      Etag:
+      - ba353868a45947eab45bdd87b279165d
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Credentials:
+      - 'true'
+    body:
+      encoding: UTF-8
+      string: "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\",
+        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-651a3b06-1bcbb34c4238f9e94ce13fb1\"\n
+        \ }, \n  \"origin\": \"113.116.31.156\", \n  \"url\": \"https://httpbin.org/cache\"\n}\n"
+  recorded_at: Mon, 02 Oct 2023 03:37:43 GMT
+recorded_with: VCR 6.2.0

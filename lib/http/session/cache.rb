@@ -13,7 +13,7 @@ class HTTP::Session
     # @return [Entry]
     def read(req)
       synchronize do
-        key = cache_key_for(req.uri)
+        key = cache_key_for(req)
         entries = read_entries(key)
         entries.find { |e| entry_matched?(e, req) }
       end
@@ -24,7 +24,7 @@ class HTTP::Session
     # @return [void]
     def write(req, res)
       synchronize do
-        key = cache_key_for(req.uri)
+        key = cache_key_for(req)
         entries = read_entries(key)
         entries = entries.reject { |e| entry_matched?(e, req) }
         entry = HTTP::Session::Cache::Entry.new(req, res)
@@ -33,14 +33,14 @@ class HTTP::Session
       end
     end
 
-    # True when it is a private cache.
-    def private?
-      @options.private_cache?
-    end
-
     # True when it is a shared cache.
     def shared?
       @options.shared_cache?
+    end
+
+    # True when it is a private cache.
+    def private?
+      @options.private_cache?
     end
 
     private
@@ -64,19 +64,19 @@ class HTTP::Session
     end
 
     def read_entries(key)
-      (cache.read(key) || []).map { |e| Entry.deserialize(e) }
+      (store.read(key) || []).map { |e| Entry.deserialize(e, from_cache: true) }
     end
 
     def write_entries(key, entries)
-      cache.write(key, entries.map { |e| e.serialize })
+      store.write(key, entries.map { |e| e.serialize })
     end
 
     def store
       @options.store
     end
 
-    def cache_key_for(uri)
-      Digest::SHA256.hexdigest(uri)
+    def cache_key_for(req)
+      Digest::SHA256.hexdigest(req.uri)
     end
   end
 end

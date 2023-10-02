@@ -63,11 +63,54 @@ RSpec.describe HTTP::Session, vcr: true do
     end
   end
 
+  describe "cache" do
+    let(:subject) { described_class.new(cache: true).freeze }
+
+    describe "Basic" do
+      it "can use cache across requests" do
+        res1 = subject.get("https://httpbin.org/cache")
+        expect(res1.code).to eq(200)
+        expect(res1.headers["Etag"]).to be_a(String)
+        expect(res1.headers["Last-Modified"]).to be_a(String)
+
+        res2 = subject.get("https://httpbin.org/cache")
+        expect(res2.from_cache?).to eq(true)
+        expect(res2.code).to eq(200)
+        expect(res2.request.headers["If-None-Match"]).to eq(res1.headers["Etag"])
+        expect(res2.request.headers["If-Modified-Since"]).to eq(res1.headers["Last-Modified"])
+      end
+
+      it "can't use cache across requests when disabled" do
+        sub = described_class.new.freeze
+
+        res1 = sub.get("https://httpbin.org/cache")
+        expect(res1.code).to eq(200)
+        expect(res1.headers["Etag"]).to be_a(String)
+        expect(res1.headers["Last-Modified"]).to be_a(String)
+
+        res2 = sub.get("https://httpbin.org/cache")
+        expect(res2.from_cache?).to eq(false)
+        expect(res2.code).to eq(200)
+        expect(res2.request.headers["If-None-Match"]).to eq(nil)
+        expect(res2.request.headers["If-Modified-Since"]).to eq(nil)
+      end
+    end
+  end
+
   describe "cookies" do
     let(:subject) { described_class.new(cookies: true).freeze }
 
-    describe "Disabled" do
-      it "can't use cookies across requests" do
+    describe "Basic" do
+      it "can use cookies across requests" do
+        res = subject.get("https://httpbin.org/cookies/set/a/1")
+        expect(res.code).to eq(302)
+
+        res = subject.get("https://httpbin.org/anything")
+        expect(res.code).to eq(200)
+        expect(res.request.headers["Cookie"]).to eq("a=1")
+      end
+
+      it "can't use cookies across requests when disabled" do
         sub = described_class.new.freeze
 
         res = sub.get("https://httpbin.org/cookies/set/a/1")

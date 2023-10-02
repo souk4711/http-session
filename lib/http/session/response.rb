@@ -30,6 +30,9 @@ class HTTP::Session
     #   @return [Time] the time when the Response object was instantiated
     attr_reader :now
 
+    # @!attribute [w] from_cache
+    attr_writer :from_cache
+
     # Returns a new instance of Response.
     def initialize(*args)
       super
@@ -37,7 +40,13 @@ class HTTP::Session
       @now = Time.now
       _hs_ensure_header_date
 
+      @from_cache = false
       @history = []
+    end
+
+    # Determine if the response is served from cache.
+    def from_cache?
+      @from_cache
     end
 
     # A CacheControl instance based on the response's cache-control header.
@@ -53,11 +62,11 @@ class HTTP::Session
     #
     # Responses with neither a freshness lifetime (expires, max-age) nor cache
     # validator (last-modified, etag) are considered uncacheable.
-    def cacheable?(in_private_caches:)
+    def cacheable?(shared:)
       return false unless CACHEABLE_RESPONSE_CODES.include?(status)
       return false if cache_control.no_store?
-      return false if cache_control.private? && !in_private_caches
-      validateable? || fresh?
+      return false if cache_control.private? && shared
+      validateable? || fresh?(shared: shared)
     end
 
     # Determine if the response includes headers that can be used to validate
@@ -70,8 +79,8 @@ class HTTP::Session
     # cache without any interaction with the origin. A response is considered
     # fresh when it includes a cache-control/max-age indicator or Expiration
     # header and the calculated age is less than the freshness lifetime.
-    def fresh?
-      ttl && ttl > 0
+    def fresh?(shared:)
+      ttl(shared: shared) && ttl(shared: shared) > 0
     end
 
     # The response's time-to-live in seconds, or nil when no freshness
@@ -80,8 +89,8 @@ class HTTP::Session
     # revalidating with the origin.
     #
     # @return [Numeric]
-    def ttl
-      max_age - age if max_age
+    def ttl(shared:)
+      max_age(shared: shared) - age if max_age(shared: shared)
     end
 
     # The number of seconds after the time specified in the response's Date
@@ -91,8 +100,8 @@ class HTTP::Session
     # maximum age can be established.
     #
     # @return [Numeric]
-    def max_age
-      cache_control.shared_max_age ||
+    def max_age(shared:)
+      (shared && cache_control.shared_max_age) ||
         cache_control.max_age ||
         (expires && (expires - date))
     end

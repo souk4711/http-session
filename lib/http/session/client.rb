@@ -94,7 +94,7 @@ class HTTP::Session
       entry = @session.cache.read(req)
       if entry.nil?
         _hs_cache_fetch(req, opts)
-      elsif entry.response.fresh? && !req.no_cache?
+      elsif entry.response.fresh?(shared: @session.cache.shared?) && !req.no_cache?
         _hs_cache_reuse(req, opts, entry)
       else
         _hs_cache_validate(req, opts, entry)
@@ -118,8 +118,8 @@ class HTTP::Session
     # The cache entry is stale, revalidate it. The original request is used
     # as a template for a conditional GET request with the backend.
     def _hs_cache_validate(req, opts, entry)
-      req.headers[HTTP::Headers::IF_MODIFIED_SINCE] = entry.last_modified if entry.response.last_modified
-      req.headers[HTTP::Headers::IF_NONE_MATCH] = entry.etag if entry.response.etag
+      req.headers[HTTP::Headers::IF_MODIFIED_SINCE] = entry.response.last_modified if entry.response.last_modified
+      req.headers[HTTP::Headers::IF_NONE_MATCH] = entry.response.etag if entry.response.etag
 
       res = _hs_perform(req, opts)
       return entry.to_response(req) if res.status.not_modified?
@@ -136,7 +136,7 @@ class HTTP::Session
 
     # Store the response to cache.
     def _hs_cache_entry_store(req, res)
-      if res.cacheable?(in_private_caches: @session.cache.private?)
+      if res.cacheable?(shared: @session.cache.shared?)
         @session.cache.write(req, res)
       end
     end

@@ -11,31 +11,31 @@ RSpec.describe HTTP::Session::Options::CacheOption do
     end
   end
 
-  it "#private_cache? & #shared_cache?" do
-    [
-      {private: true},
-      {shared: false}
-    ].each do |opts|
-      sub = described_class.new(opts)
-      expect(sub.private_cache?).to eq(true)
-      expect(sub.shared_cache?).to eq(false)
-    end
-
+  it "#shared_cache? & #private_cache?" do
     [
       {},
       {shared: true},
       {private: false}
     ].each do |opts|
       sub = described_class.new(opts)
-      expect(sub.private_cache?).to eq(false)
       expect(sub.shared_cache?).to eq(true)
+      expect(sub.private_cache?).to eq(false)
     end
 
     [
-      {private: true, shared: true},
-      {private: true, shared: false},
-      {private: false, shared: true},
-      {private: false, shared: false}
+      {shared: false},
+      {private: true}
+    ].each do |opts|
+      sub = described_class.new(opts)
+      expect(sub.shared_cache?).to eq(false)
+      expect(sub.private_cache?).to eq(true)
+    end
+
+    [
+      {shared: true, private: true},
+      {shared: true, private: false},
+      {shared: false, private: true},
+      {shared: false, private: false}
     ].each do |opts|
       expect {
         described_class.new(opts)

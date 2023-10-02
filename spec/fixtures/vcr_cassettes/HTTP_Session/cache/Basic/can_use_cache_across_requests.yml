@@ -1,0 +1,81 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://httpbin.org/cache
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Connection:
+      - close
+      Host:
+      - httpbin.org
+      User-Agent:
+      - http.rb/5.1.1
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 02 Oct 2023 03:25:45 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '238'
+      Connection:
+      - close
+      Server:
+      - gunicorn/19.9.0
+      Last-Modified:
+      - Mon, 02 Oct 2023 03:25:45 GMT
+      Etag:
+      - 6e7fb6cb62b443cd8e6409a8de5fa606
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Credentials:
+      - 'true'
+    body:
+      encoding: UTF-8
+      string: "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\",
+        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-651a3839-34aa7e591648bf9b00cd312d\"\n
+        \ }, \n  \"origin\": \"113.116.31.156\", \n  \"url\": \"https://httpbin.org/cache\"\n}\n"
+  recorded_at: Mon, 02 Oct 2023 03:25:45 GMT
+- request:
+    method: get
+    uri: https://httpbin.org/cache
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Connection:
+      - close
+      Host:
+      - httpbin.org
+      User-Agent:
+      - http.rb/5.1.1
+      If-Modified-Since:
+      - Mon, 02 Oct 2023 03:25:45 GMT
+      If-None-Match:
+      - 6e7fb6cb62b443cd8e6409a8de5fa606
+  response:
+    status:
+      code: 304
+      message: Not Modified
+    headers:
+      Date:
+      - Mon, 02 Oct 2023 03:25:45 GMT
+      Connection:
+      - close
+      Server:
+      - gunicorn/19.9.0
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Credentials:
+      - 'true'
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+  recorded_at: Mon, 02 Oct 2023 03:25:46 GMT
+recorded_with: VCR 6.2.0

@@ -20,15 +20,15 @@ class HTTP::Session
         # Enabled / Disabled
         @enabled = options.fetch(:enabled, true)
 
-        # Private Cache / Shared Cache
-        @private =
-          if options.key?(:private)
-            raise ArgumentError, ":private and :shared cannot be used at the same time" if options.key?(:shared)
-            !!options[:private]
-          elsif options.key?(:shared)
-            !options[:shared]
+        # Shared Cache / Private Cache
+        @shared =
+          if options.key?(:shared)
+            raise ArgumentError, ":shared and :private cannot be used at the same time" if options.key?(:private)
+            !!options[:shared]
+          elsif options.key?(:private)
+            !options[:private]
           else
-            false
+            true
           end
 
         # Cache Store
@@ -37,6 +37,7 @@ class HTTP::Session
             options[:store]
           elsif @enabled
             require "active_support/cache"
+            require "active_support/notifications"
             ActiveSupport::Cache::MemoryStore.new
           end
       end
@@ -46,20 +47,20 @@ class HTTP::Session
         @enabled
       end
 
-      # True when it is a private cache.
-      #
-      # Private Cache that exists in the client. It is also called local cache or browser cache.
-      # It can store and reuse personalized content for a single user.
-      def private_cache?
-        @private
-      end
-
       # True when it is a shared cache.
       #
       # Shared Cache that exists between the origin server and clients (e.g. Proxy, CDN).
       # It stores a single response and reuses it with multiple users
       def shared_cache?
-        !@private
+        @shared
+      end
+
+      # True when it is a private cache.
+      #
+      # Private Cache that exists in the client. It is also called local cache or browser cache.
+      # It can store and reuse personalized content for a single user.
+      def private_cache?
+        !shared_cache?
       end
     end
   end
