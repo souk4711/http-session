@@ -70,14 +70,15 @@ RSpec.describe HTTP::Session, vcr: true do
       it "can use cache across requests" do
         res1 = subject.get(httpbin("/cache"))
         expect(res1.code).to eq(200)
-        expect(res1.headers["Etag"]).to be_a(String)
-        expect(res1.headers["Last-Modified"]).to be_a(String)
+        expect(res1.etag).to be_a(String)
+        expect(res1.last_modified).to be_a(String)
+        expect(res1.validateable?).to eq(true)
 
         res2 = subject.get(httpbin("/cache"))
         expect(res2.from_cache?).to eq(true)
         expect(res2.code).to eq(200)
-        expect(res2.request.headers["If-None-Match"]).to eq(res1.headers["Etag"])
-        expect(res2.request.headers["If-Modified-Since"]).to eq(res1.headers["Last-Modified"])
+        expect(res2.request.headers["If-None-Match"]).to eq(res1.etag)
+        expect(res2.request.headers["If-Modified-Since"]).to eq(res1.last_modified)
       end
 
       it "can't use cache across requests when disabled" do
@@ -85,8 +86,9 @@ RSpec.describe HTTP::Session, vcr: true do
 
         res1 = sub.get(httpbin("/cache"))
         expect(res1.code).to eq(200)
-        expect(res1.headers["Etag"]).to be_a(String)
-        expect(res1.headers["Last-Modified"]).to be_a(String)
+        expect(res1.etag).to be_a(String)
+        expect(res1.last_modified).to be_a(String)
+        expect(res1.validateable?).to eq(true)
 
         res2 = sub.get(httpbin("/cache"))
         expect(res2.from_cache?).to eq(false)
@@ -94,6 +96,43 @@ RSpec.describe HTTP::Session, vcr: true do
         expect(res2.request.headers["If-None-Match"]).to eq(nil)
         expect(res2.request.headers["If-Modified-Since"]).to eq(nil)
       end
+    end
+
+    describe "Response Directives" do
+      it "Cache-Control: max-age" do
+        res = subject.get(httpbin("/cache/0"))
+        Timecop.freeze(res.date)
+
+        res1 = subject.get(httpbin("/cache/60"))
+        expect(res1.from_cache?).to eq(false)
+        expect(res1.code).to eq(200)
+        expect(res1.max_age(shared: true)).to eq(60)
+        expect(res1.age).to eq(0)
+        expect(res1.fresh?(shared: true)).to eq(true)
+
+        res2 = subject.get(httpbin("/cache/60"))
+        expect(res2.from_cache?).to eq(true)
+        expect(res2.code).to eq(200)
+      end
+
+      it "Cache-Control: s-max-age" do
+        res = subject.get(httpbin("/cache/0"))
+        Timecop.freeze(res.date)
+
+        res1 = subject.get(httpbin("/response-headers"), params: {"Cache-Control" => "public, s-maxage=60"})
+        expect(res1.from_cache?).to eq(false)
+        expect(res1.code).to eq(200)
+        expect(res1.max_age(shared: true)).to eq(60)
+        expect(res1.age).to eq(0)
+        expect(res1.fresh?(shared: true)).to eq(true)
+
+        res2 = subject.get(httpbin("/response-headers"), params: {"Cache-Control" => "public, s-maxage=60"})
+        expect(res2.from_cache?).to eq(true)
+        expect(res2.code).to eq(200)
+      end
+    end
+
+    describe "Request Directives" do
     end
   end
 

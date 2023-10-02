@@ -17,6 +17,7 @@ gem "standard", "~> 1.3"
 
 # test
 gem "rspec", "~> 3.0"
+gem "timecop"
 gem "vcr"
 gem "webmock"
 
