@@ -11,15 +11,20 @@ class HTTP::Session
     # Status codes of responses that MAY be stored by a cache or used in reply
     # to a subsequent request.
     #
-    # http://tools.ietf.org/html/rfc2616#section-13.4
+    # https://datatracker.ietf.org/doc/html/rfc9110#section-15.1
     CACHEABLE_RESPONSE_CODES = [
       200, # OK
       203, # Non-Authoritative Information
+      204, # No Content
+      206, # Partial Content
       300, # Multiple Choices
       301, # Moved Permanently
-      302, # Found
+      308, # Permanent Redirect
       404, # Not Found
-      410  # Gone
+      405, # Method Not Allowed
+      410, # Gone
+      414, # URI Too Long
+      501  # Not Implemented
     ].to_set
 
     # @!attribute [rw] history

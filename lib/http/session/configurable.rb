@@ -105,7 +105,7 @@ class HTTP::Session
 
     # Make a request with the given Basic authorization header.
     #
-    # @see http://tools.ietf.org/html/rfc2617
+    # @see https://datatracker.ietf.org/doc/html/rfc2617
     # @param [#fetch] opts
     # @option opts [#to_s] :user
     # @option opts [#to_s] :pass
