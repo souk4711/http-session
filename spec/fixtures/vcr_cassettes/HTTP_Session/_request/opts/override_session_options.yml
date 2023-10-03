@@ -19,7 +19,7 @@ http_interactions:
       message: Found
     headers:
       Date:
-      - Fri, 29 Sep 2023 02:50:14 GMT
+      - Tue, 03 Oct 2023 07:13:00 GMT
       Content-Type:
       - text/html; charset=utf-8
       Content-Length:
@@ -41,7 +41,7 @@ http_interactions:
         <title>Redirecting...</title>
         <h1>Redirecting...</h1>
         <p>You should be redirected automatically to target URL: <a href="/get">/get</a>.  If not click the link.
-  recorded_at: Fri, 29 Sep 2023 02:50:14 GMT
+  recorded_at: Tue, 03 Oct 2023 07:13:01 GMT
 - request:
     method: get
     uri: https://httpbin.org/get
@@ -61,7 +61,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Fri, 29 Sep 2023 02:50:15 GMT
+      - Tue, 03 Oct 2023 07:13:02 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -77,9 +77,9 @@ http_interactions:
     body:
       encoding: UTF-8
       string: "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\",
-        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-65163b67-44fc05ca573e384a6d622761\"\n
-        \ }, \n  \"origin\": \"113.118.103.78\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
-  recorded_at: Fri, 29 Sep 2023 02:50:15 GMT
+        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-651bbefd-5bab969458f63c5b14e90f24\"\n
+        \ }, \n  \"origin\": \"121.35.187.183\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
+  recorded_at: Tue, 03 Oct 2023 07:13:02 GMT
 - request:
     method: get
     uri: https://httpbin.org/redirect/1
@@ -99,7 +99,7 @@ http_interactions:
       message: Found
     headers:
       Date:
-      - Fri, 29 Sep 2023 02:50:15 GMT
+      - Tue, 03 Oct 2023 07:13:03 GMT
       Content-Type:
       - text/html; charset=utf-8
       Content-Length:
@@ -121,5 +121,5 @@ http_interactions:
         <title>Redirecting...</title>
         <h1>Redirecting...</h1>
         <p>You should be redirected automatically to target URL: <a href="/get">/get</a>.  If not click the link.
-  recorded_at: Fri, 29 Sep 2023 02:50:16 GMT
+  recorded_at: Tue, 03 Oct 2023 07:13:03 GMT
 recorded_with: VCR 6.2.0

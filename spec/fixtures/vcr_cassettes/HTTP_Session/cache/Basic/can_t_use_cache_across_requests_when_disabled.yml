@@ -19,7 +19,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 02 Oct 2023 03:37:41 GMT
+      - Tue, 03 Oct 2023 07:13:20 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -29,9 +29,9 @@ http_interactions:
       Server:
       - gunicorn/19.9.0
       Last-Modified:
-      - Mon, 02 Oct 2023 03:37:41 GMT
+      - Tue, 03 Oct 2023 07:13:20 GMT
       Etag:
-      - 8704742a43714c14b2c5ea0c2c5e71eb
+      - 3d9e75eb98f441daa1f5a23d1c96a074
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Allow-Credentials:
@@ -39,9 +39,9 @@ http_interactions:
     body:
       encoding: UTF-8
       string: "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\",
-        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-651a3b05-731784993ea4138c778b96a7\"\n
-        \ }, \n  \"origin\": \"113.116.31.156\", \n  \"url\": \"https://httpbin.org/cache\"\n}\n"
-  recorded_at: Mon, 02 Oct 2023 03:37:41 GMT
+        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-651bbf10-696663ef0b9879b933ef84ab\"\n
+        \ }, \n  \"origin\": \"121.35.187.183\", \n  \"url\": \"https://httpbin.org/cache\"\n}\n"
+  recorded_at: Tue, 03 Oct 2023 07:13:20 GMT
 - request:
     method: get
     uri: https://httpbin.org/cache
@@ -61,7 +61,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 02 Oct 2023 03:37:42 GMT
+      - Tue, 03 Oct 2023 07:13:24 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -71,9 +71,9 @@ http_interactions:
       Server:
       - gunicorn/19.9.0
       Last-Modified:
-      - Mon, 02 Oct 2023 03:37:42 GMT
+      - Tue, 03 Oct 2023 07:13:24 GMT
       Etag:
-      - ba353868a45947eab45bdd87b279165d
+      - dcf903fdacfd47feb71589247782c934
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Allow-Credentials:
@@ -81,7 +81,7 @@ http_interactions:
     body:
       encoding: UTF-8
       string: "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\",
-        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-651a3b06-1bcbb34c4238f9e94ce13fb1\"\n
-        \ }, \n  \"origin\": \"113.116.31.156\", \n  \"url\": \"https://httpbin.org/cache\"\n}\n"
-  recorded_at: Mon, 02 Oct 2023 03:37:43 GMT
+        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-651bbf14-14b0218745522eee2048da17\"\n
+        \ }, \n  \"origin\": \"121.35.187.183\", \n  \"url\": \"https://httpbin.org/cache\"\n}\n"
+  recorded_at: Tue, 03 Oct 2023 07:13:24 GMT
 recorded_with: VCR 6.2.0

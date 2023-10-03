@@ -19,7 +19,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 02 Oct 2023 14:01:30 GMT
+      - Tue, 03 Oct 2023 07:13:37 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -37,12 +37,12 @@ http_interactions:
     body:
       encoding: UTF-8
       string: "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\",
-        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-651acd3a-144eb2312b62e17c5428986c\"\n
-        \ }, \n  \"origin\": \"113.116.31.156\", \n  \"url\": \"https://httpbin.org/cache/0\"\n}\n"
-  recorded_at: Mon, 02 Oct 2023 14:01:33 GMT
+        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-651bbf21-6200f18a558ced9516d2d75e\"\n
+        \ }, \n  \"origin\": \"121.35.187.183\", \n  \"url\": \"https://httpbin.org/cache/0\"\n}\n"
+  recorded_at: Tue, 03 Oct 2023 07:13:38 GMT
 - request:
     method: get
-    uri: https://httpbin.org/response-headers?Cache-Control=public,%20max-age=60,%20no-store
+    uri: https://httpbin.org/response-headers?Cache-Control=max-age=60,%20no-store
     body:
       encoding: ASCII-8BIT
       string: ''
@@ -59,24 +59,24 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 02 Oct 2023 14:01:33 GMT
+      - Tue, 03 Oct 2023 07:13:39 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '121'
+      - '113'
       Connection:
       - close
       Server:
       - gunicorn/19.9.0
       Cache-Control:
-      - public, max-age=60, no-store
+      - max-age=60, no-store
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Allow-Credentials:
       - 'true'
     body:
       encoding: UTF-8
-      string: "{\n  \"Cache-Control\": \"public, max-age=60, no-store\", \n  \"Content-Length\":
-        \"121\", \n  \"Content-Type\": \"application/json\"\n}\n"
-  recorded_at: Mon, 02 Oct 2023 14:01:30 GMT
+      string: "{\n  \"Cache-Control\": \"max-age=60, no-store\", \n  \"Content-Length\":
+        \"113\", \n  \"Content-Type\": \"application/json\"\n}\n"
+  recorded_at: Tue, 03 Oct 2023 07:13:37 GMT
 recorded_with: VCR 6.2.0

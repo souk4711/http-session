@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: https://httpbin.org/response-headers?Age=30&Cache-Control=public,%20max-age=60,%20no-store
+    uri: https://httpbin.org/response-headers?Age=30&Cache-Control=max-age=60,%20no-store
     body:
       encoding: ASCII-8BIT
       string: ''
@@ -19,17 +19,17 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 03 Oct 2023 04:06:31 GMT
+      - Tue, 03 Oct 2023 07:12:46 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '137'
+      - '129'
       Connection:
       - close
       Server:
       - gunicorn/19.9.0
       Cache-Control:
-      - public, max-age=60, no-store
+      - max-age=60, no-store
       Age:
       - '30'
       Access-Control-Allow-Origin:
@@ -38,7 +38,7 @@ http_interactions:
       - 'true'
     body:
       encoding: UTF-8
-      string: "{\n  \"Age\": \"30\", \n  \"Cache-Control\": \"public, max-age=60,
-        no-store\", \n  \"Content-Length\": \"137\", \n  \"Content-Type\": \"application/json\"\n}\n"
-  recorded_at: Tue, 03 Oct 2023 04:06:32 GMT
+      string: "{\n  \"Age\": \"30\", \n  \"Cache-Control\": \"max-age=60, no-store\",
+        \n  \"Content-Length\": \"129\", \n  \"Content-Type\": \"application/json\"\n}\n"
+  recorded_at: Tue, 03 Oct 2023 07:12:46 GMT
 recorded_with: VCR 6.2.0

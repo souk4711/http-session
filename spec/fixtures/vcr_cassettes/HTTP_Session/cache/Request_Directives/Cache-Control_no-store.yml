@@ -19,7 +19,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 02 Oct 2023 14:22:50 GMT
+      - Tue, 03 Oct 2023 07:14:05 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -37,12 +37,12 @@ http_interactions:
     body:
       encoding: UTF-8
       string: "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\",
-        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-651ad23a-3fc170ce433ece611ae0fb4c\"\n
-        \ }, \n  \"origin\": \"113.116.31.156\", \n  \"url\": \"https://httpbin.org/cache/0\"\n}\n"
-  recorded_at: Mon, 02 Oct 2023 14:22:50 GMT
+        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-651bbf3d-2bb914771cbe551829c038ab\"\n
+        \ }, \n  \"origin\": \"121.35.187.183\", \n  \"url\": \"https://httpbin.org/cache/0\"\n}\n"
+  recorded_at: Tue, 03 Oct 2023 07:14:05 GMT
 - request:
     method: get
-    uri: https://httpbin.org/response-headers?Cache-Control=public,%20max-age=60
+    uri: https://httpbin.org/response-headers?Cache-Control=max-age=60
     body:
       encoding: ASCII-8BIT
       string: ''
@@ -61,24 +61,24 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 02 Oct 2023 14:22:51 GMT
+      - Tue, 03 Oct 2023 07:14:07 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '111'
+      - '103'
       Connection:
       - close
       Server:
       - gunicorn/19.9.0
       Cache-Control:
-      - public, max-age=60
+      - max-age=60
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Allow-Credentials:
       - 'true'
     body:
       encoding: UTF-8
-      string: "{\n  \"Cache-Control\": \"public, max-age=60\", \n  \"Content-Length\":
-        \"111\", \n  \"Content-Type\": \"application/json\"\n}\n"
-  recorded_at: Mon, 02 Oct 2023 14:22:50 GMT
+      string: "{\n  \"Cache-Control\": \"max-age=60\", \n  \"Content-Length\": \"103\",
+        \n  \"Content-Type\": \"application/json\"\n}\n"
+  recorded_at: Tue, 03 Oct 2023 07:14:05 GMT
 recorded_with: VCR 6.2.0

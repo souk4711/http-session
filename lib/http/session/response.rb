@@ -66,16 +66,31 @@ class HTTP::Session
       cache_control.no_cache?
     end
 
-    # Determine if the response is worth caching under any circumstance. Responses
-    # marked "private" with an explicit cache-control directive are considered
-    # uncacheable
+    # Determine if the response is worth caching under any circumstance.
     #
-    # Responses with neither a freshness lifetime (expires, max-age) nor cache
-    # validator (last-modified, etag) are considered uncacheable.
-    def cacheable?(shared:)
+    # https://www.rfc-editor.org/rfc/rfc9111.html#section-3
+    def cacheable?(shared:, req:)
+      # the response status code is final (see Section 15 of [HTTP])
       return false unless CACHEABLE_RESPONSE_CODES.include?(status)
+
+      # the no-store cache directive is not present in the response (see Section 5.2.2.5);
       return false if cache_control.no_store?
-      return false if cache_control.private? && shared
+
+      # if the cache is shared
+      if shared
+        # the private response directive is either not present or allows a shared cache
+        # to store a modified response; see Section 5.2.2.7);
+        return false if cache_control.private?
+
+        # the Authorization header field is not present in the request (see Section 11.6.2
+        # of [HTTP]) or a response directive is present that explicitly allows shared
+        # caching (see Section 3.5);
+        return false if req.headers[HTTP::Headers::AUTHORIZATION] &&
+          (!cache_control.public? && !cache_control.shared_max_age)
+      end
+
+      # Responses with neither a freshness lifetime (expires, max-age) nor cache validator
+      # (last-modified, etag) are considered uncacheable.
       validateable? || fresh?(shared: shared)
     end
 

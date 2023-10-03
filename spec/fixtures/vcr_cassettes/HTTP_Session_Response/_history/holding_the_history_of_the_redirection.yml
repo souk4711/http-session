@@ -19,7 +19,7 @@ http_interactions:
       message: Found
     headers:
       Date:
-      - Fri, 29 Sep 2023 17:07:33 GMT
+      - Tue, 03 Oct 2023 07:12:36 GMT
       Content-Type:
       - text/html; charset=utf-8
       Content-Length:
@@ -41,7 +41,7 @@ http_interactions:
         <title>Redirecting...</title>
         <h1>Redirecting...</h1>
         <p>You should be redirected automatically to target URL: <a href="/relative-redirect/1">/relative-redirect/1</a>.  If not click the link.
-  recorded_at: Fri, 29 Sep 2023 17:07:33 GMT
+  recorded_at: Tue, 03 Oct 2023 07:12:36 GMT
 - request:
     method: get
     uri: https://httpbin.org/relative-redirect/1
@@ -61,7 +61,7 @@ http_interactions:
       message: Found
     headers:
       Date:
-      - Fri, 29 Sep 2023 17:07:34 GMT
+      - Tue, 03 Oct 2023 07:12:37 GMT
       Content-Type:
       - text/html; charset=utf-8
       Content-Length:
@@ -79,7 +79,7 @@ http_interactions:
     body:
       encoding: UTF-8
       string: ''
-  recorded_at: Fri, 29 Sep 2023 17:07:34 GMT
+  recorded_at: Tue, 03 Oct 2023 07:12:38 GMT
 - request:
     method: get
     uri: https://httpbin.org/get
@@ -99,7 +99,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Fri, 29 Sep 2023 17:07:36 GMT
+      - Tue, 03 Oct 2023 07:12:40 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -115,7 +115,7 @@ http_interactions:
     body:
       encoding: UTF-8
       string: "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\",
-        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-65170458-5d0a0c476747eeff048ac310\"\n
-        \ }, \n  \"origin\": \"113.118.103.78\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
-  recorded_at: Fri, 29 Sep 2023 17:07:36 GMT
+        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-651bbee8-5dae8a7d77a4d3125ee05017\"\n
+        \ }, \n  \"origin\": \"121.35.187.183\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
+  recorded_at: Tue, 03 Oct 2023 07:12:40 GMT
 recorded_with: VCR 6.2.0

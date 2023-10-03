@@ -19,7 +19,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 02 Oct 2023 15:27:20 GMT
+      - Tue, 03 Oct 2023 07:13:58 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -37,12 +37,12 @@ http_interactions:
     body:
       encoding: UTF-8
       string: "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\",
-        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-651ae158-5a47813748f360c46507590a\"\n
-        \ }, \n  \"origin\": \"113.116.31.156\", \n  \"url\": \"https://httpbin.org/cache/0\"\n}\n"
-  recorded_at: Mon, 02 Oct 2023 15:27:20 GMT
+        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-651bbf36-7bbf2b516840ab6c57a451ce\"\n
+        \ }, \n  \"origin\": \"121.35.187.183\", \n  \"url\": \"https://httpbin.org/cache/0\"\n}\n"
+  recorded_at: Tue, 03 Oct 2023 07:13:58 GMT
 - request:
     method: get
-    uri: https://httpbin.org/response-headers?Cache-Control=public,%20max-age=60&Vary=Accept
+    uri: https://httpbin.org/response-headers?Cache-Control=max-age=60&Vary=Accept
     body:
       encoding: ASCII-8BIT
       string: ''
@@ -61,17 +61,17 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 02 Oct 2023 15:27:22 GMT
+      - Tue, 03 Oct 2023 07:14:00 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '132'
+      - '124'
       Connection:
       - close
       Server:
       - gunicorn/19.9.0
       Cache-Control:
-      - public, max-age=60
+      - max-age=60
       Vary:
       - Accept
       Access-Control-Allow-Origin:
@@ -80,12 +80,12 @@ http_interactions:
       - 'true'
     body:
       encoding: UTF-8
-      string: "{\n  \"Cache-Control\": \"public, max-age=60\", \n  \"Content-Length\":
-        \"132\", \n  \"Content-Type\": \"application/json\", \n  \"Vary\": \"Accept\"\n}\n"
-  recorded_at: Mon, 02 Oct 2023 15:27:20 GMT
+      string: "{\n  \"Cache-Control\": \"max-age=60\", \n  \"Content-Length\": \"124\",
+        \n  \"Content-Type\": \"application/json\", \n  \"Vary\": \"Accept\"\n}\n"
+  recorded_at: Tue, 03 Oct 2023 07:13:58 GMT
 - request:
     method: get
-    uri: https://httpbin.org/response-headers?Cache-Control=public,%20max-age=60&Vary=Accept
+    uri: https://httpbin.org/response-headers?Cache-Control=max-age=60&Vary=Accept
     body:
       encoding: ASCII-8BIT
       string: ''
@@ -104,17 +104,17 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 02 Oct 2023 15:27:22 GMT
+      - Tue, 03 Oct 2023 07:14:01 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '132'
+      - '124'
       Connection:
       - close
       Server:
       - gunicorn/19.9.0
       Cache-Control:
-      - public, max-age=60
+      - max-age=60
       Vary:
       - Accept
       Access-Control-Allow-Origin:
@@ -123,7 +123,7 @@ http_interactions:
       - 'true'
     body:
       encoding: UTF-8
-      string: "{\n  \"Cache-Control\": \"public, max-age=60\", \n  \"Content-Length\":
-        \"132\", \n  \"Content-Type\": \"application/json\", \n  \"Vary\": \"Accept\"\n}\n"
-  recorded_at: Mon, 02 Oct 2023 15:27:20 GMT
+      string: "{\n  \"Cache-Control\": \"max-age=60\", \n  \"Content-Length\": \"124\",
+        \n  \"Content-Type\": \"application/json\", \n  \"Vary\": \"Accept\"\n}\n"
+  recorded_at: Tue, 03 Oct 2023 07:13:58 GMT
 recorded_with: VCR 6.2.0

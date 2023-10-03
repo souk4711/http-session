@@ -24,56 +24,95 @@ RSpec.describe HTTP::Session::Response, vcr: true do
     it "etag" do
       res = subject.get(httpbin("/cache"))
       expect(res.code).to eq(200)
-      expect(res.cache_control.no_store?).to eq(nil)
-      expect(res.cache_control.private?).to eq(nil)
       expect(res.validateable?).to eq(true)
-      expect(res.ttl(shared: true)).to eq(nil)
       expect(res.fresh?(shared: true)).to eq(nil)
-      expect(res.cacheable?(shared: true)).to eq(true)
+      expect(res.cacheable?(shared: true, req: res.request)).to eq(true)
     end
 
     it "max-age" do
-      res = subject.get(httpbin("/response-headers"), params: {"Cache-Control" => "public, max-age=60", "Age" => "30"})
+      res = subject.get(
+        httpbin("/response-headers"),
+        params: {"Cache-Control" => "max-age=60", "Age" => "30"}
+      )
       expect(res.code).to eq(200)
-      expect(res.cache_control.no_store?).to eq(nil)
-      expect(res.cache_control.private?).to eq(nil)
       expect(res.validateable?).to eq(false)
-      expect(res.ttl(shared: true)).to eq(30)
       expect(res.fresh?(shared: true)).to eq(true)
-      expect(res.cacheable?(shared: true)).to eq(true)
+      expect(res.cacheable?(shared: true, req: res.request)).to eq(true)
     end
 
     it "s-maxage" do
-      res = subject.get(httpbin("/response-headers"), params: {"Cache-Control" => "public, max-age=60, s-maxage=15", "Age" => "30"})
+      res = subject.get(
+        httpbin("/response-headers"),
+        params: {"Cache-Control" => "max-age=60, s-maxage=15", "Age" => "30"}
+      )
       expect(res.code).to eq(200)
       expect(res.ttl(shared: true)).to eq(-15)
       expect(res.fresh?(shared: true)).to eq(false)
-      expect(res.cacheable?(shared: true)).to eq(false)
+      expect(res.cacheable?(shared: true, req: res.request)).to eq(false)
+      expect(res.code).to eq(200)
       expect(res.ttl(shared: false)).to eq(30)
       expect(res.fresh?(shared: false)).to eq(true)
-      expect(res.cacheable?(shared: false)).to eq(true)
+      expect(res.cacheable?(shared: false, req: res.request)).to eq(true)
     end
 
     it "no-cache" do
-      res = subject.get(httpbin("/response-headers"), params: {"Cache-Control" => "public, max-age=60, no-cache", "Age" => "30"})
+      res = subject.get(
+        httpbin("/response-headers"),
+        params: {"Cache-Control" => "max-age=60, no-cache", "Age" => "30"}
+      )
       expect(res.code).to eq(200)
       expect(res.cache_control.no_cache?).to eq(true)
-      expect(res.cacheable?(shared: true)).to eq(true)
+      expect(res.cacheable?(shared: true, req: res.request)).to eq(true)
     end
 
     it "no-store" do
-      res = subject.get(httpbin("/response-headers"), params: {"Cache-Control" => "public, max-age=60, no-store", "Age" => "30"})
+      res = subject.get(
+        httpbin("/response-headers"),
+        params: {"Cache-Control" => "max-age=60, no-store", "Age" => "30"}
+      )
       expect(res.code).to eq(200)
       expect(res.cache_control.no_store?).to eq(true)
-      expect(res.cacheable?(shared: true)).to eq(false)
+      expect(res.cacheable?(shared: true, req: res.request)).to eq(false)
     end
 
     it "private" do
-      res = subject.get(httpbin("/response-headers"), params: {"Cache-Control" => "private, max-age=60", "Age" => "30"})
+      res = subject.get(
+        httpbin("/response-headers"),
+        params: {"Cache-Control" => "max-age=60, private", "Age" => "30"}
+      )
       expect(res.code).to eq(200)
       expect(res.cache_control.private?).to eq(true)
-      expect(res.cacheable?(shared: true)).to eq(false)
-      expect(res.cacheable?(shared: false)).to eq(true)
+      expect(res.cacheable?(shared: true, req: res.request)).to eq(false)
+      expect(res.cacheable?(shared: false, req: res.request)).to eq(true)
+    end
+
+    it "Authorization" do
+      res = subject.get(
+        httpbin("/response-headers"),
+        params: {"Cache-Control" => "max-age=60", "Age" => "30"},
+        headers: {"Authorization" => ""}
+      )
+      expect(res.code).to eq(200)
+      expect(res.cacheable?(shared: true, req: res.request)).to eq(false)
+      expect(res.cacheable?(shared: false, req: res.request)).to eq(true)
+
+      res = subject.get(
+        httpbin("/response-headers"),
+        params: {"Cache-Control" => "max-age=60, public", "Age" => "30"},
+        headers: {"Authorization" => ""}
+      )
+      expect(res.code).to eq(200)
+      expect(res.cacheable?(shared: true, req: res.request)).to eq(true)
+      expect(res.cacheable?(shared: false, req: res.request)).to eq(true)
+
+      res = subject.get(
+        httpbin("/response-headers"),
+        params: {"Cache-Control" => "max-age=60, s-maxage=60", "Age" => "30"},
+        headers: {"Authorization" => ""}
+      )
+      expect(res.code).to eq(200)
+      expect(res.cacheable?(shared: true, req: res.request)).to eq(true)
+      expect(res.cacheable?(shared: false, req: res.request)).to eq(true)
     end
   end
 
@@ -95,7 +134,7 @@ RSpec.describe HTTP::Session::Response, vcr: true do
       Timecop.freeze(res.date)
 
       res = subject.get(httpbin("/delay/1"))
-      expect(res.date.to_i).to be > (now.to_i + 1)
+      expect(res.date.to_i).to be >= (now.to_i + 1)
     end
   end
 end

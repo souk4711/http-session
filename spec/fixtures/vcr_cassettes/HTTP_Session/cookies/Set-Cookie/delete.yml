@@ -19,7 +19,7 @@ http_interactions:
       message: Found
     headers:
       Date:
-      - Thu, 28 Sep 2023 16:17:41 GMT
+      - Tue, 03 Oct 2023 07:14:37 GMT
       Content-Type:
       - text/html; charset=utf-8
       Content-Length:
@@ -43,7 +43,7 @@ http_interactions:
         <title>Redirecting...</title>
         <h1>Redirecting...</h1>
         <p>You should be redirected automatically to target URL: <a href="/cookies">/cookies</a>.  If not click the link.
-  recorded_at: Thu, 28 Sep 2023 16:17:41 GMT
+  recorded_at: Tue, 03 Oct 2023 07:14:38 GMT
 - request:
     method: get
     uri: https://httpbin.org/cookies/delete?a=
@@ -65,7 +65,7 @@ http_interactions:
       message: Found
     headers:
       Date:
-      - Thu, 28 Sep 2023 16:17:42 GMT
+      - Tue, 03 Oct 2023 07:14:38 GMT
       Content-Type:
       - text/html; charset=utf-8
       Content-Length:
@@ -89,7 +89,7 @@ http_interactions:
         <title>Redirecting...</title>
         <h1>Redirecting...</h1>
         <p>You should be redirected automatically to target URL: <a href="/cookies">/cookies</a>.  If not click the link.
-  recorded_at: Thu, 28 Sep 2023 16:17:42 GMT
+  recorded_at: Tue, 03 Oct 2023 07:14:39 GMT
 - request:
     method: get
     uri: https://httpbin.org/anything
@@ -109,11 +109,11 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Thu, 28 Sep 2023 16:17:43 GMT
+      - Tue, 03 Oct 2023 07:14:40 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '325'
+      - '324'
       Connection:
       - close
       Server:
@@ -126,8 +126,8 @@ http_interactions:
       encoding: UTF-8
       string: "{\n  \"args\": {}, \n  \"data\": \"\", \n  \"files\": {}, \n  \"form\":
         {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"User-Agent\":
-        \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6515a727-7da6e08417a47ec01ee60df2\"\n
-        \ }, \n  \"json\": null, \n  \"method\": \"GET\", \n  \"origin\": \"113.118.114.167\",
+        \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-651bbf60-5d57d9d86a4e2a2571e491df\"\n
+        \ }, \n  \"json\": null, \n  \"method\": \"GET\", \n  \"origin\": \"121.35.187.183\",
         \n  \"url\": \"https://httpbin.org/anything\"\n}\n"
-  recorded_at: Thu, 28 Sep 2023 16:17:43 GMT
+  recorded_at: Tue, 03 Oct 2023 07:14:40 GMT
 recorded_with: VCR 6.2.0

@@ -19,7 +19,7 @@ http_interactions:
       message: Found
     headers:
       Date:
-      - Fri, 29 Sep 2023 04:58:45 GMT
+      - Tue, 03 Oct 2023 07:13:11 GMT
       Content-Type:
       - text/html; charset=utf-8
       Content-Length:
@@ -41,7 +41,7 @@ http_interactions:
         <title>Redirecting...</title>
         <h1>Redirecting...</h1>
         <p>You should be redirected automatically to target URL: <a href="/relative-redirect/3">/relative-redirect/3</a>.  If not click the link.
-  recorded_at: Fri, 29 Sep 2023 04:58:45 GMT
+  recorded_at: Tue, 03 Oct 2023 07:13:11 GMT
 - request:
     method: get
     uri: https://httpbin.org/relative-redirect/3
@@ -61,7 +61,7 @@ http_interactions:
       message: Found
     headers:
       Date:
-      - Fri, 29 Sep 2023 04:58:46 GMT
+      - Tue, 03 Oct 2023 07:13:12 GMT
       Content-Type:
       - text/html; charset=utf-8
       Content-Length:
@@ -79,7 +79,7 @@ http_interactions:
     body:
       encoding: UTF-8
       string: ''
-  recorded_at: Fri, 29 Sep 2023 04:58:46 GMT
+  recorded_at: Tue, 03 Oct 2023 07:13:12 GMT
 - request:
     method: get
     uri: https://httpbin.org/relative-redirect/2
@@ -99,7 +99,7 @@ http_interactions:
       message: Found
     headers:
       Date:
-      - Fri, 29 Sep 2023 04:58:47 GMT
+      - Tue, 03 Oct 2023 07:13:13 GMT
       Content-Type:
       - text/html; charset=utf-8
       Content-Length:
@@ -117,7 +117,7 @@ http_interactions:
     body:
       encoding: UTF-8
       string: ''
-  recorded_at: Fri, 29 Sep 2023 04:58:47 GMT
+  recorded_at: Tue, 03 Oct 2023 07:13:13 GMT
 - request:
     method: get
     uri: https://httpbin.org/relative-redirect/1
@@ -137,7 +137,7 @@ http_interactions:
       message: Found
     headers:
       Date:
-      - Fri, 29 Sep 2023 04:58:48 GMT
+      - Tue, 03 Oct 2023 07:13:14 GMT
       Content-Type:
       - text/html; charset=utf-8
       Content-Length:
@@ -155,7 +155,7 @@ http_interactions:
     body:
       encoding: UTF-8
       string: ''
-  recorded_at: Fri, 29 Sep 2023 04:58:48 GMT
+  recorded_at: Tue, 03 Oct 2023 07:13:14 GMT
 - request:
     method: get
     uri: https://httpbin.org/get
@@ -175,7 +175,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Fri, 29 Sep 2023 04:58:49 GMT
+      - Tue, 03 Oct 2023 07:13:16 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -191,7 +191,7 @@ http_interactions:
     body:
       encoding: UTF-8
       string: "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\",
-        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-65165989-716bf374224083257ba8f845\"\n
-        \ }, \n  \"origin\": \"113.118.103.78\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
-  recorded_at: Fri, 29 Sep 2023 04:58:49 GMT
+        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-651bbf0b-79ac72e13ccde1d23a69dace\"\n
+        \ }, \n  \"origin\": \"121.35.187.183\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
+  recorded_at: Tue, 03 Oct 2023 07:13:16 GMT
 recorded_with: VCR 6.2.0

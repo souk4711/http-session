@@ -19,7 +19,7 @@ http_interactions:
       message: Found
     headers:
       Date:
-      - Fri, 29 Sep 2023 17:14:04 GMT
+      - Tue, 03 Oct 2023 07:12:35 GMT
       Content-Type:
       - text/html; charset=utf-8
       Content-Length:
@@ -41,5 +41,5 @@ http_interactions:
         <title>Redirecting...</title>
         <h1>Redirecting...</h1>
         <p>You should be redirected automatically to target URL: <a href="/relative-redirect/1">/relative-redirect/1</a>.  If not click the link.
-  recorded_at: Fri, 29 Sep 2023 17:14:04 GMT
+  recorded_at: Tue, 03 Oct 2023 07:12:35 GMT
 recorded_with: VCR 6.2.0

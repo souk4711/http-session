@@ -19,11 +19,11 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Thu, 28 Sep 2023 04:50:17 GMT
+      - Tue, 03 Oct 2023 07:12:22 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '237'
+      - '236'
       Connection:
       - close
       Server:
@@ -35,5 +35,5 @@ http_interactions:
     body:
       encoding: UTF-8
       string: ''
-  recorded_at: Thu, 28 Sep 2023 04:50:17 GMT
+  recorded_at: Tue, 03 Oct 2023 07:12:22 GMT
 recorded_with: VCR 6.2.0

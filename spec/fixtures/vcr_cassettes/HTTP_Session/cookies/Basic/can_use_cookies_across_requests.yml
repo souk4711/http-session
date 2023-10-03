@@ -19,7 +19,7 @@ http_interactions:
       message: Found
     headers:
       Date:
-      - Mon, 02 Oct 2023 03:07:35 GMT
+      - Tue, 03 Oct 2023 07:14:08 GMT
       Content-Type:
       - text/html; charset=utf-8
       Content-Length:
@@ -43,7 +43,7 @@ http_interactions:
         <title>Redirecting...</title>
         <h1>Redirecting...</h1>
         <p>You should be redirected automatically to target URL: <a href="/cookies">/cookies</a>.  If not click the link.
-  recorded_at: Mon, 02 Oct 2023 03:07:35 GMT
+  recorded_at: Tue, 03 Oct 2023 07:14:08 GMT
 - request:
     method: get
     uri: https://httpbin.org/anything
@@ -65,7 +65,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 02 Oct 2023 03:07:36 GMT
+      - Tue, 03 Oct 2023 07:14:09 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -82,8 +82,8 @@ http_interactions:
       encoding: UTF-8
       string: "{\n  \"args\": {}, \n  \"data\": \"\", \n  \"files\": {}, \n  \"form\":
         {}, \n  \"headers\": {\n    \"Cookie\": \"a=1\", \n    \"Host\": \"httpbin.org\",
-        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-651a33f8-33e9a21f69020ce3257e686b\"\n
-        \ }, \n  \"json\": null, \n  \"method\": \"GET\", \n  \"origin\": \"113.116.31.156\",
+        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-651bbf41-16253362712ba22e24dc54b8\"\n
+        \ }, \n  \"json\": null, \n  \"method\": \"GET\", \n  \"origin\": \"121.35.187.183\",
         \n  \"url\": \"https://httpbin.org/anything\"\n}\n"
-  recorded_at: Mon, 02 Oct 2023 03:07:36 GMT
+  recorded_at: Tue, 03 Oct 2023 07:14:09 GMT
 recorded_with: VCR 6.2.0

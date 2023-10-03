@@ -105,7 +105,10 @@ RSpec.describe HTTP::Session, vcr: true do
         res = subject.get(httpbin("/cache/0"))
         Timecop.freeze(res.date)
 
-        res1 = subject.get(httpbin("/response-headers"), params: {"Cache-Control" => "public, max-age=60"})
+        res1 = subject.get(
+          httpbin("/response-headers"),
+          params: {"Cache-Control" => "max-age=60"}
+        )
         expect(res1.from_cache?).to eq(false)
         expect(res1.code).to eq(200)
         expect(res1.max_age(shared: true)).to eq(60)
@@ -113,7 +116,10 @@ RSpec.describe HTTP::Session, vcr: true do
         expect(res1.fresh?(shared: true)).to eq(true)
         expect(subject.cache.store.instance_variable_get("@data").size).to eq(1)
 
-        res2 = subject.get(httpbin("/response-headers"), params: {"Cache-Control" => "public, max-age=60"})
+        res2 = subject.get(
+          httpbin("/response-headers"),
+          params: {"Cache-Control" => "max-age=60"}
+        )
         expect(res2.from_cache?).to eq(true)
         expect(res2.code).to eq(200)
       end
@@ -122,7 +128,10 @@ RSpec.describe HTTP::Session, vcr: true do
         res = subject.get(httpbin("/cache/0"))
         Timecop.freeze(res.date)
 
-        res1 = subject.get(httpbin("/response-headers"), params: {"Cache-Control" => "public, s-maxage=60"})
+        res1 = subject.get(
+          httpbin("/response-headers"),
+          params: {"Cache-Control" => "s-maxage=60"}
+        )
         expect(res1.from_cache?).to eq(false)
         expect(res1.code).to eq(200)
         expect(res1.max_age(shared: true)).to eq(60)
@@ -130,7 +139,10 @@ RSpec.describe HTTP::Session, vcr: true do
         expect(res1.fresh?(shared: true)).to eq(true)
         expect(subject.cache.store.instance_variable_get("@data").size).to eq(1)
 
-        res2 = subject.get(httpbin("/response-headers"), params: {"Cache-Control" => "public, s-maxage=60"})
+        res2 = subject.get(
+          httpbin("/response-headers"),
+          params: {"Cache-Control" => "s-maxage=60"}
+        )
         expect(res2.from_cache?).to eq(true)
         expect(res2.code).to eq(200)
       end
@@ -139,7 +151,10 @@ RSpec.describe HTTP::Session, vcr: true do
         res = subject.get(httpbin("/cache/0"))
         Timecop.freeze(res.date)
 
-        res1 = subject.get(httpbin("/response-headers"), params: {"Cache-Control" => "public, max-age=60, no-cache"})
+        res1 = subject.get(
+          httpbin("/response-headers"),
+          params: {"Cache-Control" => "max-age=60, no-cache"}
+        )
         expect(res1.from_cache?).to eq(false)
         expect(res1.code).to eq(200)
         expect(res1.max_age(shared: true)).to eq(60)
@@ -147,7 +162,10 @@ RSpec.describe HTTP::Session, vcr: true do
         expect(res1.fresh?(shared: true)).to eq(true)
         expect(subject.cache.store.instance_variable_get("@data").size).to eq(1)
 
-        res2 = subject.get(httpbin("/response-headers"), params: {"Cache-Control" => "public, max-age=60, no-cache"})
+        res2 = subject.get(
+          httpbin("/response-headers"),
+          params: {"Cache-Control" => "max-age=60, no-cache"}
+        )
         expect(res2.from_cache?).to eq(false)
         expect(res2.code).to eq(200)
       end
@@ -156,7 +174,10 @@ RSpec.describe HTTP::Session, vcr: true do
         res = subject.get(httpbin("/cache/0"))
         Timecop.freeze(res.date)
 
-        res1 = subject.get(httpbin("/response-headers"), params: {"Cache-Control" => "public, max-age=60, no-store"})
+        res1 = subject.get(
+          httpbin("/response-headers"),
+          params: {"Cache-Control" => "max-age=60, no-store"}
+        )
         expect(res1.from_cache?).to eq(false)
         expect(res1.code).to eq(200)
         expect(res1.max_age(shared: true)).to eq(60)
@@ -169,7 +190,10 @@ RSpec.describe HTTP::Session, vcr: true do
         res = subject.get(httpbin("/cache/0"))
         Timecop.freeze(res.date)
 
-        res1 = subject.get(httpbin("/response-headers"), params: {"Cache-Control" => "public, max-age=60, private"})
+        res1 = subject.get(
+          httpbin("/response-headers"),
+          params: {"Cache-Control" => "max-age=60, private"}
+        )
         expect(res1.from_cache?).to eq(false)
         expect(res1.code).to eq(200)
         expect(res1.max_age(shared: true)).to eq(60)
@@ -185,7 +209,7 @@ RSpec.describe HTTP::Session, vcr: true do
 
           res1 = subject.get(
             httpbin("/response-headers"),
-            params: {"Cache-Control" => "public, max-age=60", "Vary" => "*"}
+            params: {"Cache-Control" => "max-age=60", "Vary" => "*"}
           )
           expect(res1.from_cache?).to eq(false)
           expect(res1.code).to eq(200)
@@ -196,7 +220,7 @@ RSpec.describe HTTP::Session, vcr: true do
 
           res2 = subject.get(
             httpbin("/response-headers"),
-            params: {"Cache-Control" => "public, max-age=60", "Vary" => "*"}
+            params: {"Cache-Control" => "max-age=60", "Vary" => "*"}
           )
           expect(res2.from_cache?).to eq(false)
           expect(res2.code).to eq(200)
@@ -208,7 +232,7 @@ RSpec.describe HTTP::Session, vcr: true do
 
           res1 = subject.get(
             httpbin("/response-headers"),
-            params: {"Cache-Control" => "public, max-age=60", "Vary" => ""},
+            params: {"Cache-Control" => "max-age=60", "Vary" => ""},
             headers: {"Accept" => "text/html"}
           )
           expect(res1.from_cache?).to eq(false)
@@ -220,7 +244,7 @@ RSpec.describe HTTP::Session, vcr: true do
 
           res2 = subject.get(
             httpbin("/response-headers"),
-            params: {"Cache-Control" => "public, max-age=60", "Vary" => ""},
+            params: {"Cache-Control" => "max-age=60", "Vary" => ""},
             headers: {"Accept" => "application/xml"}
           )
           expect(res2.from_cache?).to eq(true)
@@ -233,7 +257,7 @@ RSpec.describe HTTP::Session, vcr: true do
 
           res1 = subject.get(
             httpbin("/response-headers"),
-            params: {"Cache-Control" => "public, max-age=60", "Vary" => "Accept"},
+            params: {"Cache-Control" => "max-age=60", "Vary" => "Accept"},
             headers: {"Accept" => "text/html"}
           )
           expect(res1.from_cache?).to eq(false)
@@ -245,7 +269,7 @@ RSpec.describe HTTP::Session, vcr: true do
 
           res2 = subject.get(
             httpbin("/response-headers"),
-            params: {"Cache-Control" => "public, max-age=60", "Vary" => "Accept"},
+            params: {"Cache-Control" => "max-age=60", "Vary" => "Accept"},
             headers: {"Accept" => "text/html"}
           )
           expect(res2.from_cache?).to eq(true)
@@ -258,7 +282,7 @@ RSpec.describe HTTP::Session, vcr: true do
 
           res1 = subject.get(
             httpbin("/response-headers"),
-            params: {"Cache-Control" => "public, max-age=60", "Vary" => "Accept"},
+            params: {"Cache-Control" => "max-age=60", "Vary" => "Accept"},
             headers: {"Accept" => "text/html"}
           )
           expect(res1.from_cache?).to eq(false)
@@ -270,7 +294,7 @@ RSpec.describe HTTP::Session, vcr: true do
 
           res2 = subject.get(
             httpbin("/response-headers"),
-            params: {"Cache-Control" => "public, max-age=60", "Vary" => "Accept"},
+            params: {"Cache-Control" => "max-age=60", "Vary" => "Accept"},
             headers: {"Accept" => "application/xml"}
           )
           expect(res2.from_cache?).to eq(false)
@@ -284,7 +308,10 @@ RSpec.describe HTTP::Session, vcr: true do
         res = subject.get(httpbin("/cache/0"))
         Timecop.freeze(res.date)
 
-        res1 = subject.get(httpbin("/response-headers"), params: {"Cache-Control" => "public, max-age=60"})
+        res1 = subject.get(
+          httpbin("/response-headers"),
+          params: {"Cache-Control" => "max-age=60"}
+        )
         expect(res1.from_cache?).to eq(false)
         expect(res1.code).to eq(200)
         expect(res1.max_age(shared: true)).to eq(60)
@@ -292,7 +319,11 @@ RSpec.describe HTTP::Session, vcr: true do
         expect(res1.fresh?(shared: true)).to eq(true)
         expect(subject.cache.store.instance_variable_get("@data").size).to eq(1)
 
-        res2 = subject.get(httpbin("/response-headers"), params: {"Cache-Control" => "public, max-age=60"}, headers: {"Cache-Control" => "no-cache"})
+        res2 = subject.get(
+          httpbin("/response-headers"),
+          params: {"Cache-Control" => "max-age=60"},
+          headers: {"Cache-Control" => "no-cache"}
+        )
         expect(res2.from_cache?).to eq(false)
         expect(res2.code).to eq(200)
       end
@@ -301,7 +332,11 @@ RSpec.describe HTTP::Session, vcr: true do
         res = subject.get(httpbin("/cache/0"))
         Timecop.freeze(res.date)
 
-        res1 = subject.get(httpbin("/response-headers"), params: {"Cache-Control" => "public, max-age=60"}, headers: {"Cache-Control" => "no-store"})
+        res1 = subject.get(
+          httpbin("/response-headers"),
+          params: {"Cache-Control" => "max-age=60"},
+          headers: {"Cache-Control" => "no-store"}
+        )
         expect(res1.from_cache?).to eq(false)
         expect(res1.code).to eq(200)
         expect(res1.max_age(shared: true)).to eq(60)

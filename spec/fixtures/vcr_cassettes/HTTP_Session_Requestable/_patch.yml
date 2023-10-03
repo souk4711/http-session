@@ -19,11 +19,11 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Thu, 28 Sep 2023 04:50:23 GMT
+      - Tue, 03 Oct 2023 07:12:34 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '330'
+      - '329'
       Connection:
       - close
       Server:
@@ -36,8 +36,8 @@ http_interactions:
       encoding: UTF-8
       string: "{\n  \"args\": {}, \n  \"data\": \"\", \n  \"files\": {}, \n  \"form\":
         {}, \n  \"headers\": {\n    \"Content-Length\": \"0\", \n    \"Host\": \"httpbin.org\",
-        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6515060f-2cef042277d3fd1f6ac37c5b\"\n
-        \ }, \n  \"json\": null, \n  \"origin\": \"113.118.114.167\", \n  \"url\":
+        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-651bbee2-5288f30512bea6981db067dc\"\n
+        \ }, \n  \"json\": null, \n  \"origin\": \"121.35.187.183\", \n  \"url\":
         \"https://httpbin.org/patch\"\n}\n"
-  recorded_at: Thu, 28 Sep 2023 04:50:23 GMT
+  recorded_at: Tue, 03 Oct 2023 07:12:34 GMT
 recorded_with: VCR 6.2.0

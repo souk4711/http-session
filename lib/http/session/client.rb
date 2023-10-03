@@ -138,7 +138,7 @@ class HTTP::Session
 
     # Store the response to cache.
     def _hs_cache_entry_store(req, res)
-      if res.cacheable?(shared: @session.cache.shared?)
+      if res.cacheable?(shared: @session.cache.shared?, req: req)
         @session.cache.write(req, res)
       end
     end
