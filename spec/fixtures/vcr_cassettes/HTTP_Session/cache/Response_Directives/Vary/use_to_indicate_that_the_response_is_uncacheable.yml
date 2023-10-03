@@ -19,7 +19,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 02 Oct 2023 15:27:08 GMT
+      - Tue, 03 Oct 2023 03:18:28 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -37,9 +37,9 @@ http_interactions:
     body:
       encoding: UTF-8
       string: "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\",
-        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-651ae14c-54a163d169de974722aefada\"\n
-        \ }, \n  \"origin\": \"113.116.31.156\", \n  \"url\": \"https://httpbin.org/cache/0\"\n}\n"
-  recorded_at: Mon, 02 Oct 2023 15:27:08 GMT
+        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-651b8804-65e809e813a0096c511dbc53\"\n
+        \ }, \n  \"origin\": \"121.35.187.183\", \n  \"url\": \"https://httpbin.org/cache/0\"\n}\n"
+  recorded_at: Tue, 03 Oct 2023 03:18:29 GMT
 - request:
     method: get
     uri: https://httpbin.org/response-headers?Cache-Control=public,%20max-age=60&Vary=*
@@ -47,8 +47,6 @@ http_interactions:
       encoding: ASCII-8BIT
       string: ''
     headers:
-      Accept:
-      - text/html
       Connection:
       - close
       Host:
@@ -61,7 +59,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 02 Oct 2023 15:27:09 GMT
+      - Tue, 03 Oct 2023 03:18:29 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -82,7 +80,7 @@ http_interactions:
       encoding: UTF-8
       string: "{\n  \"Cache-Control\": \"public, max-age=60\", \n  \"Content-Length\":
         \"127\", \n  \"Content-Type\": \"application/json\", \n  \"Vary\": \"*\"\n}\n"
-  recorded_at: Mon, 02 Oct 2023 15:27:08 GMT
+  recorded_at: Tue, 03 Oct 2023 03:18:28 GMT
 - request:
     method: get
     uri: https://httpbin.org/response-headers?Cache-Control=public,%20max-age=60&Vary=*
@@ -90,8 +88,6 @@ http_interactions:
       encoding: ASCII-8BIT
       string: ''
     headers:
-      Accept:
-      - application/xml
       Connection:
       - close
       Host:
@@ -104,7 +100,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 02 Oct 2023 15:27:10 GMT
+      - Tue, 03 Oct 2023 03:18:30 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -125,5 +121,5 @@ http_interactions:
       encoding: UTF-8
       string: "{\n  \"Cache-Control\": \"public, max-age=60\", \n  \"Content-Length\":
         \"127\", \n  \"Content-Type\": \"application/json\", \n  \"Vary\": \"*\"\n}\n"
-  recorded_at: Mon, 02 Oct 2023 15:27:08 GMT
+  recorded_at: Tue, 03 Oct 2023 03:18:28 GMT
 recorded_with: VCR 6.2.0

@@ -185,8 +185,7 @@ RSpec.describe HTTP::Session, vcr: true do
 
           res1 = subject.get(
             httpbin("/response-headers"),
-            params: {"Cache-Control" => "public, max-age=60", "Vary" => "*"},
-            headers: {"Accept" => "text/html"}
+            params: {"Cache-Control" => "public, max-age=60", "Vary" => "*"}
           )
           expect(res1.from_cache?).to eq(false)
           expect(res1.code).to eq(200)
@@ -197,8 +196,7 @@ RSpec.describe HTTP::Session, vcr: true do
 
           res2 = subject.get(
             httpbin("/response-headers"),
-            params: {"Cache-Control" => "public, max-age=60", "Vary" => "*"},
-            headers: {"Accept" => "application/xml"}
+            params: {"Cache-Control" => "public, max-age=60", "Vary" => "*"}
           )
           expect(res2.from_cache?).to eq(false)
           expect(res2.code).to eq(200)

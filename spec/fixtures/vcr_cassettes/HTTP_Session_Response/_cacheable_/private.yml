@@ -1,0 +1,44 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://httpbin.org/response-headers?Age=30&Cache-Control=private,%20max-age=60
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Connection:
+      - close
+      Host:
+      - httpbin.org
+      User-Agent:
+      - http.rb/5.1.1
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 03 Oct 2023 04:06:32 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '128'
+      Connection:
+      - close
+      Server:
+      - gunicorn/19.9.0
+      Cache-Control:
+      - private, max-age=60
+      Age:
+      - '30'
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Credentials:
+      - 'true'
+    body:
+      encoding: UTF-8
+      string: "{\n  \"Age\": \"30\", \n  \"Cache-Control\": \"private, max-age=60\",
+        \n  \"Content-Length\": \"128\", \n  \"Content-Type\": \"application/json\"\n}\n"
+  recorded_at: Tue, 03 Oct 2023 04:06:33 GMT
+recorded_with: VCR 6.2.0

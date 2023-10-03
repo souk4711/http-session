@@ -121,7 +121,7 @@ class HTTP::Session
     # @return [Time]
     def expires
       headers[HTTP::Headers::EXPIRES] && Time.httpdate(headers[HTTP::Headers::EXPIRES])
-    rescue ArgumentError
+    rescue
       nil
     end
 
@@ -155,7 +155,7 @@ class HTTP::Session
     # When no Date header is present or is unparseable, set the Date header to Time.now.
     def _hs_ensure_header_date
       date
-    rescue ArgumentError
+    rescue
       headers[HTTP::Headers::DATE] = now.httpdate
     end
   end
