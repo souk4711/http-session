@@ -64,20 +64,35 @@ RSpec.describe HTTP::Session, vcr: true do
   end
 
   describe "cache" do
+    matcher :be_cacheable_using_etag do |expected|
+      match do |actual|
+        expect(actual.code).to eq(200)
+        expect(actual.etag).to be_a(String)
+        expect(actual.last_modified).to be_a(String)
+        expect(actual.validateable?).to eq(true)
+      end
+    end
+
+    matcher :be_cacheable_using_maxage do |expected|
+      match do |actual|
+        expect(actual.code).to eq(200)
+        expect(actual.max_age(shared: true)).to eq(60)
+        expect(actual.age).to eq(0)
+        expect(actual.fresh?(shared: true)).to eq(true)
+      end
+    end
+
     let(:subject) { described_class.new(cache: true).freeze }
 
     describe "Basic" do
       it "can use cache across requests" do
         res1 = subject.get(httpbin("/cache"))
-        expect(res1.code).to eq(200)
-        expect(res1.etag).to be_a(String)
-        expect(res1.last_modified).to be_a(String)
-        expect(res1.validateable?).to eq(true)
+        expect(res1).to be_cacheable_using_etag
         expect(subject.cache.store.instance_variable_get("@data").size).to eq(1)
 
         res2 = subject.get(httpbin("/cache"))
-        expect(res2.from_cache?).to eq(true)
         expect(res2.code).to eq(200)
+        expect(res2.from_cache?).to eq(true)
         expect(res2.request.headers["If-None-Match"]).to eq(res1.etag)
         expect(res2.request.headers["If-Modified-Since"]).to eq(res1.last_modified)
       end
@@ -86,15 +101,12 @@ RSpec.describe HTTP::Session, vcr: true do
         sub = described_class.new.freeze
 
         res1 = sub.get(httpbin("/cache"))
-        expect(res1.code).to eq(200)
-        expect(res1.etag).to be_a(String)
-        expect(res1.last_modified).to be_a(String)
-        expect(res1.validateable?).to eq(true)
+        expect(res1).to be_cacheable_using_etag
         expect(sub.cache.store).to eq(nil)
 
         res2 = sub.get(httpbin("/cache"))
-        expect(res2.from_cache?).to eq(false)
         expect(res2.code).to eq(200)
+        expect(res2.from_cache?).to eq(false)
         expect(res2.request.headers["If-None-Match"]).to eq(nil)
         expect(res2.request.headers["If-Modified-Since"]).to eq(nil)
       end
@@ -109,19 +121,16 @@ RSpec.describe HTTP::Session, vcr: true do
           httpbin("/response-headers"),
           params: {"Cache-Control" => "max-age=60"}
         )
+        expect(res1).to be_cacheable_using_maxage
         expect(res1.from_cache?).to eq(false)
-        expect(res1.code).to eq(200)
-        expect(res1.max_age(shared: true)).to eq(60)
-        expect(res1.age).to eq(0)
-        expect(res1.fresh?(shared: true)).to eq(true)
         expect(subject.cache.store.instance_variable_get("@data").size).to eq(1)
 
         res2 = subject.get(
           httpbin("/response-headers"),
           params: {"Cache-Control" => "max-age=60"}
         )
-        expect(res2.from_cache?).to eq(true)
         expect(res2.code).to eq(200)
+        expect(res2.from_cache?).to eq(true)
       end
 
       it "Cache-Control: s-max-age" do
@@ -132,19 +141,16 @@ RSpec.describe HTTP::Session, vcr: true do
           httpbin("/response-headers"),
           params: {"Cache-Control" => "s-maxage=60"}
         )
+        expect(res1).to be_cacheable_using_maxage
         expect(res1.from_cache?).to eq(false)
-        expect(res1.code).to eq(200)
-        expect(res1.max_age(shared: true)).to eq(60)
-        expect(res1.age).to eq(0)
-        expect(res1.fresh?(shared: true)).to eq(true)
         expect(subject.cache.store.instance_variable_get("@data").size).to eq(1)
 
         res2 = subject.get(
           httpbin("/response-headers"),
           params: {"Cache-Control" => "s-maxage=60"}
         )
-        expect(res2.from_cache?).to eq(true)
         expect(res2.code).to eq(200)
+        expect(res2.from_cache?).to eq(true)
       end
 
       it "Cache-Control: no-cache" do
@@ -155,19 +161,16 @@ RSpec.describe HTTP::Session, vcr: true do
           httpbin("/response-headers"),
           params: {"Cache-Control" => "max-age=60, no-cache"}
         )
+        expect(res1).to be_cacheable_using_maxage
         expect(res1.from_cache?).to eq(false)
-        expect(res1.code).to eq(200)
-        expect(res1.max_age(shared: true)).to eq(60)
-        expect(res1.age).to eq(0)
-        expect(res1.fresh?(shared: true)).to eq(true)
         expect(subject.cache.store.instance_variable_get("@data").size).to eq(1)
 
         res2 = subject.get(
           httpbin("/response-headers"),
           params: {"Cache-Control" => "max-age=60, no-cache"}
         )
-        expect(res2.from_cache?).to eq(false)
         expect(res2.code).to eq(200)
+        expect(res2.from_cache?).to eq(false)
       end
 
       it "Cache-Control: no-store" do
@@ -178,11 +181,8 @@ RSpec.describe HTTP::Session, vcr: true do
           httpbin("/response-headers"),
           params: {"Cache-Control" => "max-age=60, no-store"}
         )
+        expect(res1).to be_cacheable_using_maxage
         expect(res1.from_cache?).to eq(false)
-        expect(res1.code).to eq(200)
-        expect(res1.max_age(shared: true)).to eq(60)
-        expect(res1.age).to eq(0)
-        expect(res1.fresh?(shared: true)).to eq(true)
         expect(subject.cache.store.instance_variable_get("@data").size).to eq(0)
       end
 
@@ -194,11 +194,8 @@ RSpec.describe HTTP::Session, vcr: true do
           httpbin("/response-headers"),
           params: {"Cache-Control" => "max-age=60, private"}
         )
+        expect(res1).to be_cacheable_using_maxage
         expect(res1.from_cache?).to eq(false)
-        expect(res1.code).to eq(200)
-        expect(res1.max_age(shared: true)).to eq(60)
-        expect(res1.age).to eq(0)
-        expect(res1.fresh?(shared: true)).to eq(true)
         expect(subject.cache.store.instance_variable_get("@data").size).to eq(0)
       end
 
@@ -211,19 +208,16 @@ RSpec.describe HTTP::Session, vcr: true do
             httpbin("/response-headers"),
             params: {"Cache-Control" => "max-age=60", "Vary" => "*"}
           )
+          expect(res1).to be_cacheable_using_maxage
           expect(res1.from_cache?).to eq(false)
-          expect(res1.code).to eq(200)
-          expect(res1.max_age(shared: true)).to eq(60)
-          expect(res1.age).to eq(0)
-          expect(res1.fresh?(shared: true)).to eq(true)
           expect(subject.cache.store.instance_variable_get("@data").size).to eq(1)
 
           res2 = subject.get(
             httpbin("/response-headers"),
             params: {"Cache-Control" => "max-age=60", "Vary" => "*"}
           )
-          expect(res2.from_cache?).to eq(false)
           expect(res2.code).to eq(200)
+          expect(res2.from_cache?).to eq(false)
         end
 
         it "use '' to ignore content negotiation" do
@@ -235,11 +229,8 @@ RSpec.describe HTTP::Session, vcr: true do
             params: {"Cache-Control" => "max-age=60", "Vary" => ""},
             headers: {"Accept" => "text/html"}
           )
+          expect(res1).to be_cacheable_using_maxage
           expect(res1.from_cache?).to eq(false)
-          expect(res1.code).to eq(200)
-          expect(res1.max_age(shared: true)).to eq(60)
-          expect(res1.age).to eq(0)
-          expect(res1.fresh?(shared: true)).to eq(true)
           expect(subject.cache.store.instance_variable_get("@data").size).to eq(1)
 
           res2 = subject.get(
@@ -247,8 +238,8 @@ RSpec.describe HTTP::Session, vcr: true do
             params: {"Cache-Control" => "max-age=60", "Vary" => ""},
             headers: {"Accept" => "application/xml"}
           )
-          expect(res2.from_cache?).to eq(true)
           expect(res2.code).to eq(200)
+          expect(res2.from_cache?).to eq(true)
         end
 
         it "headers matched" do
@@ -260,11 +251,8 @@ RSpec.describe HTTP::Session, vcr: true do
             params: {"Cache-Control" => "max-age=60", "Vary" => "Accept"},
             headers: {"Accept" => "text/html"}
           )
+          expect(res1).to be_cacheable_using_maxage
           expect(res1.from_cache?).to eq(false)
-          expect(res1.code).to eq(200)
-          expect(res1.max_age(shared: true)).to eq(60)
-          expect(res1.age).to eq(0)
-          expect(res1.fresh?(shared: true)).to eq(true)
           expect(subject.cache.store.instance_variable_get("@data").size).to eq(1)
 
           res2 = subject.get(
@@ -272,8 +260,8 @@ RSpec.describe HTTP::Session, vcr: true do
             params: {"Cache-Control" => "max-age=60", "Vary" => "Accept"},
             headers: {"Accept" => "text/html"}
           )
-          expect(res2.from_cache?).to eq(true)
           expect(res2.code).to eq(200)
+          expect(res2.from_cache?).to eq(true)
         end
 
         it "headers unmatched" do
@@ -285,11 +273,8 @@ RSpec.describe HTTP::Session, vcr: true do
             params: {"Cache-Control" => "max-age=60", "Vary" => "Accept"},
             headers: {"Accept" => "text/html"}
           )
+          expect(res1).to be_cacheable_using_maxage
           expect(res1.from_cache?).to eq(false)
-          expect(res1.code).to eq(200)
-          expect(res1.max_age(shared: true)).to eq(60)
-          expect(res1.age).to eq(0)
-          expect(res1.fresh?(shared: true)).to eq(true)
           expect(subject.cache.store.instance_variable_get("@data").size).to eq(1)
 
           res2 = subject.get(
@@ -297,8 +282,8 @@ RSpec.describe HTTP::Session, vcr: true do
             params: {"Cache-Control" => "max-age=60", "Vary" => "Accept"},
             headers: {"Accept" => "application/xml"}
           )
-          expect(res2.from_cache?).to eq(false)
           expect(res2.code).to eq(200)
+          expect(res2.from_cache?).to eq(false)
         end
       end
 
@@ -311,11 +296,8 @@ RSpec.describe HTTP::Session, vcr: true do
             httpbin("/response-headers"),
             params: {"Cache-Control" => "max-age=60"}
           )
+          expect(res1).to be_cacheable_using_maxage
           expect(res1.from_cache?).to eq(false)
-          expect(res1.code).to eq(200)
-          expect(res1.max_age(shared: true)).to eq(60)
-          expect(res1.age).to eq(0)
-          expect(res1.fresh?(shared: true)).to eq(true)
           expect(res1.headers["Age"]).to eq(nil)
           expect(subject.cache.store.instance_variable_get("@data").size).to eq(1)
 
@@ -324,8 +306,8 @@ RSpec.describe HTTP::Session, vcr: true do
             httpbin("/response-headers"),
             params: {"Cache-Control" => "max-age=60"}
           )
-          expect(res2.from_cache?).to eq(true)
           expect(res2.code).to eq(200)
+          expect(res2.from_cache?).to eq(true)
           expect(res2.headers["Age"]).to eq("2")
         end
       end
@@ -340,11 +322,8 @@ RSpec.describe HTTP::Session, vcr: true do
           httpbin("/response-headers"),
           params: {"Cache-Control" => "max-age=60"}
         )
+        expect(res1).to be_cacheable_using_maxage
         expect(res1.from_cache?).to eq(false)
-        expect(res1.code).to eq(200)
-        expect(res1.max_age(shared: true)).to eq(60)
-        expect(res1.age).to eq(0)
-        expect(res1.fresh?(shared: true)).to eq(true)
         expect(subject.cache.store.instance_variable_get("@data").size).to eq(1)
 
         res2 = subject.get(
@@ -352,8 +331,8 @@ RSpec.describe HTTP::Session, vcr: true do
           params: {"Cache-Control" => "max-age=60"},
           headers: {"Cache-Control" => "no-cache"}
         )
-        expect(res2.from_cache?).to eq(false)
         expect(res2.code).to eq(200)
+        expect(res2.from_cache?).to eq(false)
       end
 
       it "Cache-Control: no-store" do
@@ -365,11 +344,8 @@ RSpec.describe HTTP::Session, vcr: true do
           params: {"Cache-Control" => "max-age=60"},
           headers: {"Cache-Control" => "no-store"}
         )
+        expect(res1).to be_cacheable_using_maxage
         expect(res1.from_cache?).to eq(false)
-        expect(res1.code).to eq(200)
-        expect(res1.max_age(shared: true)).to eq(60)
-        expect(res1.age).to eq(0)
-        expect(res1.fresh?(shared: true)).to eq(true)
         expect(subject.cache.store.instance_variable_get("@data").size).to eq(0)
       end
     end
