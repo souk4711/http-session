@@ -3,12 +3,11 @@ class HTTP::Session
     class Entry
       class << self
         # Deserializes from a JSON primitive type.
-        def deserialize(hash, from_cache: false)
+        def deserialize(hash)
           req = HTTP::Request.new(hash[:req])
           req = HTTP::Session::Request.new(req)
           res = HTTP::Response.new(hash[:res].merge(request: req))
           res = HTTP::Session::Response.new(res)
-          res.from_cache = from_cache
           new(req, res)
         end
       end
@@ -33,7 +32,7 @@ class HTTP::Session
         h = serialize_response
         res = HTTP::Response.new(h.merge(request: req))
         res = HTTP::Session::Response.new(res)
-        res.from_cache = @response.from_cache?
+        res.from_cache = true
         res
       end
 

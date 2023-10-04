@@ -69,11 +69,19 @@ class HTTP::Session
     end
 
     def read_entries(key)
-      (store.read(key) || []).map { |e| Entry.deserialize(e, from_cache: true) }
+      entrie = store.read(key) || []
+      entrie.map do |e|
+        Entry.deserialize(e)
+      end
     end
 
     def write_entries(key, entries)
-      store.write(key, entries.map { |e| e.serialize })
+      entries = entries.map do |e|
+        e = e.serialize
+        e[:res][:headers].delete(HTTP::Headers::AGE)
+        e
+      end
+      store.write(key, entries)
     end
 
     def cache_key_for(req)

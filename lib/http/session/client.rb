@@ -114,7 +114,9 @@ class HTTP::Session
 
     # The cache entry is fresh, reuse it.
     def _hs_cache_reuse(req, opts, entry)
-      entry.to_response(req)
+      res = entry.to_response(req)
+      res.headers[HTTP::Headers::AGE] = [(res.now - res.date).to_i, 0].max.to_s
+      res
     end
 
     # The cache entry is stale, revalidate it. The original request is used

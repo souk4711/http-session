@@ -301,6 +301,34 @@ RSpec.describe HTTP::Session, vcr: true do
           expect(res2.code).to eq(200)
         end
       end
+
+      describe "Age" do
+        it "a cache MUST generate the field when using a fresh entry" do
+          res = subject.get(httpbin("/cache/0"))
+          Timecop.freeze(res.date)
+
+          res1 = subject.get(
+            httpbin("/response-headers"),
+            params: {"Cache-Control" => "max-age=60"}
+          )
+          expect(res1.from_cache?).to eq(false)
+          expect(res1.code).to eq(200)
+          expect(res1.max_age(shared: true)).to eq(60)
+          expect(res1.age).to eq(0)
+          expect(res1.fresh?(shared: true)).to eq(true)
+          expect(res1.headers["Age"]).to eq(nil)
+          expect(subject.cache.store.instance_variable_get("@data").size).to eq(1)
+
+          Timecop.freeze(res1.date + 2)
+          res2 = subject.get(
+            httpbin("/response-headers"),
+            params: {"Cache-Control" => "max-age=60"}
+          )
+          expect(res2.from_cache?).to eq(true)
+          expect(res2.code).to eq(200)
+          expect(res2.headers["Age"]).to eq("2")
+        end
+      end
     end
 
     describe "Request Directives" do
