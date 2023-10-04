@@ -1,10 +1,11 @@
 class HTTP::Session
-  class Client < HTTP::Client
+  class Client
+    include HTTP::Session::Client::Perform
+
     # @param [Hash] default_options
     # @param [Session] session
     def initialize(default_options, session)
-      super(default_options)
-
+      httprb_initialize(default_options)
       @session = session
     end
 
@@ -25,7 +26,8 @@ class HTTP::Session
       return res unless opts.follow
 
       HTTP::Redirector.new(opts.follow).perform(req, res) do |request|
-        perform(wrap_request(request, opts), opts)
+        request = HTTP::Session::Request.new(request)
+        perform(request, opts)
       end.tap do |res|
         res.history = hist
       end
@@ -33,30 +35,14 @@ class HTTP::Session
 
     private
 
+    # Make an HTTP request.
+    #
     # @param [Request] req
     # @param [HTTP::Options] opts
     # @return [Response]
     def perform(req, opts)
-      if @session.default_options.cache.enabled?
-        req.cacheable? ? _hs_cache_lookup(req, opts) : _hs_cache_pass(req, opts)
-      else
-        _hs_perform(req, opts)
-      end
-    end
-
-    # @return [Response]
-    def build_response(*)
-      HTTP::Session::Response.new(super)
-    end
-
-    # @return [Request]
-    def build_request(*)
-      HTTP::Session::Request.new(super)
-    end
-
-    # @return [Request]
-    def wrap_request(*)
-      HTTP::Session::Request.new(super)
+      req = wrap_request(req, opts)
+      wrap_response(_hs_perform(req, opts), opts)
     end
 
     # Add session cookie to the request's :cookies.
@@ -83,6 +69,15 @@ class HTTP::Session
       end
     end
 
+    # Make an HTTP request using cache.
+    def _hs_perform(req, opts)
+      if @session.default_options.cache.enabled?
+        req.cacheable? ? _hs_cache_lookup(req, opts) : _hs_cache_pass(req, opts)
+      else
+        _hs_forward(req, opts)
+      end
+    end
+
     # Try to serve the response from cache.
     #
     #   * When a matching cache entry is found and is fresh, use it as the response
@@ -106,7 +101,7 @@ class HTTP::Session
     # The cache entry is missing. Forward the request to the backend and determine
     # whether the response should be stored.
     def _hs_cache_fetch(req, opts)
-      res = _hs_perform(req, opts)
+      res = _hs_forward(req, opts)
 
       _hs_cache_entry_store(req, res)
       res
@@ -125,7 +120,7 @@ class HTTP::Session
       req.headers[HTTP::Headers::IF_MODIFIED_SINCE] = entry.response.last_modified if entry.response.last_modified
       req.headers[HTTP::Headers::IF_NONE_MATCH] = entry.response.etag if entry.response.etag
 
-      res = _hs_perform(req, opts)
+      res = _hs_forward(req, opts)
       return entry.to_response(req) if res.status.not_modified?
 
       _hs_cache_entry_store(req, res)
@@ -135,7 +130,7 @@ class HTTP::Session
     # The request is not cacheable. So the request is sent to the backend, and the
     # backend's response is sent to the client, but is not entered into the cache.
     def _hs_cache_pass(req, opts)
-      _hs_perform(req, opts)
+      _hs_forward(req, opts)
     end
 
     # Store the response to cache.
@@ -146,8 +141,8 @@ class HTTP::Session
     end
 
     # Delegate the request to the backend and create the response.
-    def _hs_perform(req, opts)
-      HTTP::Session::Response.new(method(:perform).super_method.call(req, opts))
+    def _hs_forward(req, opts)
+      httprb_perform(req, opts)
     end
   end
 end

@@ -1,4 +1,5 @@
 require "http-session"
+require "http-session/webmock"
 
 RSPEC_ROOT = Pathname.new(__dir__)
 

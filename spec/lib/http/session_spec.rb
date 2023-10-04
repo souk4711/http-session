@@ -349,6 +349,27 @@ RSpec.describe HTTP::Session, vcr: true do
         expect(subject.cache.store.instance_variable_get("@data").size).to eq(0)
       end
     end
+
+    describe "work with HTTP::Features" do
+      it "logging" do
+        io = StringIO.new
+        sub = described_class.new(cache: true).use(logging: {logger: Logger.new(io)}).freeze
+
+        res1 = sub.get(httpbin("/cache"))
+        expect(res1).to be_cacheable_using_etag
+        expect(sub.cache.store.instance_variable_get("@data").size).to eq(1)
+
+        out1 = (io.rewind && io.read).tap { io.truncate(0) }
+        expect(out1.scan("< 200 OK").count).to eq(1)
+
+        res2 = sub.get(httpbin("/cache"))
+        expect(res2.code).to eq(200)
+        expect(res2.from_cache?).to eq(true)
+
+        out2 = (io.rewind && io.read).tap { io.truncate(0) }
+        expect(out2.scan("< 200 OK").count).to eq(1)
+      end
+    end
   end
 
   describe "cookies" do
