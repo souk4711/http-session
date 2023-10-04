@@ -33,12 +33,13 @@ class HTTP::Session
 
         # Cache Store
         @store =
-          if options.key?(:store)
-            options[:store]
-          elsif @enabled
-            require "active_support/cache"
-            require "active_support/notifications"
-            ActiveSupport::Cache::MemoryStore.new
+          if @enabled
+            store = options[:store]
+            if store.respond_to?(:read) && store.respond_to?(:write)
+              store
+            else
+              lookup_store(store)
+            end
           end
       end
 
@@ -61,6 +62,14 @@ class HTTP::Session
       # It can store and reuse personalized content for a single user.
       def private_cache?
         !shared_cache?
+      end
+
+      private
+
+      def lookup_store(store)
+        require "active_support/cache"
+        require "active_support/notifications"
+        ActiveSupport::Cache.lookup_store(store)
       end
     end
   end

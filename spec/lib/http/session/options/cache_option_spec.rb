@@ -48,9 +48,16 @@ RSpec.describe HTTP::Session::Options::CacheOption do
     expect(sub.store).to eq(nil)
 
     sub = described_class.new(enabled: true)
-    expect(sub.store).to be_a(ActiveSupport::Cache::Store)
+    expect(sub.store).to be_a(ActiveSupport::Cache::MemoryStore)
 
-    store = Object.new
+    sub = described_class.new(store: :null_store)
+    expect(sub.store).to be_a(ActiveSupport::Cache::NullStore)
+
+    sub = described_class.new(store: [:file_store, "/tmp/cache"])
+    expect(sub.store).to be_a(ActiveSupport::Cache::FileStore)
+
+    expect_any_instance_of(described_class).to_not receive(:lookup_store)
+    store = ActiveSupport::Cache::NullStore.new
     sub = described_class.new(store: store)
     expect(sub.store).to eq(store)
   end
