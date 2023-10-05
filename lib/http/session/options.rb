@@ -53,6 +53,7 @@ class HTTP::Session
 
     # @return [Options]
     def with_features(features)
+      raise ArgumentError, "feature :auto_inflate is not supported" if features.include?(:auto_inflate)
       tap { @http = @http.with_features(features) }
     end
 

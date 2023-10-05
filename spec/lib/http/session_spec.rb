@@ -110,6 +110,28 @@ RSpec.describe HTTP::Session, vcr: true do
         expect(res2.request.headers["If-None-Match"]).to eq(nil)
         expect(res2.request.headers["If-Modified-Since"]).to eq(nil)
       end
+
+      it "variant format" do
+        uri = "https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"
+
+        res = subject.get(uri)
+        expect(res.code).to eq(200)
+        expect(res.body.to_s).to start_with("/*! jQuery v3.6.4 |")
+
+        res = subject.get(uri)
+        expect(res.code).to eq(200)
+        expect(res.from_cache?).to eq(true)
+        expect(res.body.to_s).to start_with("/*! jQuery v3.6.4 |")
+
+        res = subject.get(uri, headers: {"Accept-Encoding" => "gzip"})
+        expect(res.code).to eq(200)
+        expect(Zlib::Inflate.new(32 + Zlib::MAX_WBITS).inflate(res.body)).to start_with("/*! jQuery v3.6.4 |")
+
+        res = subject.get(uri, headers: {"Accept-Encoding" => "gzip"})
+        expect(res.code).to eq(200)
+        expect(res.from_cache?).to eq(true)
+        expect(Zlib::Inflate.new(32 + Zlib::MAX_WBITS).inflate(res.body)).to start_with("/*! jQuery v3.6.4 |")
+      end
     end
 
     describe "Response Directives" do
@@ -350,7 +372,7 @@ RSpec.describe HTTP::Session, vcr: true do
       end
     end
 
-    describe "work with HTTP::Features" do
+    describe "HTTP::Features" do
       it "logging" do
         io = StringIO.new
         sub = described_class.new(cache: true).use(logging: {logger: Logger.new(io)}).freeze
@@ -358,16 +380,38 @@ RSpec.describe HTTP::Session, vcr: true do
         res1 = sub.get(httpbin("/cache"))
         expect(res1).to be_cacheable_using_etag
         expect(sub.cache.store.instance_variable_get("@data").size).to eq(1)
-
         out1 = (io.rewind && io.read).tap { io.truncate(0) }
         expect(out1.scan("< 200 OK").count).to eq(1)
 
         res2 = sub.get(httpbin("/cache"))
         expect(res2.code).to eq(200)
         expect(res2.from_cache?).to eq(true)
-
         out2 = (io.rewind && io.read).tap { io.truncate(0) }
         expect(out2.scan("< 200 OK").count).to eq(1)
+      end
+
+      it "instrumentation" do
+        res_arr = []
+        ActiveSupport::Notifications.subscribe("request.http") do |name, start, finish, id, payload|
+          res_arr << payload[:response]
+        end
+        sub = described_class.new(cache: true).use(instrumentation: {instrumenter: ActiveSupport::Notifications.instrumenter}).freeze
+
+        res1 = sub.get(httpbin("/cache"))
+        expect(res1).to be_cacheable_using_etag
+        expect(sub.cache.store.instance_variable_get("@data").size).to eq(1)
+        expect(res_arr).to eql([res1])
+
+        res2 = sub.get(httpbin("/cache"))
+        expect(res2.code).to eq(200)
+        expect(res2.from_cache?).to eq(true)
+        expect(res_arr).to eql([res1, res2])
+      end
+
+      it "auto_inflate" do
+        expect {
+          described_class.new(cache: true).use(:auto_inflate).freeze
+        }.to raise_error(ArgumentError, /is not supported/)
       end
     end
   end
