@@ -36,10 +36,7 @@ class HTTP::Session
         h = serialize_response
         h[:request] = req
         h[:body] = HTTP::Session::Response::StringBody.new(h[:body])
-
-        res = HTTP::Session::Response.new(HTTP::Response.new(h))
-        res.from_cache = true
-        res
+        HTTP::Session::Response.new(HTTP::Response.new(h))
       end
 
       # Serializes to a JSON primitive type.

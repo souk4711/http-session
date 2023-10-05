@@ -3,6 +3,7 @@ require "monitor"
 
 require_relative "session/cache/cache_control"
 require_relative "session/cache/entry"
+require_relative "session/cache/status"
 require_relative "session/cache"
 require_relative "session/client/perform"
 require_relative "session/client"

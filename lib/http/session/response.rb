@@ -36,9 +36,6 @@ class HTTP::Session
     #   @return [Time] the time when the Response object was instantiated
     attr_reader :now
 
-    # @!attribute [w] from_cache
-    attr_writer :from_cache
-
     # Returns a new instance of Response.
     def initialize(*args)
       super
@@ -46,13 +43,13 @@ class HTTP::Session
       @now = Time.now
       _hs_ensure_header_date
 
-      @from_cache = false
       @history = []
     end
 
     # Determine if the response is served from cache.
     def from_cache?
-      @from_cache
+      v = headers[HTTP::Session::Cache::Status::HEADER_NAME]
+      HTTP::Session::Cache::Status.HIT?(v)
     end
 
     # A CacheControl instance based on the response's cache-control header.

@@ -451,8 +451,7 @@ RSpec.describe HTTP::Session, vcr: true do
 
         res = sub.get(uri, headers: {"Accept-Encoding" => "gzip"})
         expect(res.code).to eq(200)
-        # FIXME:
-        # expect(res.from_cache?).to eq(true)
+        expect(res.from_cache?).to eq(true)
         expect(res.body.to_s).to start_with("/*! jQuery v3.6.4 |")
       end
 
@@ -466,8 +465,7 @@ RSpec.describe HTTP::Session, vcr: true do
 
         res = sub.get(uri, headers: {"Accept-Encoding" => "br"})
         expect(res.code).to eq(200)
-        # FIXME:
-        # expect(res.from_cache?).to eq(true)
+        expect(res.from_cache?).to eq(true)
         expect(res.body.to_s).to start_with("/*! jQuery v3.6.4 |")
       end
     end

@@ -102,8 +102,9 @@ class HTTP::Session
     # whether the response should be stored.
     def _hs_cache_fetch(req, opts)
       res = _hs_forward(req, opts)
-
       _hs_cache_entry_store(req, res)
+
+      res.headers[HTTP::Session::Cache::Status::HEADER_NAME] = HTTP::Session::Cache::Status::MISS
       res
     end
 
@@ -111,6 +112,7 @@ class HTTP::Session
     def _hs_cache_reuse(req, opts, entry)
       res = entry.to_response(req)
       res.headers[HTTP::Headers::AGE] = [(res.now - res.date).to_i, 0].max.to_s
+      res.headers[HTTP::Session::Cache::Status::HEADER_NAME] = HTTP::Session::Cache::Status::HIT
       res
     end
 
@@ -121,16 +123,23 @@ class HTTP::Session
       req.headers[HTTP::Headers::IF_NONE_MATCH] = entry.response.etag if entry.response.etag
 
       res = _hs_forward(req, opts)
-      return entry.to_response(req) if res.status.not_modified?
+      if res.status.not_modified?
+        res = entry.to_response(req)
+        res.headers[HTTP::Session::Cache::Status::HEADER_NAME] = HTTP::Session::Cache::Status::REVALIDATED
+        return res
+      end
 
       _hs_cache_entry_store(req, res)
+      res.headers[HTTP::Session::Cache::Status::HEADER_NAME] = HTTP::Session::Cache::Status::EXPIRED
       res
     end
 
     # The request is not cacheable. So the request is sent to the backend, and the
     # backend's response is sent to the client, but is not entered into the cache.
     def _hs_cache_pass(req, opts)
-      _hs_forward(req, opts)
+      res = _hs_forward(req, opts)
+      res.headers[HTTP::Session::Cache::Status::HEADER_NAME] = HTTP::Session::Cache::Status::UNCACHEABLE
+      res
     end
 
     # Store the response to cache.
