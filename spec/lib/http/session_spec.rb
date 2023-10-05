@@ -25,15 +25,17 @@ RSpec.describe HTTP::Session, vcr: true do
         res = subject.get(httpbin("/anything"))
         expect(res.code).to eq(200)
         expect(res).to be_an_instance_of(HTTP::Session::Response)
-        expect(res.request).to be_an_instance_of(HTTP::Session::Request)
         expect(res.__getobj__).to be_an_instance_of(HTTP::Response)
+        expect(res.__getobj__.body).to be_an_instance_of(HTTP::Response::Body)
+        expect(res.request).to be_an_instance_of(HTTP::Session::Request)
         expect(res.request.__getobj__).to be_an_instance_of(HTTP::Request)
 
         res = subject.get(httpbin("/redirect/1"), follow: true)
         expect(res.code).to eq(200)
         expect(res).to be_an_instance_of(HTTP::Session::Response)
-        expect(res.request).to be_an_instance_of(HTTP::Session::Request)
         expect(res.__getobj__).to be_an_instance_of(HTTP::Response)
+        expect(res.__getobj__.body).to be_an_instance_of(HTTP::Response::Body)
+        expect(res.request).to be_an_instance_of(HTTP::Session::Request)
         expect(res.request.__getobj__).to be_an_instance_of(HTTP::Request)
 
         res = subject.get(
@@ -43,8 +45,9 @@ RSpec.describe HTTP::Session, vcr: true do
         )
         expect(res.code).to eq(200)
         expect(res).to be_instance_of(HTTP::Session::Response)
-        expect(res.request).to be_an_instance_of(HTTP::Session::Request)
         expect(res.__getobj__).to be_an_instance_of(HTTP::Response)
+        expect(res.__getobj__.body).to be_an_instance_of(HTTP::Response::Body)
+        expect(res.request).to be_an_instance_of(HTTP::Session::Request)
         expect(res.request.__getobj__).to be_an_instance_of(HTTP::Request)
       end
     end
@@ -109,6 +112,21 @@ RSpec.describe HTTP::Session, vcr: true do
         expect(res2.from_cache?).to eq(false)
         expect(res2.request.headers["If-None-Match"]).to eq(nil)
         expect(res2.request.headers["If-Modified-Since"]).to eq(nil)
+      end
+
+      it "return a cached HTTP::Session::Response" do
+        res1 = subject.get(httpbin("/cache"))
+        expect(res1).to be_cacheable_using_etag
+        expect(subject.cache.store.instance_variable_get("@data").size).to eq(1)
+
+        res2 = subject.get(httpbin("/cache"))
+        expect(res2.code).to eq(200)
+        expect(res2.from_cache?).to eq(true)
+        expect(res2).to be_an_instance_of(HTTP::Session::Response)
+        expect(res2.__getobj__).to be_an_instance_of(HTTP::Response)
+        expect(res2.__getobj__.body).to be_an_instance_of(HTTP::Session::Response::CachedBody)
+        expect(res2.request).to be_an_instance_of(HTTP::Session::Request)
+        expect(res2.request.__getobj__).to be_an_instance_of(HTTP::Request)
       end
 
       it "variant format" do

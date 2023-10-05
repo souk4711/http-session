@@ -1,3 +1,4 @@
+require "forwardable"
 require "http"
 require "monitor"
 
@@ -12,6 +13,7 @@ require_relative "session/options/cookies_option"
 require_relative "session/options"
 require_relative "session/request"
 require_relative "session/requestable"
+require_relative "session/response/cached_body"
 require_relative "session/response"
 require_relative "session/version"
 
