@@ -1,2 +1,3 @@
 --markup=markdown
 --markup-provider=redcarpet
+--exclude lib/http-session/webmock.rb

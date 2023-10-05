@@ -1,7 +1,7 @@
 class HTTP::Session
   # Provides the same request API interfaces as HTTP::Client.
   #
-  # @see https://github.com/httprb/http/blob/main/lib/http/chainable.rb
+  # Mostly borrowed from [http/lib/http/chainable.rb](https://github.com/httprb/http/blob/main/lib/http/chainable.rb)
   module Requestable
     # Request a get sans response body.
     #

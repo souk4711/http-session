@@ -1,6 +1,7 @@
 class HTTP::Session
-  # @author [rack/rack-cache](https://github.com/rack/rack-cache)
-  # @author [souk4711/http-session](https://github.com/souk4711/http-session)
+  # Provides access to the HTTP response.
+  #
+  # Mostly borrowed from [rack-cache/lib/rack/cache/response.rb](https://github.com/rack/rack-cache/blob/main/lib/rack/cache/response.rb)
   class Response < SimpleDelegator
     class << self
       def new(*args)

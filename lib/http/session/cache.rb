@@ -9,6 +9,8 @@ class HTTP::Session
       @options = options
     end
 
+    # Read an entry from cache.
+    #
     # @param [Request] req
     # @return [Entry]
     def read(req)
@@ -19,6 +21,8 @@ class HTTP::Session
       end
     end
 
+    # Write an entry to cache.
+    #
     # @param [Request] req
     # @param [Response] res
     # @return [void]

@@ -2,7 +2,7 @@ class HTTP::Session
   class Client
     # Make an HTTP request without any HTTP::Features.
     #
-    # @author [httprb/http](https://github.com/httprb/http/blob/main/lib/http/client.rb)
+    # Mostly borrowed from [http/lib/http/client.rb](https://github.com/httprb/http/blob/main/lib/http/client.rb)
     module Perform
       HTTP_OR_HTTPS_RE = %r{^https?://}i
 

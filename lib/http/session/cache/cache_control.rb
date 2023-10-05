@@ -3,7 +3,7 @@ class HTTP::Session
     # Parses a cache-control header and exposes the directives as a Hash.
     # Directives that do not have values are set to +true+.
     #
-    # @author [rack/rack-cache](https://github.com/rack/rack-cache)
+    # Mostly borrowed from [rack-cache/lib/rack/cache/cache_control.rb](https://github.com/rack/rack-cache/blob/main/lib/rack/cache/cache_control.rb)
     class CacheControl < Hash
       def initialize(value = nil)
         parse(value)

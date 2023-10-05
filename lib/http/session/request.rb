@@ -1,6 +1,7 @@
 class HTTP::Session
-  # @author [rack/rack-cache](https://github.com/rack/rack-cache)
-  # @author [souk4711/http-session](https://github.com/souk4711/http-session)
+  # Provides access to the HTTP request.
+  #
+  # Mostly borrowed from [rack-cache/lib/rack/cache/request.rb](https://github.com/rack/rack-cache/blob/main/lib/rack/cache/request.rb)
   class Request < SimpleDelegator
     class << self
       def new(*args)
