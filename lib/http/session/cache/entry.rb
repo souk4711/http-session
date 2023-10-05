@@ -9,7 +9,7 @@ class HTTP::Session
 
           res = h[:res]
           res[:request] = req
-          res[:body] = HTTP::Session::Response::CachedBody.new(res[:body])
+          res[:body] = HTTP::Session::Response::StringBody.new(res[:body])
           res = HTTP::Session::Response.new(HTTP::Response.new(res))
 
           new(req, res)
@@ -35,7 +35,7 @@ class HTTP::Session
       def to_response(req)
         h = serialize_response
         h[:request] = req
-        h[:body] = HTTP::Session::Response::CachedBody.new(h[:body])
+        h[:body] = HTTP::Session::Response::StringBody.new(h[:body])
 
         res = HTTP::Session::Response.new(HTTP::Response.new(h))
         res.from_cache = true

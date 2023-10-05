@@ -7,6 +7,7 @@ gemspec
 
 # optonal dependencies
 gem "activesupport", "~> 7.0"
+gem "brotli"
 
 # rake
 gem "rake", "~> 13.0"

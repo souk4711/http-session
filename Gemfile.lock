@@ -18,6 +18,7 @@ GEM
     backport (1.2.0)
     base64 (0.1.1)
     benchmark (0.2.1)
+    brotli (0.4.0)
     childprocess (4.1.0)
     concurrent-ruby (1.2.2)
     crack (0.4.5)
@@ -160,6 +161,7 @@ PLATFORMS
 
 DEPENDENCIES
   activesupport (~> 7.0)
+  brotli
   http-session!
   overcommit (~> 0.59)
   rake (~> 13.0)

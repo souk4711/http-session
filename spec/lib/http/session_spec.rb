@@ -124,7 +124,7 @@ RSpec.describe HTTP::Session, vcr: true do
         expect(res2.from_cache?).to eq(true)
         expect(res2).to be_an_instance_of(HTTP::Session::Response)
         expect(res2.__getobj__).to be_an_instance_of(HTTP::Response)
-        expect(res2.__getobj__.body).to be_an_instance_of(HTTP::Session::Response::CachedBody)
+        expect(res2.__getobj__.body).to be_an_instance_of(HTTP::Session::Response::StringBody)
         expect(res2.request).to be_an_instance_of(HTTP::Session::Request)
         expect(res2.request.__getobj__).to be_an_instance_of(HTTP::Request)
       end
@@ -430,6 +430,40 @@ RSpec.describe HTTP::Session, vcr: true do
         expect {
           described_class.new(cache: true).use(:auto_inflate).freeze
         }.to raise_error(ArgumentError, /is not supported/)
+      end
+
+      it "hsf_auto_inflate" do
+        sub = described_class.new(cache: true).use(hsf_auto_inflate: {br: true}).freeze
+        uri = "https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"
+
+        res = sub.get(uri)
+        expect(res.code).to eq(200)
+        expect(res.body.to_s).to start_with("/*! jQuery v3.6.4 |")
+
+        res = sub.get(uri)
+        expect(res.code).to eq(200)
+        expect(res.from_cache?).to eq(true)
+        expect(res.body.to_s).to start_with("/*! jQuery v3.6.4 |")
+
+        res = sub.get(uri, headers: {"Accept-Encoding" => "gzip"})
+        expect(res.code).to eq(200)
+        expect(res.body.to_s).to start_with("/*! jQuery v3.6.4 |")
+
+        res = sub.get(uri, headers: {"Accept-Encoding" => "gzip"})
+        expect(res.code).to eq(200)
+        # FIXME:
+        # expect(res.from_cache?).to eq(true)
+        expect(res.body.to_s).to start_with("/*! jQuery v3.6.4 |")
+
+        res = sub.get(uri, headers: {"Accept-Encoding" => "br"})
+        expect(res.code).to eq(200)
+        expect(res.body.to_s).to start_with("/*! jQuery v3.6.4 |")
+
+        res = sub.get(uri, headers: {"Accept-Encoding" => "br"})
+        expect(res.code).to eq(200)
+        # FIXME:
+        # expect(res.from_cache?).to eq(true)
+        expect(res.body.to_s).to start_with("/*! jQuery v3.6.4 |")
       end
     end
   end

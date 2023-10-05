@@ -1,6 +1,8 @@
+require "forwardable"
+
 class HTTP::Session
   class Response < SimpleDelegator
-    class CachedBody
+    class StringBody
       extend Forwardable
 
       def_delegator :to_s, :empty?
