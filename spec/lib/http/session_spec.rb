@@ -433,7 +433,7 @@ RSpec.describe HTTP::Session, vcr: true do
       end
 
       it "hsf_auto_inflate" do
-        sub = described_class.new(cache: true).use(hsf_auto_inflate: {br: true}).freeze
+        sub = described_class.new(cache: true).use(:hsf_auto_inflate).freeze
         uri = "https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"
 
         res = sub.get(uri)
@@ -454,6 +454,11 @@ RSpec.describe HTTP::Session, vcr: true do
         # FIXME:
         # expect(res.from_cache?).to eq(true)
         expect(res.body.to_s).to start_with("/*! jQuery v3.6.4 |")
+      end
+
+      it "hsf_auto_inflate - br", skip: (RUBY_ENGINE == "jruby" && "gem 'brotli' not works in JRuby") do
+        sub = described_class.new(cache: true).use(hsf_auto_inflate: {br: true}).freeze
+        uri = "https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"
 
         res = sub.get(uri, headers: {"Accept-Encoding" => "br"})
         expect(res.code).to eq(200)

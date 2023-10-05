@@ -5,9 +5,9 @@ source "https://rubygems.org"
 # Specify your gem's dependencies in http-session.gemspec
 gemspec
 
-# optonal dependencies
+# optional dependencies
 gem "activesupport", "~> 7.0"
-gem "brotli"
+gem "brotli", platforms: :ruby
 
 # rake
 gem "rake", "~> 13.0"

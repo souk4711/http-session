@@ -4,7 +4,7 @@ require "http-session/webmock"
 require "active_support/cache"
 require "active_support/notifications"
 require "active_support/isolated_execution_state"
-require "brotli"
+require "brotli" unless RUBY_ENGINE == "jruby"
 
 RSPEC_ROOT = Pathname.new(__dir__)
 
