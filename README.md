@@ -24,8 +24,8 @@ Or install it yourself as:
 
 ### Shared Cache
 
-A [shared cache] is a cache that stores responses for **reuse by more than one user**; shared
-caches are usually (but not always) deployed as a part of an intermediary.
+A [shared cache] is a cache that stores responses for **reuse by more than one user**; shared caches
+are usually (but not always) deployed as a part of an intermediary. This is used by default.
 
 ```ruby
 http = HTTP.session(cache: {shared: true})
@@ -62,6 +62,9 @@ http = HTTP.session(cache: {private: true})
 
 ### Cache Store
 
+The default store used is ActiveSupport::Cache::MemoryStore that lives on the client instance. You can
+use ths `:store` option to set a custom store, e.g. ActiveSupport::Cache::MemCacheStore.
+
 ```ruby
 store = ActiveSupport::Cache::MemCacheStore.new("localhost", "server-downstairs.localnetwork:8229")
 http = HTTP.session(cache: {store: store})
@@ -71,7 +74,7 @@ http = HTTP.session(cache: {store: store})
   .freeze
 ```
 
-### Features
+### HTTP::Features
 
 * [logging]: Log requests and responses.
 * [instrumentation]: Instrument requests and responses. Expects an ActiveSupport::Notifications-compatible instrumenter.
@@ -106,3 +109,4 @@ Everyone interacting in the HTTP::Session project's codebases, issue trackers, c
 [logging]:https://github.com/httprb/http/wiki/Logging-and-Instrumentation#logging
 [instrumentation]:https://github.com/httprb/http/wiki/Logging-and-Instrumentation#instrumentation
 [auto_inflate]:https://github.com/httprb/http/wiki/Compression#automatic-inflating
+[hsf_auto_inflate]:https://github.com/souk4711/http-session/blob/main/lib/http/session/features/auto_inflate.rb
