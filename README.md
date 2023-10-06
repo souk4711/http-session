@@ -1,6 +1,62 @@
 # HTTP::Session
 
-HTTP::Session - a session abstraction for [http.rb] in order to support cookies and caching.
+HTTP::Session - a session abstraction for [http.rb] in order to support **cookies** and **caching**.
+
+**This takes 1 minute:**
+
+```ruby
+require "active_support/all"
+require "http"
+
+ActiveSupport::Notifications.subscribe('start_request.http') do |name, start, finish, id, payload|
+  pp start: start, req: payload[:request].inspect
+end
+
+http = HTTP
+  .follow
+  .timeout(8)
+  .use(instrumentation: { instrumenter: ActiveSupport::Notifications.instrumenter })
+
+60.times do
+  http.get("https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js", headers: {"Accept-Encoding" => ""})
+end
+```
+
+**This takes 1 second:**
+
+```ruby
+require "active_support/all"
+require "http-session"
+
+ActiveSupport::Notifications.subscribe('start_request.http') do |name, start, finish, id, payload|
+  pp start: start, req: payload[:request].inspect
+end
+
+http = HTTP.session(cache: true)
+  .follow
+  .timeout(8)
+  .use(instrumentation: { instrumenter: ActiveSupport::Notifications.instrumenter })
+
+60.times do
+  http.get("https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js", headers: {"Accept-Encoding" => ""})
+end
+```
+
+When responses can be reused from a cache, taking into account [HTTP RFC 9111] rules for user agents and
+shared caches. The following headers are used to determine whether the response is cacheable or not:
+
+* `Cache-Control` request header
+  * `no-store`
+  * `no-cache`
+* `Cache-Control` response header
+  * `no-store`
+  * `no-cache`
+  * `private`
+  * `public`
+  * `max-age`
+  * `s-maxage`
+* `Etag` & `Last-Modified` response header for conditional requests
+* `Vary` response header for content negotiation
 
 
 ## Installation
@@ -28,7 +84,7 @@ A [shared cache] is a cache that stores responses for **reuse by more than one u
 are usually (but not always) deployed as a part of an intermediary. This is used by default.
 
 ```ruby
-http = HTTP.session(cache: {shared: true})
+http = HTTP.session(cache: true) # or HTTP.session(cache: {shared: true})
   .follow
   .timeout(4)
   .use(hsf_auto_inflate: {br: true})
@@ -62,8 +118,8 @@ http = HTTP.session(cache: {private: true})
 
 ### Cache Store
 
-The default store used is ActiveSupport::Cache::MemoryStore that lives on the client instance. You can
-use ths `:store` option to set a custom store, e.g. ActiveSupport::Cache::MemCacheStore.
+The default cache store is ActiveSupport::Cache::MemoryStore, which resides on the client instance. You
+can use ths `:store` option to set another store, e.g. ActiveSupport::Cache::MemCacheStore.
 
 ```ruby
 store = ActiveSupport::Cache::MemCacheStore.new("localhost", "server-downstairs.localnetwork:8229")
@@ -103,9 +159,10 @@ The gem is available as open source under the terms of the [MIT License](https:/
 Everyone interacting in the HTTP::Session project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/souk4711/http-session/blob/main/CODE_OF_CONDUCT.md).
 
 
+[HTTP RFC 9111]:https://datatracker.ietf.org/doc/html/rfc9111/
+[shared cache]:https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching#shared_cache
+[private cache]:https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching#private_caches
 [http.rb]:https://github.com/httprb/http
-[shared cache]:https://datatracker.ietf.org/doc/html/rfc9111/#section-1
-[private cache]:https://datatracker.ietf.org/doc/html/rfc9111/#section-1
 [logging]:https://github.com/httprb/http/wiki/Logging-and-Instrumentation#logging
 [instrumentation]:https://github.com/httprb/http/wiki/Logging-and-Instrumentation#instrumentation
 [auto_inflate]:https://github.com/httprb/http/wiki/Compression#automatic-inflating
