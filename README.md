@@ -2,6 +2,10 @@
 
 HTTP::Session - a session abstraction for [http.rb] in order to support **cookies** and **caching**.
 
+## Intro
+
+### Cache
+
 **This takes 1 minute:**
 
 ```ruby
@@ -118,8 +122,8 @@ http = HTTP.session(cache: {private: true})
 
 ### Cache Store
 
-The default cache store is ActiveSupport::Cache::MemoryStore, which resides on the client instance. You
-can use ths `:store` option to set another store, e.g. ActiveSupport::Cache::MemCacheStore.
+The default cache store is `ActiveSupport::Cache::MemoryStore`, which resides on the client instance. You
+can use ths `:store` option to set another store, e.g. `ActiveSupport::Cache::MemCacheStore`.
 
 ```ruby
 store = ActiveSupport::Cache::MemCacheStore.new("localhost", "server-downstairs.localnetwork:8229")
@@ -131,6 +135,8 @@ http = HTTP.session(cache: {store: store})
 ```
 
 ### HTTP::Features
+
+The following features can work with `http-session`:
 
 * [logging]: Log requests and responses.
 * [instrumentation]: Instrument requests and responses. Expects an ActiveSupport::Notifications-compatible instrumenter.
