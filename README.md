@@ -20,6 +20,47 @@ Or install it yourself as:
     $ gem install http-session
 
 
+## Usage
+
+### Shared Cache
+
+A [shared cache] is a cache that stores responses for **reuse by more than one user**; shared
+caches are usually (but not always) deployed as a part of an intermediary.
+
+```ruby
+http = HTTP.session(cache: {shared: true})
+  .follow
+  .timeout(4)
+  .use(hsf_auto_inflate: {br: true})
+  .freeze
+
+res = http.get("https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js")
+p "cache-status: #{res.headers["x-httprb-cache-status"]}" # => miss
+
+res = http.get("https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js")
+p "cache-status: #{res.headers["x-httprb-cache-status"]}" # => hit
+
+res = http.get("https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js", headers: {"cache-control" => "no-cache"})
+p "cache-status: #{res.headers["x-httprb-cache-status"]}" # => revalidated
+
+res = http.get("https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js", headers: {"cache-control" => "no-store"})
+p "cache-status: #{res.headers["x-httprb-cache-status"]}" # => uncacheable
+```
+
+### Private Cache
+
+A [private cache], in contrast, is **dedicated to a single user**; often, they are deployed as a
+component of a user agent.
+
+```ruby
+http = HTTP.session(cache: {private: true})
+  .follow
+  .timeout(4)
+  .use(hsf_auto_inflate: {br: true})
+  .freeze
+```
+
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
@@ -40,3 +81,7 @@ The gem is available as open source under the terms of the [MIT License](https:/
 ## Code of Conduct
 
 Everyone interacting in the HTTP::Session project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/souk4711/http-session/blob/main/CODE_OF_CONDUCT.md).
+
+
+[shared cache]:https://datatracker.ietf.org/doc/html/rfc9111/#section-1
+[private cache]:https://datatracker.ietf.org/doc/html/rfc9111/#section-1
