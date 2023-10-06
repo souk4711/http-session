@@ -80,7 +80,7 @@ Or install it yourself as:
     $ gem install http-session
 
 
-## Usage
+## Reference
 
 ### Shared Cache
 
@@ -141,6 +141,7 @@ The following features can work with `http-session`:
 * [logging]: Log requests and responses.
 * [instrumentation]: Instrument requests and responses. Expects an ActiveSupport::Notifications-compatible instrumenter.
 * [hsf_auto_inflate]: Simlar to [auto_inflate], used for automatically decompressing the response body.
+* etc.
 
 
 ## Development
