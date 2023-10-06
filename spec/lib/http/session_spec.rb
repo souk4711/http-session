@@ -91,11 +91,13 @@ RSpec.describe HTTP::Session, vcr: true do
       it "can use cache across requests" do
         res1 = subject.get(httpbin("/cache"))
         expect(res1).to be_cacheable_using_etag
+        expect(res1.headers["X-Httprb-Cache-Status"]).to eq("MISS")
         expect(subject.cache.store.instance_variable_get("@data").size).to eq(1)
 
         res2 = subject.get(httpbin("/cache"))
         expect(res2.code).to eq(200)
         expect(res2.from_cache?).to eq(true)
+        expect(res2.headers["X-Httprb-Cache-Status"]).to eq("REVALIDATED")
         expect(res2.request.headers["If-None-Match"]).to eq(res1.etag)
         expect(res2.request.headers["If-Modified-Since"]).to eq(res1.last_modified)
       end
@@ -105,11 +107,13 @@ RSpec.describe HTTP::Session, vcr: true do
 
         res1 = sub.get(httpbin("/cache"))
         expect(res1).to be_cacheable_using_etag
+        expect(res1.headers["X-Httprb-Cache-Status"]).to eq(nil)
         expect(sub.cache.store).to eq(nil)
 
         res2 = sub.get(httpbin("/cache"))
         expect(res2.code).to eq(200)
         expect(res2.from_cache?).to eq(false)
+        expect(res2.headers["X-Httprb-Cache-Status"]).to eq(nil)
         expect(res2.request.headers["If-None-Match"]).to eq(nil)
         expect(res2.request.headers["If-Modified-Since"]).to eq(nil)
       end
@@ -130,7 +134,7 @@ RSpec.describe HTTP::Session, vcr: true do
       end
 
       it "variant format" do
-        uri = "https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"
+        uri = jsdelivr("/npm/jquery@3.6.4/dist/jquery.min.js")
 
         res = subject.get(uri)
         expect(res.code).to eq(200)
@@ -163,6 +167,7 @@ RSpec.describe HTTP::Session, vcr: true do
         )
         expect(res1).to be_cacheable_using_maxage
         expect(res1.from_cache?).to eq(false)
+        expect(res1.headers["X-Httprb-Cache-Status"]).to eq("MISS")
         expect(subject.cache.store.instance_variable_get("@data").size).to eq(1)
 
         res2 = subject.get(
@@ -171,6 +176,7 @@ RSpec.describe HTTP::Session, vcr: true do
         )
         expect(res2.code).to eq(200)
         expect(res2.from_cache?).to eq(true)
+        expect(res2.headers["X-Httprb-Cache-Status"]).to eq("HIT")
       end
 
       it "Cache-Control: s-max-age" do
@@ -183,6 +189,7 @@ RSpec.describe HTTP::Session, vcr: true do
         )
         expect(res1).to be_cacheable_using_maxage
         expect(res1.from_cache?).to eq(false)
+        expect(res1.headers["X-Httprb-Cache-Status"]).to eq("MISS")
         expect(subject.cache.store.instance_variable_get("@data").size).to eq(1)
 
         res2 = subject.get(
@@ -191,6 +198,7 @@ RSpec.describe HTTP::Session, vcr: true do
         )
         expect(res2.code).to eq(200)
         expect(res2.from_cache?).to eq(true)
+        expect(res2.headers["X-Httprb-Cache-Status"]).to eq("HIT")
       end
 
       it "Cache-Control: no-cache" do
@@ -203,6 +211,7 @@ RSpec.describe HTTP::Session, vcr: true do
         )
         expect(res1).to be_cacheable_using_maxage
         expect(res1.from_cache?).to eq(false)
+        expect(res1.headers["X-Httprb-Cache-Status"]).to eq("MISS")
         expect(subject.cache.store.instance_variable_get("@data").size).to eq(1)
 
         res2 = subject.get(
@@ -211,6 +220,7 @@ RSpec.describe HTTP::Session, vcr: true do
         )
         expect(res2.code).to eq(200)
         expect(res2.from_cache?).to eq(false)
+        expect(res2.headers["X-Httprb-Cache-Status"]).to eq("EXPIRED")
       end
 
       it "Cache-Control: no-store" do
@@ -223,6 +233,7 @@ RSpec.describe HTTP::Session, vcr: true do
         )
         expect(res1).to be_cacheable_using_maxage
         expect(res1.from_cache?).to eq(false)
+        expect(res1.headers["X-Httprb-Cache-Status"]).to eq("MISS")
         expect(subject.cache.store.instance_variable_get("@data").size).to eq(0)
       end
 
@@ -236,6 +247,7 @@ RSpec.describe HTTP::Session, vcr: true do
         )
         expect(res1).to be_cacheable_using_maxage
         expect(res1.from_cache?).to eq(false)
+        expect(res1.headers["X-Httprb-Cache-Status"]).to eq("MISS")
         expect(subject.cache.store.instance_variable_get("@data").size).to eq(0)
       end
 
@@ -250,6 +262,7 @@ RSpec.describe HTTP::Session, vcr: true do
           )
           expect(res1).to be_cacheable_using_maxage
           expect(res1.from_cache?).to eq(false)
+          expect(res1.headers["X-Httprb-Cache-Status"]).to eq("MISS")
           expect(subject.cache.store.instance_variable_get("@data").size).to eq(1)
 
           res2 = subject.get(
@@ -258,6 +271,7 @@ RSpec.describe HTTP::Session, vcr: true do
           )
           expect(res2.code).to eq(200)
           expect(res2.from_cache?).to eq(false)
+          expect(res2.headers["X-Httprb-Cache-Status"]).to eq("MISS")
         end
 
         it "use '' to ignore content negotiation" do
@@ -271,6 +285,7 @@ RSpec.describe HTTP::Session, vcr: true do
           )
           expect(res1).to be_cacheable_using_maxage
           expect(res1.from_cache?).to eq(false)
+          expect(res1.headers["X-Httprb-Cache-Status"]).to eq("MISS")
           expect(subject.cache.store.instance_variable_get("@data").size).to eq(1)
 
           res2 = subject.get(
@@ -280,6 +295,7 @@ RSpec.describe HTTP::Session, vcr: true do
           )
           expect(res2.code).to eq(200)
           expect(res2.from_cache?).to eq(true)
+          expect(res2.headers["X-Httprb-Cache-Status"]).to eq("HIT")
         end
 
         it "headers matched" do
@@ -293,6 +309,7 @@ RSpec.describe HTTP::Session, vcr: true do
           )
           expect(res1).to be_cacheable_using_maxage
           expect(res1.from_cache?).to eq(false)
+          expect(res1.headers["X-Httprb-Cache-Status"]).to eq("MISS")
           expect(subject.cache.store.instance_variable_get("@data").size).to eq(1)
 
           res2 = subject.get(
@@ -302,6 +319,7 @@ RSpec.describe HTTP::Session, vcr: true do
           )
           expect(res2.code).to eq(200)
           expect(res2.from_cache?).to eq(true)
+          expect(res2.headers["X-Httprb-Cache-Status"]).to eq("HIT")
         end
 
         it "headers unmatched" do
@@ -315,6 +333,7 @@ RSpec.describe HTTP::Session, vcr: true do
           )
           expect(res1).to be_cacheable_using_maxage
           expect(res1.from_cache?).to eq(false)
+          expect(res1.headers["X-Httprb-Cache-Status"]).to eq("MISS")
           expect(subject.cache.store.instance_variable_get("@data").size).to eq(1)
 
           res2 = subject.get(
@@ -324,6 +343,7 @@ RSpec.describe HTTP::Session, vcr: true do
           )
           expect(res2.code).to eq(200)
           expect(res2.from_cache?).to eq(false)
+          expect(res2.headers["X-Httprb-Cache-Status"]).to eq("MISS")
         end
       end
 
@@ -364,6 +384,7 @@ RSpec.describe HTTP::Session, vcr: true do
         )
         expect(res1).to be_cacheable_using_maxage
         expect(res1.from_cache?).to eq(false)
+        expect(res1.headers["X-Httprb-Cache-Status"]).to eq("MISS")
         expect(subject.cache.store.instance_variable_get("@data").size).to eq(1)
 
         res2 = subject.get(
@@ -373,6 +394,7 @@ RSpec.describe HTTP::Session, vcr: true do
         )
         expect(res2.code).to eq(200)
         expect(res2.from_cache?).to eq(false)
+        expect(res2.headers["X-Httprb-Cache-Status"]).to eq("EXPIRED")
       end
 
       it "Cache-Control: no-store" do
@@ -386,6 +408,7 @@ RSpec.describe HTTP::Session, vcr: true do
         )
         expect(res1).to be_cacheable_using_maxage
         expect(res1.from_cache?).to eq(false)
+        expect(res1.headers["X-Httprb-Cache-Status"]).to eq("UNCACHEABLE")
         expect(subject.cache.store.instance_variable_get("@data").size).to eq(0)
       end
     end
@@ -434,7 +457,7 @@ RSpec.describe HTTP::Session, vcr: true do
 
       it "hsf_auto_inflate" do
         sub = described_class.new(cache: true).use(:hsf_auto_inflate).freeze
-        uri = "https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"
+        uri = jsdelivr("/npm/jquery@3.6.4/dist/jquery.min.js")
 
         res = sub.get(uri)
         expect(res.code).to eq(200)
@@ -457,7 +480,7 @@ RSpec.describe HTTP::Session, vcr: true do
 
       it "hsf_auto_inflate - br", skip: (RUBY_ENGINE == "jruby" && "gem 'brotli' not works in JRuby") do
         sub = described_class.new(cache: true).use(hsf_auto_inflate: {br: true}).freeze
-        uri = "https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"
+        uri = jsdelivr("/npm/jquery@3.6.4/dist/jquery.min.js")
 
         res = sub.get(uri, headers: {"Accept-Encoding" => "br"})
         expect(res.code).to eq(200)
