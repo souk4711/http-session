@@ -70,7 +70,7 @@ class HTTP::Session
       end
 
       def wrap_response(res, opts)
-        opts.features.inject(res) do |response, (_name, feature)|
+        opts.features.to_a.reverse.to_h.inject(res) do |response, (_name, feature)|
           response = feature.wrap_response(response)
           HTTP::Session::Response.new(response)
         end

@@ -491,6 +491,40 @@ RSpec.describe HTTP::Session, vcr: true do
         expect(res.from_cache?).to eq(true)
         expect(res.body.to_s).to start_with("/*! jQuery v3.6.4 |")
       end
+
+      it "handle features use rack-like orders" do
+        cls = Class.new(HTTP::Feature) do
+          @orders = []
+
+          def self.orders
+            @orders
+          end
+
+          def initialize(id:)
+            @id = id
+          end
+
+          def wrap_request(req)
+            self.class.orders << "req.#{@id}"
+            req
+          end
+
+          def wrap_response(res)
+            self.class.orders << "res.#{@id}"
+            res
+          end
+
+          HTTP::Options.register_feature(:feature_orders_1, self)
+          HTTP::Options.register_feature(:feature_orders_2, self)
+        end
+
+        sub = described_class.new(cache: true).use(
+          feature_orders_1: {id: 1},
+          feature_orders_2: {id: 2}
+        )
+        sub.get(httpbin("/cache"))
+        expect(cls.orders).to eq(["req.1", "req.2", "res.2", "res.1"])
+      end
     end
   end
 
