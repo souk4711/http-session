@@ -4,6 +4,8 @@ class HTTP::Session
   module Features
     class AutoInflate < HTTP::Feature
       def initialize(br: false)
+        load_dependencies if br
+
         @supported_encoding = Set.new(%w[deflate gzip x-gzip])
         @supported_encoding.add("br") if br
         @supported_encoding.freeze
@@ -33,6 +35,13 @@ class HTTP::Session
       end
 
       private
+
+      def load_dependencies
+        require "brotli"
+      rescue LoadError
+        raise LoadError,
+          "Specified 'brotli' for inflate, but the gem is not loaded. Add `gem 'brotli'` to your Gemfile."
+      end
 
       def brotli_inflate(body)
         Brotli.inflate(body)

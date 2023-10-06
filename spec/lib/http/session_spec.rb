@@ -436,6 +436,8 @@ RSpec.describe HTTP::Session, vcr: true do
         ActiveSupport::Notifications.subscribe("request.http") do |name, start, finish, id, payload|
           res_arr << payload[:response]
         end
+
+        require "active_support/isolated_execution_state"
         sub = described_class.new(cache: true).use(instrumentation: {instrumenter: ActiveSupport::Notifications.instrumenter}).freeze
 
         res1 = sub.get(httpbin("/cache"))

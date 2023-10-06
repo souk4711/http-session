@@ -67,9 +67,16 @@ class HTTP::Session
       private
 
       def lookup_store(store)
+        load_dependencies
+        ActiveSupport::Cache.lookup_store(store)
+      end
+
+      def load_dependencies
         require "active_support/cache"
         require "active_support/notifications"
-        ActiveSupport::Cache.lookup_store(store)
+      rescue LoadError
+        raise LoadError,
+          "Specified 'active_support' for caching, but the gem is not loaded. Add `gem 'active_support'` to your Gemfile."
       end
     end
   end
