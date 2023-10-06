@@ -32,17 +32,11 @@ class HTTP::Session
     #   @return [Array<Response>] a list of response objects holding the history of the redirection
     attr_accessor :history
 
-    # @!attribute [r] now
-    #   @return [Time] the time when the Response object was instantiated
-    attr_reader :now
-
     # Returns a new instance of Response.
     def initialize(*args)
       super
 
-      @now = Time.now
       _hs_ensure_header_date
-
       @history = []
     end
 
@@ -161,6 +155,13 @@ class HTTP::Session
     # in the response (i.e., no date parsing / conversion is performed).
     def last_modified
       headers[HTTP::Headers::LAST_MODIFIED]
+    end
+
+    # The current time.
+    #
+    # @return [Time]
+    def now
+      Time.now
     end
 
     private
