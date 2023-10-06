@@ -1,6 +1,6 @@
 # HTTP::Session
 
-HTTP::Session - a session abstraction for http.rb in order to support cookies and caching.
+HTTP::Session - a session abstraction for [http.rb] in order to support cookies and caching.
 
 
 ## Installation
@@ -60,6 +60,23 @@ http = HTTP.session(cache: {private: true})
   .freeze
 ```
 
+### Cache Store
+
+```ruby
+store = ActiveSupport::Cache::MemCacheStore.new("localhost", "server-downstairs.localnetwork:8229")
+http = HTTP.session(cache: {store: store})
+  .follow
+  .timeout(4)
+  .use(hsf_auto_inflate: {br: true})
+  .freeze
+```
+
+### Features
+
+* [logging]: Log requests and responses.
+* [instrumentation]: Instrument requests and responses. Expects an ActiveSupport::Notifications-compatible instrumenter.
+* [hsf_auto_inflate]: Simlar to [auto_inflate], used for automatically decompressing the response body.
+
 
 ## Development
 
@@ -83,5 +100,9 @@ The gem is available as open source under the terms of the [MIT License](https:/
 Everyone interacting in the HTTP::Session project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/souk4711/http-session/blob/main/CODE_OF_CONDUCT.md).
 
 
+[http.rb]:https://github.com/httprb/http
 [shared cache]:https://datatracker.ietf.org/doc/html/rfc9111/#section-1
 [private cache]:https://datatracker.ietf.org/doc/html/rfc9111/#section-1
+[logging]:https://github.com/httprb/http/wiki/Logging-and-Instrumentation#logging
+[instrumentation]:https://github.com/httprb/http/wiki/Logging-and-Instrumentation#instrumentation
+[auto_inflate]:https://github.com/httprb/http/wiki/Compression#automatic-inflating
