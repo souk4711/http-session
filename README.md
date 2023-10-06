@@ -143,6 +143,12 @@ The following features can work with `http-session`:
 * [hsf_auto_inflate]: Simlar to [auto_inflate], used for automatically decompressing the response body.
 * etc.
 
+### Intergate with WebMock
+
+```ruby
+require "http-session/webmock"
+```
+
 
 ## Development
 
