@@ -2,11 +2,20 @@
 
 HTTP::Session - a session abstraction for [http.rb] in order to support **cookies** and **caching**.
 
-## Intro
+
+## Quickstart
+
+### Install
+
+Add this line to your application's Gemfile:
+
+```ruby
+gem 'http-session'
+```
 
 ### Cache
 
-**This takes 1 minute:**
+**This takes 60 times to deliver the request to the origin server:**
 
 ```ruby
 require "active_support/all"
@@ -26,7 +35,7 @@ http = HTTP
 end
 ```
 
-**This takes 1 second:**
+**This only takes 1 time to deliver the request to the origin server:**
 
 ```ruby
 require "active_support/all"
@@ -40,6 +49,7 @@ http = HTTP.session(cache: true)
   .follow
   .timeout(8)
   .use(instrumentation: { instrumenter: ActiveSupport::Notifications.instrumenter })
+  .freeze
 
 60.times do
   http.get("https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js", headers: {"Accept-Encoding" => ""})
@@ -63,29 +73,14 @@ shared caches. The following headers are used to determine whether the response 
 * `Vary` response header for content negotiation
 
 
-## Installation
-
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'http-session'
-```
-
-And then execute:
-
-    $ bundle install
-
-Or install it yourself as:
-
-    $ gem install http-session
-
-
 ## Reference
 
-### Shared Cache
+### Cache
+
+#### Shared Cache
 
 A [shared cache] is a cache that stores responses for **reuse by more than one user**; shared caches
-are usually (but not always) deployed as a part of an intermediary. This is used by default.
+are usually (but not always) deployed as a part of an intermediary. **This is used by default**.
 
 ```ruby
 http = HTTP.session(cache: true) # or HTTP.session(cache: {shared: true})
@@ -107,7 +102,7 @@ res = http.get("https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js", h
 p "cache-status: #{res.headers["x-httprb-cache-status"]}" # => uncacheable
 ```
 
-### Private Cache
+#### Private Cache
 
 A [private cache], in contrast, is **dedicated to a single user**; often, they are deployed as a
 component of a user agent.
@@ -120,7 +115,7 @@ http = HTTP.session(cache: {private: true})
   .freeze
 ```
 
-### Cache Store
+#### Cache Store
 
 The default cache store is `ActiveSupport::Cache::MemoryStore`, which resides on the client instance. You
 can use ths `:store` option to set another store, e.g. `ActiveSupport::Cache::MemCacheStore`.
