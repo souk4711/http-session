@@ -10,7 +10,7 @@ HTTP::Session - a session abstraction for [http.rb] in order to support **cookie
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'http-session'
+gem 'ruby-http-session', require: "http-session"
 ```
 
 ### Cookies

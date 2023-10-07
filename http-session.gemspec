@@ -3,7 +3,7 @@
 require_relative "lib/http/session/version"
 
 Gem::Specification.new do |spec|
-  spec.name = "http-session"
+  spec.name = "ruby-http-session"
   spec.version = HTTP::Session::VERSION
   spec.authors = ["John Doe"]
   spec.email = ["johndoe@example.com"]

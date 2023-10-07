@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    http-session (1.0.0)
+    ruby-http-session (1.0.1)
       http (~> 5.1, >= 5.1.1)
 
 GEM
@@ -162,12 +162,12 @@ PLATFORMS
 DEPENDENCIES
   activesupport (~> 7.0)
   brotli
-  http-session!
   overcommit (~> 0.59)
   rake (~> 13.0)
   redcarpet (~> 3.5)
   rspec (~> 3.0)
   rubocop (~> 1.29)
+  ruby-http-session!
   solargraph
   standard (~> 1.3)
   timecop
