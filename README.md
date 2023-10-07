@@ -1,6 +1,6 @@
 # HTTP::Session
 
-HTTP::Session - a session abstraction for [http.rb] in order to support **cookies** and **cache**.
+HTTP::Session - a session abstraction for [http.rb] in order to support **cookies** and **caching**.
 
 
 ## Quickstart
@@ -30,11 +30,10 @@ pp JSON.parse(r.body)["cookies"]  # -> {"mycookies"=>"abc"}
 r = http.get("https://httpbin.org/cookies")
 pp JSON.parse(r.body)["cookies"]  # -> {"mycookies"=>"abc"}
 
-http.jar.map { |c| pp [c.domain, c.path, c.to_s] }
-# => ["httpbin.org", "/", "mycookies=abc"]
+http.jar.map { |c| pp [c.domain, c.path, c.to_s] }  # => ["httpbin.org", "/", "mycookies=abc"]
 ```
 
-### Cache
+### Caching
 
 When responses can be reused from a cache, taking into account [HTTP RFC 9111] rules for user agents and
 shared caches. The following headers are used to determine whether the response is cacheable or not:
@@ -96,7 +95,7 @@ end
 
 ## Reference
 
-### Cache
+### Caching
 
 #### Shared Cache
 
