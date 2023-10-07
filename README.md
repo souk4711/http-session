@@ -22,6 +22,7 @@ require "http-session"
 
 http = HTTP.session(cookies: true)
   .follow
+  .timeout(8)
   .freeze
 
 r = http.get("https://httpbin.org/cookies/set/mycookies/abc")
@@ -81,6 +82,9 @@ end
 
 A [shared cache] is a cache that stores responses for **reuse by more than one user**; shared caches
 are usually (but not always) deployed as a part of an intermediary. **This is used by default**.
+
+**Note**: Responses for requests with **Authorization** header fields will not be stored in a shared
+cache unless explicitly allowed. Read [rfc9111#section-3.5] for more.
 
 ```ruby
 http = HTTP.session(cache: true) # or HTTP.session(cache: {shared: true})
@@ -237,6 +241,7 @@ Everyone interacting in the HTTP::Session project's codebases, issue trackers, c
 
 
 [HTTP RFC 9111]:https://datatracker.ietf.org/doc/html/rfc9111/
+[rfc9111#section-3.5]:https://datatracker.ietf.org/doc/html/rfc9111/#section-3.5
 [shared cache]:https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching#shared_cache
 [private cache]:https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching#private_caches
 [http.rb]:https://github.com/httprb/http
