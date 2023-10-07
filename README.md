@@ -1,6 +1,6 @@
 # HTTP::Session
 
-HTTP::Session - a session abstraction for [http.rb] in order to support **cookies** and **caching**.
+HTTP::Session - a session abstraction for [http.rb] in order to support **cookies** and **cache**.
 
 
 ## Quickstart
@@ -13,7 +13,44 @@ Add this line to your application's Gemfile:
 gem 'http-session'
 ```
 
+### Cookies
+
+The cookies are set automatically each time a request is made:
+
+```ruby
+require "http"
+
+http = HTTP.session(cookies: true)
+  .follow
+  .freeze
+
+r = http.get("https://httpbin.org/cookies/set/mycookies/abc")
+pp JSON.parse(r.body)["cookies"]  # -> {"mycookies"=>"abc"}
+
+r = http.get("https://httpbin.org/cookies")
+pp JSON.parse(r.body)["cookies"]  # -> {"mycookies"=>"abc"}
+
+http.jar.map { |c| pp [c.domain, c.path, c.to_s] }
+# => ["httpbin.org", "/", "mycookies=abc"]
+```
+
 ### Cache
+
+When responses can be reused from a cache, taking into account [HTTP RFC 9111] rules for user agents and
+shared caches. The following headers are used to determine whether the response is cacheable or not:
+
+* `Cache-Control` request header
+  * `no-store`
+  * `no-cache`
+* `Cache-Control` response header
+  * `no-store`
+  * `no-cache`
+  * `private`
+  * `public`
+  * `max-age`
+  * `s-maxage`
+* `Etag` & `Last-Modified` response header for conditional requests
+* `Vary` response header for content negotiation
 
 **This takes 60 times to deliver the request to the origin server:**
 
@@ -55,22 +92,6 @@ http = HTTP.session(cache: true)
   http.get("https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js", headers: {"Accept-Encoding" => ""})
 end
 ```
-
-When responses can be reused from a cache, taking into account [HTTP RFC 9111] rules for user agents and
-shared caches. The following headers are used to determine whether the response is cacheable or not:
-
-* `Cache-Control` request header
-  * `no-store`
-  * `no-cache`
-* `Cache-Control` response header
-  * `no-store`
-  * `no-cache`
-  * `private`
-  * `public`
-  * `max-age`
-  * `s-maxage`
-* `Etag` & `Last-Modified` response header for conditional requests
-* `Vary` response header for content negotiation
 
 
 ## Reference

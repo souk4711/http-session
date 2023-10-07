@@ -32,6 +32,10 @@ class HTTP::Session
   #   @return [Cache]
   attr_reader :cache
 
+  # @!attribute [r] jar
+  #   @return [HTTP::CookieJar]
+  attr_reader :jar
+
   # @param [Hash] default_options
   # @option default_options [Boolean, Hash] :cookies session cookies option
   # @option default_options [Boolean, Hash] :cache session cache option
