@@ -19,7 +19,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Fri, 06 Oct 2023 04:09:03 GMT
+      - Fri, 06 Oct 2023 17:42:53 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -29,9 +29,9 @@ http_interactions:
       Server:
       - gunicorn/19.9.0
       Last-Modified:
-      - Fri, 06 Oct 2023 04:09:03 GMT
+      - Fri, 06 Oct 2023 17:42:53 GMT
       Etag:
-      - f80dc0ed749147a7af35fa2aaec1dc3f
+      - 867204bba6e448fea202682a72fe2bd3
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Allow-Credentials:
@@ -39,7 +39,7 @@ http_interactions:
     body:
       encoding: UTF-8
       string: "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\",
-        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-651f885f-3e66ce8472ac1232757286a3\"\n
+        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6520471d-4b4ead967afa823d16fd52c6\"\n
         \ }, \n  \"origin\": \"121.34.202.128\", \n  \"url\": \"https://httpbin.org/cache\"\n}\n"
-  recorded_at: Fri, 06 Oct 2023 04:09:03 GMT
+  recorded_at: Fri, 06 Oct 2023 17:42:53 GMT
 recorded_with: VCR 6.2.0

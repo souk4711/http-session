@@ -494,38 +494,43 @@ RSpec.describe HTTP::Session, vcr: true do
         expect(res.body.to_s).to start_with("/*! jQuery v3.6.4 |")
       end
 
-      it "handle features use rack-like orders" do
-        cls = Class.new(HTTP::Feature) do
-          @orders = []
+      it "handle responses in the reverse order from the requests" do
+        feature_class_order =
+          Class.new(HTTP::Feature) do
+            @order = []
 
-          def self.orders
-            @orders
+            class << self
+              attr_reader :order
+            end
+
+            def initialize(id:)
+              @id = id
+            end
+
+            def wrap_request(req)
+              self.class.order << "request.#{@id}"
+              req
+            end
+
+            def wrap_response(res)
+              self.class.order << "response.#{@id}"
+              res
+            end
           end
-
-          def initialize(id:)
-            @id = id
-          end
-
-          def wrap_request(req)
-            self.class.orders << "req.#{@id}"
-            req
-          end
-
-          def wrap_response(res)
-            self.class.orders << "res.#{@id}"
-            res
-          end
-
-          HTTP::Options.register_feature(:feature_orders_1, self)
-          HTTP::Options.register_feature(:feature_orders_2, self)
-        end
+        feature_instance_a = feature_class_order.new(id: "a")
+        feature_instance_b = feature_class_order.new(id: "b")
+        feature_instance_c = feature_class_order.new(id: "c")
 
         sub = described_class.new(cache: true).use(
-          feature_orders_1: {id: 1},
-          feature_orders_2: {id: 2}
-        )
+          test_feature_a: feature_instance_a,
+          test_feature_b: feature_instance_b,
+          test_feature_c: feature_instance_c
+        ).freeze
         sub.get(httpbin("/cache"))
-        expect(cls.orders).to eq(["req.1", "req.2", "res.2", "res.1"])
+
+        expect(feature_class_order.order).to eq(
+          ["request.a", "request.b", "request.c", "response.c", "response.b", "response.a"]
+        )
       end
     end
   end
