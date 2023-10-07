@@ -18,7 +18,7 @@ gem 'http-session'
 The cookies are set automatically each time a request is made:
 
 ```ruby
-require "http"
+require "http-session"
 
 http = HTTP.session(cookies: true)
   .follow
