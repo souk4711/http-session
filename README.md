@@ -56,16 +56,10 @@ shared caches. The following headers are used to determine whether the response 
 
 ```ruby
 require "http-session"
-require "active_support/all"
-
-ActiveSupport::Notifications.subscribe('start_request.http') do |name, start, finish, id, payload|
-  pp start: start, req: payload[:request].inspect
-end
 
 http = HTTP.session(cache: true)
   .follow
   .timeout(8)
-  .use(instrumentation: { instrumenter: ActiveSupport::Notifications.instrumenter })
   .freeze
 
 60.times do
