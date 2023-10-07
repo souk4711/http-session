@@ -153,11 +153,11 @@ http = HTTP.session(cache: {store: store})
 
 The following value is used in the `X-Httprb-Cache-Status` response header:
 
-* HIT: found in cache
-* REVALIDATED: found in cache but stale, revalidated success
-* EXPIRED: found in cache but stale, revalidated failure, served from the origin server
-* MISS: not found in cache, served from the origin server
-* UNCACHEABLE: the request can not use cached response
+* **HIT**: found in cache
+* **REVALIDATED**: found in cache but stale, revalidated success
+* **EXPIRED**: found in cache but stale, revalidated failure, served from the origin server
+* **MISS**: not found in cache, served from the origin server
+* **UNCACHEABLE**: the request can not use cached response
 
 ### HTTP::Features
 
