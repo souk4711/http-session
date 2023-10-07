@@ -76,10 +76,11 @@ RSpec.describe HTTP::Session, vcr: true do
       end
     end
 
-    matcher :be_cacheable_using_maxage do |expected|
+    matcher :be_cacheable_using_maxage do |expected = {}|
       match do |actual|
+        max_age = expected[:max_age] || 60
         expect(actual.code).to eq(200)
-        expect(actual.max_age(shared: true)).to eq(60)
+        expect(actual.max_age(shared: true)).to eq(max_age)
         expect(actual.age).to eq(0)
         expect(actual.fresh?(shared: true)).to eq(true)
       end
@@ -153,6 +154,33 @@ RSpec.describe HTTP::Session, vcr: true do
         expect(res.code).to eq(200)
         expect(res.from_cache?).to eq(true)
         expect(Zlib::Inflate.new(32 + Zlib::MAX_WBITS).inflate(res.body)).to start_with("/*! jQuery v3.6.4 |")
+      end
+
+      it "thread safe" do
+        res = subject.get(httpbin("/cache/0"))
+        Timecop.freeze(res.date)
+
+        thrs = []
+        8.times do |i|
+          thrs << Thread.new do
+            res = subject.get(httpbin("/cache/#{60 * i + 60}"))
+            expect(res).to be_cacheable_using_maxage(max_age: 60 * i + 60)
+            expect(res.headers["X-Httprb-Cache-Status"]).to eq("MISS")
+          end
+        end
+        thrs.each(&:join)
+        expect(subject.cache.store.instance_variable_get("@data").size).to eq(8)
+
+        thrs = []
+        8.times do |i|
+          thrs << Thread.new do
+            res = subject.get(httpbin("/cache/#{60 * i + 60}"))
+            expect(res.code).to eq(200)
+            expect(res.from_cache?).to eq(true)
+            expect(res.headers["X-Httprb-Cache-Status"]).to eq("HIT")
+          end
+        end
+        thrs.each(&:join)
       end
     end
 
@@ -557,6 +585,23 @@ RSpec.describe HTTP::Session, vcr: true do
         res = sub.get(httpbin("/anything"))
         expect(res.code).to eq(200)
         expect(res.request.headers["Cookie"]).to eq(nil)
+      end
+
+      it "thread safe" do
+        sub = described_class.new(cookies: true).follow.freeze
+
+        thrs = []
+        8.times do |i|
+          thrs << Thread.new do
+            res = sub.get(httpbin("/cookies/set/#{i}/#{i * 2}"))
+            expect(res.code).to eq(200)
+          end
+        end
+        thrs.each(&:join)
+
+        res = sub.get(httpbin("/anything"))
+        expect(res.code).to eq(200)
+        expect(res.request.headers["Cookie"]).to eq("0=0; 1=2; 2=4; 3=6; 4=8; 5=10; 6=12; 7=14")
       end
     end
 
