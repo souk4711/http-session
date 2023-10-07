@@ -15,7 +15,7 @@ gem 'ruby-http-session', require: "http-session"
 
 ### Cookies
 
-The cookies are set automatically each time a request is made:
+The cookies are automatically set each time a request is made.
 
 ```ruby
 require "http-session"
@@ -138,7 +138,7 @@ The following value is used in the `X-Httprb-Cache-Status` response header:
 
 #### logging
 
-Log requests and responses:
+Log requests and responses.
 
 ```ruby
 require "http-session"
@@ -160,7 +160,7 @@ http.get("https://httpbin.org/get")
 
 #### instrumentation
 
-Instrument requests and responses. Expects an ActiveSupport::Notifications-compatible instrumenter:
+Instrument requests and responses. Expects an ActiveSupport::Notifications-compatible instrumenter.
 
 ```ruby
 require "http-session"
