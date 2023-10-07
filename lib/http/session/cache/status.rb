@@ -8,7 +8,6 @@ class HTTP::Session
       EXPIRED     = "EXPIRED"     # found in cache but stale, revalidated failure, served from the origin server
       MISS        = "MISS"        # not found in cache, served from the origin server
       UNCACHEABLE = "UNCACHEABLE" # the request can not use cached response
-      DISABLED    = "DISABLED"    # HTTP::Session::Cache feature not enabled
       # rubocop:enable Layout/ExtraSpacing
 
       class << self

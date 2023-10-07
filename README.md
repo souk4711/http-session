@@ -149,9 +149,19 @@ http = HTTP.session(cache: {store: store})
   .freeze
 ```
 
+#### Cache Status
+
+The following value is used in the `X-Httprb-Cache-Status` response header:
+
+* HIT: found in cache
+* REVALIDATED: found in cache but stale, revalidated success
+* EXPIRED: found in cache but stale, revalidated failure, served from the origin server
+* MISS: not found in cache, served from the origin server
+* UNCACHEABLE: the request can not use cached response
+
 ### HTTP::Features
 
-The following features can work with `http-session`:
+The following features are available with `http-session`:
 
 * [logging]: Log requests and responses.
 * [instrumentation]: Instrument requests and responses. Expects an ActiveSupport::Notifications-compatible instrumenter.
