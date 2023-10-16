@@ -111,7 +111,7 @@ class HTTP::Session
       entry = @session.cache_mgr.read(req)
       if entry.nil?
         _hs_cache_fetch(req, opts)
-      elsif entry.response.fresh?(shared: @session.cache_mgr.shared?) &&
+      elsif entry.response.fresh?(shared: @session.cache_mgr.shared_cache?) &&
           !entry.response.no_cache? &&
           !req.no_cache?
         _hs_cache_reuse(req, opts, entry)
@@ -166,7 +166,7 @@ class HTTP::Session
 
     # Store the response to cache.
     def _hs_cache_entry_store(req, res)
-      if res.cacheable?(shared: @session.cache_mgr.shared?, req: req)
+      if res.cacheable?(shared: @session.cache_mgr.shared_cache?, req: req)
         @session.cache_mgr.write(req, res)
       end
     end

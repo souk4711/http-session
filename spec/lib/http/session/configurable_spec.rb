@@ -86,8 +86,7 @@ RSpec.describe HTTP::Session::Configurable do
     expect(opts.cache.private_cache?).to eq(true)
     expect(opts.cache.shared_cache?).to eq(false)
 
-    cache = sub.cache_mgr
-    expect(cache.private?).to eq(true)
-    expect(cache.shared?).to eq(false)
+    expect(sub.cache_mgr.private_cache?).to eq(true)
+    expect(sub.cache_mgr.shared_cache?).to eq(false)
   end
 end

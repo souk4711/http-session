@@ -1,11 +1,16 @@
 class HTTP::Session
   class Cookies
+    extend Forwardable
     include MonitorMixin
+
+    # @!method enabled?
+    #   True when it is a shared cache.
+    #   @return [Boolean]
+    def_delegator :@options, :enabled?
 
     # @param [Options::CookiesOption] options
     def initialize(options)
       super()
-
       @options = options
     end
 
@@ -28,11 +33,6 @@ class HTTP::Session
       end
     end
 
-    # True if it is enabled.
-    def enabled?
-      @options.enabled?
-    end
-
     private
 
     def read_cookies
@@ -50,6 +50,7 @@ class HTTP::Session
       end
     end
 
+    # Only available when #enbled? has the value true.
     def jar
       @options.jar
     end

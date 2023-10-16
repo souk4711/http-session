@@ -1,11 +1,26 @@
 class HTTP::Session
   class Cache
+    extend Forwardable
     include MonitorMixin
+
+    # @!method enabled?
+    #   True when it is a shared cache.
+    #   @return [Boolean]
+    def_delegator :@options, :enabled?
+
+    # @!method shared_cache?
+    #   True when it is a shared cache.
+    #   @return [Boolean]
+    def_delegator :@options, :shared_cache?
+
+    # @!method private_cache?
+    #   True when it is a private cache.
+    #   @return [Boolean]
+    def_delegator :@options, :private_cache?
 
     # @param [Options::CacheOption] options
     def initialize(options)
       super()
-
       @options = options
     end
 
@@ -35,21 +50,6 @@ class HTTP::Session
         entries << entry
         write_entries(key, entries)
       end
-    end
-
-    # True if it is enabled.
-    def enabled?
-      @options.enabled?
-    end
-
-    # True when it is a shared cache.
-    def shared?
-      @options.shared_cache?
-    end
-
-    # True when it is a private cache.
-    def private?
-      @options.private_cache?
     end
 
     private
@@ -92,6 +92,7 @@ class HTTP::Session
       Digest::SHA256.hexdigest(req.uri)
     end
 
+    # Only available when #enbled? has the value true.
     def store
       @options.store
     end
