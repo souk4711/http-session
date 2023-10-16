@@ -30,8 +30,6 @@ pp JSON.parse(r.body)["cookies"]  # -> {"mycookies"=>"abc"}
 
 r = http.get("https://httpbin.org/cookies")
 pp JSON.parse(r.body)["cookies"]  # -> {"mycookies"=>"abc"}
-
-http.jar.map { |c| pp [c.domain, c.path, c.to_s] }  # => ["httpbin.org", "/", "mycookies=abc"]
 ```
 
 ### Caching

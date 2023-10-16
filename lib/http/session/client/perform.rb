@@ -40,6 +40,12 @@ class HTTP::Session
         raise
       end
 
+      def close
+        @connection&.close
+        @connection = nil
+        @state = :clean
+      end
+
       private
 
       def verify_connection!(uri)
@@ -48,12 +54,6 @@ class HTTP::Session
         end
         return close if @connection && (!@connection.keep_alive? || @connection.expired?)
         close if @state == :dirty
-      end
-
-      def close
-        @connection&.close
-        @connection = nil
-        @state = :clean
       end
 
       def build_response(req, options)

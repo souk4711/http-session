@@ -1,5 +1,3 @@
-require "forwardable"
-
 class HTTP::Session
   class Response < SimpleDelegator
     class StringBody

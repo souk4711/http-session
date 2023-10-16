@@ -1,4 +1,8 @@
 RSpec.describe HTTP::Session, vcr: true do
+  def cache_store(sub)
+    sub.cache_mgr.__send__(:store)
+  end
+
   describe "#request" do
     let(:subject) { described_class.new.freeze }
 
@@ -93,7 +97,7 @@ RSpec.describe HTTP::Session, vcr: true do
         res1 = subject.get(httpbin("/cache"))
         expect(res1).to be_cacheable_using_etag
         expect(res1.headers["X-Httprb-Cache-Status"]).to eq("MISS")
-        expect(subject.cache.store.instance_variable_get("@data").size).to eq(1)
+        expect(cache_store(subject).instance_variable_get("@data").size).to eq(1)
 
         res2 = subject.get(httpbin("/cache"))
         expect(res2.code).to eq(200)
@@ -109,7 +113,7 @@ RSpec.describe HTTP::Session, vcr: true do
         res1 = sub.get(httpbin("/cache"))
         expect(res1).to be_cacheable_using_etag
         expect(res1.headers["X-Httprb-Cache-Status"]).to eq(nil)
-        expect(sub.cache.store).to eq(nil)
+        expect(cache_store(sub)).to eq(nil)
 
         res2 = sub.get(httpbin("/cache"))
         expect(res2.code).to eq(200)
@@ -122,7 +126,7 @@ RSpec.describe HTTP::Session, vcr: true do
       it "return a cached HTTP::Session::Response" do
         res1 = subject.get(httpbin("/cache"))
         expect(res1).to be_cacheable_using_etag
-        expect(subject.cache.store.instance_variable_get("@data").size).to eq(1)
+        expect(cache_store(subject).instance_variable_get("@data").size).to eq(1)
 
         res2 = subject.get(httpbin("/cache"))
         expect(res2.code).to eq(200)
@@ -169,7 +173,7 @@ RSpec.describe HTTP::Session, vcr: true do
           end
         end
         thrs.each(&:join)
-        expect(subject.cache.store.instance_variable_get("@data").size).to eq(8)
+        expect(cache_store(subject).instance_variable_get("@data").size).to eq(8)
 
         thrs = []
         8.times do |i|
@@ -196,7 +200,7 @@ RSpec.describe HTTP::Session, vcr: true do
         expect(res1).to be_cacheable_using_maxage
         expect(res1.from_cache?).to eq(false)
         expect(res1.headers["X-Httprb-Cache-Status"]).to eq("MISS")
-        expect(subject.cache.store.instance_variable_get("@data").size).to eq(1)
+        expect(cache_store(subject).instance_variable_get("@data").size).to eq(1)
 
         res2 = subject.get(
           httpbin("/response-headers"),
@@ -218,7 +222,7 @@ RSpec.describe HTTP::Session, vcr: true do
         expect(res1).to be_cacheable_using_maxage
         expect(res1.from_cache?).to eq(false)
         expect(res1.headers["X-Httprb-Cache-Status"]).to eq("MISS")
-        expect(subject.cache.store.instance_variable_get("@data").size).to eq(1)
+        expect(cache_store(subject).instance_variable_get("@data").size).to eq(1)
 
         res2 = subject.get(
           httpbin("/response-headers"),
@@ -240,7 +244,7 @@ RSpec.describe HTTP::Session, vcr: true do
         expect(res1).to be_cacheable_using_maxage
         expect(res1.from_cache?).to eq(false)
         expect(res1.headers["X-Httprb-Cache-Status"]).to eq("MISS")
-        expect(subject.cache.store.instance_variable_get("@data").size).to eq(1)
+        expect(cache_store(subject).instance_variable_get("@data").size).to eq(1)
 
         res2 = subject.get(
           httpbin("/response-headers"),
@@ -262,7 +266,7 @@ RSpec.describe HTTP::Session, vcr: true do
         expect(res1).to be_cacheable_using_maxage
         expect(res1.from_cache?).to eq(false)
         expect(res1.headers["X-Httprb-Cache-Status"]).to eq("MISS")
-        expect(subject.cache.store.instance_variable_get("@data").size).to eq(0)
+        expect(cache_store(subject).instance_variable_get("@data").size).to eq(0)
       end
 
       it "Cache-Control: private" do
@@ -276,7 +280,7 @@ RSpec.describe HTTP::Session, vcr: true do
         expect(res1).to be_cacheable_using_maxage
         expect(res1.from_cache?).to eq(false)
         expect(res1.headers["X-Httprb-Cache-Status"]).to eq("MISS")
-        expect(subject.cache.store.instance_variable_get("@data").size).to eq(0)
+        expect(cache_store(subject).instance_variable_get("@data").size).to eq(0)
       end
 
       describe "Vary" do
@@ -291,7 +295,7 @@ RSpec.describe HTTP::Session, vcr: true do
           expect(res1).to be_cacheable_using_maxage
           expect(res1.from_cache?).to eq(false)
           expect(res1.headers["X-Httprb-Cache-Status"]).to eq("MISS")
-          expect(subject.cache.store.instance_variable_get("@data").size).to eq(1)
+          expect(cache_store(subject).instance_variable_get("@data").size).to eq(1)
 
           res2 = subject.get(
             httpbin("/response-headers"),
@@ -314,7 +318,7 @@ RSpec.describe HTTP::Session, vcr: true do
           expect(res1).to be_cacheable_using_maxage
           expect(res1.from_cache?).to eq(false)
           expect(res1.headers["X-Httprb-Cache-Status"]).to eq("MISS")
-          expect(subject.cache.store.instance_variable_get("@data").size).to eq(1)
+          expect(cache_store(subject).instance_variable_get("@data").size).to eq(1)
 
           res2 = subject.get(
             httpbin("/response-headers"),
@@ -338,7 +342,7 @@ RSpec.describe HTTP::Session, vcr: true do
           expect(res1).to be_cacheable_using_maxage
           expect(res1.from_cache?).to eq(false)
           expect(res1.headers["X-Httprb-Cache-Status"]).to eq("MISS")
-          expect(subject.cache.store.instance_variable_get("@data").size).to eq(1)
+          expect(cache_store(subject).instance_variable_get("@data").size).to eq(1)
 
           res2 = subject.get(
             httpbin("/response-headers"),
@@ -362,7 +366,7 @@ RSpec.describe HTTP::Session, vcr: true do
           expect(res1).to be_cacheable_using_maxage
           expect(res1.from_cache?).to eq(false)
           expect(res1.headers["X-Httprb-Cache-Status"]).to eq("MISS")
-          expect(subject.cache.store.instance_variable_get("@data").size).to eq(1)
+          expect(cache_store(subject).instance_variable_get("@data").size).to eq(1)
 
           res2 = subject.get(
             httpbin("/response-headers"),
@@ -387,7 +391,7 @@ RSpec.describe HTTP::Session, vcr: true do
           expect(res1).to be_cacheable_using_maxage
           expect(res1.from_cache?).to eq(false)
           expect(res1.headers["Age"]).to eq(nil)
-          expect(subject.cache.store.instance_variable_get("@data").size).to eq(1)
+          expect(cache_store(subject).instance_variable_get("@data").size).to eq(1)
 
           Timecop.freeze(res1.date + 2)
           res2 = subject.get(
@@ -413,7 +417,7 @@ RSpec.describe HTTP::Session, vcr: true do
         expect(res1).to be_cacheable_using_maxage
         expect(res1.from_cache?).to eq(false)
         expect(res1.headers["X-Httprb-Cache-Status"]).to eq("MISS")
-        expect(subject.cache.store.instance_variable_get("@data").size).to eq(1)
+        expect(cache_store(subject).instance_variable_get("@data").size).to eq(1)
 
         res2 = subject.get(
           httpbin("/response-headers"),
@@ -437,7 +441,7 @@ RSpec.describe HTTP::Session, vcr: true do
         expect(res1).to be_cacheable_using_maxage
         expect(res1.from_cache?).to eq(false)
         expect(res1.headers["X-Httprb-Cache-Status"]).to eq("UNCACHEABLE")
-        expect(subject.cache.store.instance_variable_get("@data").size).to eq(0)
+        expect(cache_store(subject).instance_variable_get("@data").size).to eq(0)
       end
     end
 
@@ -448,13 +452,15 @@ RSpec.describe HTTP::Session, vcr: true do
 
         res1 = sub.get(httpbin("/cache"))
         expect(res1).to be_cacheable_using_etag
-        expect(sub.cache.store.instance_variable_get("@data").size).to eq(1)
+        expect(cache_store(sub).instance_variable_get("@data").size).to eq(1)
+
         out1 = (io.rewind && io.read).tap { io.truncate(0) }
         expect(out1.scan("< 200 OK").count).to eq(1)
 
         res2 = sub.get(httpbin("/cache"))
         expect(res2.code).to eq(200)
         expect(res2.from_cache?).to eq(true)
+
         out2 = (io.rewind && io.read).tap { io.truncate(0) }
         expect(out2.scan("< 200 OK").count).to eq(1)
       end
@@ -470,8 +476,8 @@ RSpec.describe HTTP::Session, vcr: true do
 
         res1 = sub.get(httpbin("/cache"))
         expect(res1).to be_cacheable_using_etag
-        expect(sub.cache.store.instance_variable_get("@data").size).to eq(1)
         expect(res_arr).to eql([res1])
+        expect(cache_store(sub).instance_variable_get("@data").size).to eq(1)
 
         res2 = sub.get(httpbin("/cache"))
         expect(res2.code).to eq(200)

@@ -12,7 +12,7 @@ class HTTP::Session
     # Read an entry from cache.
     #
     # @param [Request] req
-    # @return [Entry]
+    # @return [nil, Entry]
     def read(req)
       synchronize do
         key = cache_key_for(req)
@@ -37,6 +37,11 @@ class HTTP::Session
       end
     end
 
+    # True if it is enabled.
+    def enabled?
+      @options.enabled?
+    end
+
     # True when it is a shared cache.
     def shared?
       @options.shared_cache?
@@ -45,11 +50,6 @@ class HTTP::Session
     # True when it is a private cache.
     def private?
       @options.private_cache?
-    end
-
-    # @!visibility private
-    def store
-      @options.store
     end
 
     private
@@ -90,6 +90,10 @@ class HTTP::Session
 
     def cache_key_for(req)
       Digest::SHA256.hexdigest(req.uri)
+    end
+
+    def store
+      @options.store
     end
   end
 end

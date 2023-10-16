@@ -135,7 +135,7 @@ class HTTP::Session
     private
 
     # :nodoc:
-    def branch(default_options)
+    def branch(_default_options)
       raise FrozenError, "can't modify frozen #{self.class.name}" if frozen?
       self
     end

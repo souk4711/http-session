@@ -1,5 +1,3 @@
-require "set"
-
 class HTTP::Session
   module Features
     class AutoInflate < HTTP::Feature

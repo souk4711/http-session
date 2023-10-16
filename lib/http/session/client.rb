@@ -14,11 +14,23 @@ class HTTP::Session
     # @param [Hash] opts
     # @return [Response]
     def request(verb, uri, opts)
-      data = @session.make_http_request_data
+      _hs_request(verb, uri, opts).tap do |res|
+        _hs_cookies_save(res)
+      end
+    end
+
+    private
+
+    # @param verb
+    # @param uri
+    # @param [Hash] opts
+    # @return [Response]
+    def _hs_request(verb, uri, opts)
+      cookies = _hs_cookies_load
       hist = []
 
       opts = @default_options.merge(opts)
-      opts = _hs_handle_http_request_options_cookies(opts, data[:cookies])
+      opts = _hs_handle_http_request_options_cookies(opts, cookies)
       opts = _hs_handle_http_request_options_follow(opts, hist)
 
       req = build_request(verb, uri, opts)
@@ -31,18 +43,6 @@ class HTTP::Session
       end.tap do |res|
         res.history = hist
       end
-    end
-
-    private
-
-    # Make an HTTP request.
-    #
-    # @param [Request] req
-    # @param [HTTP::Options] opts
-    # @return [Response]
-    def perform(req, opts)
-      req = wrap_request(req, opts)
-      wrap_response(_hs_perform(req, opts), opts)
     end
 
     # Add session cookie to the request's :cookies.
@@ -69,9 +69,31 @@ class HTTP::Session
       end
     end
 
+    # Load cookies.
+    def _hs_cookies_load
+      return unless @session.cookies_mgr.enabled?
+      @session.cookies_mgr.read
+    end
+
+    # Save cookies.
+    def _hs_cookies_save(res)
+      return unless @session.cookies_mgr.enabled?
+      @session.cookies_mgr.write(res)
+    end
+
+    # Make an HTTP request.
+    #
+    # @param [Request] req
+    # @param [HTTP::Options] opts
+    # @return [Response]
+    def perform(req, opts)
+      req = wrap_request(req, opts)
+      wrap_response(_hs_perform(req, opts), opts)
+    end
+
     # Make an HTTP request using cache.
     def _hs_perform(req, opts)
-      if @session.default_options.cache.enabled?
+      if @session.cache_mgr.enabled?
         req.cacheable? ? _hs_cache_lookup(req, opts) : _hs_cache_pass(req, opts)
       else
         _hs_forward(req, opts)
@@ -86,10 +108,10 @@ class HTTP::Session
     #     entry with the backend using conditional GET.
     #   * When no matching cache entry is found, trigger miss processing.
     def _hs_cache_lookup(req, opts)
-      entry = @session.cache.read(req)
+      entry = @session.cache_mgr.read(req)
       if entry.nil?
         _hs_cache_fetch(req, opts)
-      elsif entry.response.fresh?(shared: @session.cache.shared?) &&
+      elsif entry.response.fresh?(shared: @session.cache_mgr.shared?) &&
           !entry.response.no_cache? &&
           !req.no_cache?
         _hs_cache_reuse(req, opts, entry)
@@ -144,8 +166,8 @@ class HTTP::Session
 
     # Store the response to cache.
     def _hs_cache_entry_store(req, res)
-      if res.cacheable?(shared: @session.cache.shared?, req: req)
-        @session.cache.write(req, res)
+      if res.cacheable?(shared: @session.cache_mgr.shared?, req: req)
+        @session.cache_mgr.write(req, res)
       end
     end
 
