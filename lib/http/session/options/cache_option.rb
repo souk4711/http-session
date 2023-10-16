@@ -1,51 +1,40 @@
 class HTTP::Session
   class Options
     class CacheOption
+      include Optionable
+
       # @!attribute [r] store
       #   @return [ActiveSupport::Cache::Store]
       attr_reader :store
 
-      # @param [Hash] options
-      # @option options [Boolean] :private set true if it is a private cache
-      # @option options [Boolean] :shared set true if it is a shared cache
-      # @option options [ActiveSupport::Cache::Store] :store
-      def initialize(options)
-        options =
-          case options
-          when nil, false then {enabled: false}
-          when true then {enabled: true}
-          else options
-          end
-
-        # Enabled / Disabled
-        @enabled = options.fetch(:enabled, true)
+      # @param [Hash] opts
+      # @option opts [Boolean] :private set true if it is a private cache
+      # @option opts [Boolean] :shared set true if it is a shared cache
+      # @option opts [ActiveSupport::Cache::Store] :store
+      def initialize(opts)
+        initialize_options(opts)
 
         # Shared Cache / Private Cache
         @shared =
-          if options.key?(:shared)
-            raise ArgumentError, ":shared and :private cannot be used at the same time" if options.key?(:private)
-            !!options[:shared]
-          elsif options.key?(:private)
-            !options[:private]
+          if @options.key?(:shared)
+            raise ArgumentError, ":shared and :private cannot be used at the same time" if @options.key?(:private)
+            !!@options[:shared]
+          elsif @options.key?(:private)
+            !@options[:private]
           else
             true
           end
 
         # Cache Store
         @store =
-          if @enabled
-            store = options[:store]
+          if enabled?
+            store = @options[:store]
             if store.respond_to?(:read) && store.respond_to?(:write)
               store
             else
               lookup_store(store)
             end
           end
-      end
-
-      # Indicates whether or not the session cache feature is enabled.
-      def enabled?
-        @enabled
       end
 
       # True when it is a shared cache.

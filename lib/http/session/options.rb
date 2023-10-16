@@ -8,6 +8,10 @@ class HTTP::Session
     #   @return [CacheOption]
     attr_reader :cache
 
+    # @!attribute [r] persistent
+    #   @return [PersistentOption]
+    attr_reader :persistent
+
     # @!attribute [r] http
     #   @return [HTTP::Options]
     attr_reader :http
@@ -16,6 +20,7 @@ class HTTP::Session
     def initialize(options)
       @cookies = HTTP::Session::Options::CookiesOption.new(options.fetch(:cookies, false))
       @cache = HTTP::Session::Options::CacheOption.new(options.fetch(:cache, false))
+      @persistent = HTTP::Session::Options::PersistentOption.new(options.fetch(:persistent, false))
       @http = HTTP::Options.new(
         options.fetch(:http, {}).slice(
           :cookies,

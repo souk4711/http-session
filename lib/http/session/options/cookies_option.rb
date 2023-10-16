@@ -1,29 +1,21 @@
 class HTTP::Session
   class Options
     class CookiesOption
+      include Optionable
+
       # @!attribute [r] jar
       #   @return [HTTP::CookieJar]
       attr_reader :jar
 
-      # @param [Hash] options
-      def initialize(options)
-        options =
-          case options
-          when nil, false then {enabled: false}
-          when true then {enabled: true}
-          else options
-          end
-
-        # Enabled / Disabled
-        @enabled = options.fetch(:enabled, true)
+      # @param [Hash] opts
+      def initialize(opts)
+        initialize_options(opts)
 
         # CookieJar
-        @jar = lookup_jar if @enabled
-      end
-
-      # Indicates whether or not the session cookie feature is enabled.
-      def enabled?
-        @enabled
+        @jar =
+          if enabled?
+            lookup_jar
+          end
       end
 
       private
