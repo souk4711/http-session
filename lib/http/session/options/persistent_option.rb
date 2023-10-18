@@ -13,7 +13,15 @@ class HTTP::Session
         initialize_options(opts)
 
         @pools =
-          @options.fetch(:pools, {"*" => true})
+          normalize_pools(@options.fetch(:pools, {"*" => true}))
+      end
+
+      private
+
+      def normalize_pools(pools)
+        pools.transform_keys do |k|
+          (k == "*") ? k : HTTP::URI.parse(k).origin
+        end
       end
     end
   end

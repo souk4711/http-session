@@ -840,6 +840,13 @@ RSpec.describe HTTP::Session, vcr: true do
         expect(res.headers["Connection"]).to eq("keep-alive")
 
         sub = described_class.new(persistent: {
+          pools: {httpbin("/abc") => {}}
+        }).freeze
+        res = sub.get(httpbin("/anything"))
+        expect(res.code).to eq(200)
+        expect(res.headers["Connection"]).to eq("keep-alive")
+
+        sub = described_class.new(persistent: {
           pools: {
             HTTP::URI.parse(httpbin("/")).origin => false,
             "*" => true
