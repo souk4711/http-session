@@ -4,7 +4,7 @@ class HTTP::Session
     include MonitorMixin
 
     # @!method enabled?
-    #   True when it is a shared cache.
+    #   True when it is enabled.
     #   @return [Boolean]
     def_delegator :@options, :enabled?
 

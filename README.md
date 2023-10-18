@@ -65,6 +65,21 @@ http = HTTP.session(cache: true)
 end
 ```
 
+### Thread Safe
+
+The following **HTTP::Session** methods are thread-safe:
+
+* **head**
+* **get**
+* **post**
+* **put**
+* **delete**
+* **trace**
+* **options**
+* **connect**
+* **patch**
+* **request**
+
 
 ## Reference
 
