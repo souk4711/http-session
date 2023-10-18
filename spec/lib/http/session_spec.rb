@@ -880,6 +880,16 @@ RSpec.describe HTTP::Session, vcr: true do
         expect(res.headers["Connection"]).to eq("keep-alive")
       end
 
+      it "multiple requests using same connection" do
+        sub = described_class.new(persistent: true).freeze
+
+        expect do
+          16.times do |i|
+            sub.get(httpbin("/anything"), params: {i => i})
+          end
+        end.to_not raise_error
+      end
+
       it "thread safe" do
         sub = described_class.new(persistent: {
           pools: {

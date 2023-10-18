@@ -173,7 +173,9 @@ class HTTP::Session
 
     # Delegate the request to the backend and create the response.
     def _hs_forward(req, opts)
-      httprb_perform(req, opts)
+      res = httprb_perform(req, opts)
+      res.flush if default_options.persistent?
+      res
     end
   end
 end

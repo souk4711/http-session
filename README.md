@@ -76,7 +76,7 @@ http = HTTP.session(persistent: true)
   .freeze
 
 http.get("https://httpbin.org/get") # create a persistent connection
-http.get("https://httpbin.org/get") # reuse connection
+http.get("https://httpbin.org/get") # reuse previous connection
 ```
 
 ### Thread Safe
