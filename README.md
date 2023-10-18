@@ -15,7 +15,8 @@ gem 'ruby-http-session', require: "http-session"
 
 ### Cookies
 
-The cookies are automatically set each time a request is made.
+Use `cookies: true` to enable this feature. Once enabled, the cookies are
+automatically set each time a request is made.
 
 ```ruby
 require "http-session"
@@ -34,6 +35,52 @@ pp JSON.parse(r.body)["cookies"]  # -> {"mycookies"=>"abc"}
 
 ### Caching
 
+Use `cache: true` to enable this feature. Once enabled, the `cache-control`
+will be used to determine whether the response is cacheable or not.
+
+```ruby
+require "http-session"
+
+http = HTTP.session(cache: true)
+  .follow
+  .timeout(8)
+  .freeze
+
+# takes only 1 time to deliver the request to the origin server
+60.times do
+  http.get("https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js")
+end
+```
+
+### Persistent Connections (Keep-Alive)
+
+Use `persistent: true` to enable this feature. Once enabled, the connection pools
+will be used to manage persistent connections.
+
+```ruby
+require "http-session"
+
+http = HTTP.session(persistent: true)
+  .follow
+  .timeout(8)
+  .freeze
+
+http.get("https://httpbin.org/get") # create a persistent connection#1
+http.get("https://httpbin.org/get") # reuse connection#1
+
+http.get("https://example.org")     # create a persistent connection#2
+http.get("https://example.org")     # reuse connection#2
+```
+
+### Thread Safe
+
+It works by default.
+
+
+## Reference
+
+### Caching
+
 When responses can be reused from a cache, taking into account [HTTP RFC 9111] rules for user agents and
 shared caches. The following headers are used to determine whether the response is cacheable or not:
 
@@ -49,55 +96,6 @@ shared caches. The following headers are used to determine whether the response 
   * `s-maxage`
 * `Etag` & `Last-Modified` response header for conditional requests
 * `Vary` response header for content negotiation
-
-**This only takes 1 time to deliver the request to the origin server:**
-
-```ruby
-require "http-session"
-
-http = HTTP.session(cache: true)
-  .follow
-  .timeout(8)
-  .freeze
-
-60.times do
-  http.get("https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js")
-end
-```
-
-### Persistent Connections (Keep-Alive)
-
-```ruby
-require "http-session"
-
-http = HTTP.session(persistent: true)
-  .follow
-  .timeout(8)
-  .freeze
-
-http.get("https://httpbin.org/get") # create a persistent connection#1
-http.get("https://httpbin.org/get") # reuse connection#1
-```
-
-### Thread Safe
-
-The following **HTTP::Session** methods are thread-safe:
-
-* **head**
-* **get**
-* **post**
-* **put**
-* **delete**
-* **trace**
-* **options**
-* **connect**
-* **patch**
-* **request**
-
-
-## Reference
-
-### Caching
 
 #### Shared Cache
 
@@ -184,6 +182,21 @@ http.get("https://httpbin.org/get")
 #   -> create a connection pool with maxsize 5, and return a persistent connection
 http.get("https://github.com/")
 ```
+
+### Thread Safe
+
+The following **HTTP::Session** methods are thread-safe:
+
+* **head**
+* **get**
+* **post**
+* **put**
+* **delete**
+* **trace**
+* **options**
+* **connect**
+* **patch**
+* **request**
 
 ### HTTP::Features
 
