@@ -75,8 +75,8 @@ http = HTTP.session(persistent: true)
   .timeout(8)
   .freeze
 
-http.get("https://httpbin.org/get") # create a persistent connection
-http.get("https://httpbin.org/get") # reuse previous connection
+http.get("https://httpbin.org/get") # create a persistent connection#1
+http.get("https://httpbin.org/get") # reuse connection#1
 ```
 
 ### Thread Safe
@@ -114,16 +114,16 @@ http = HTTP.session(cache: true) # or HTTP.session(cache: {shared: true})
   .freeze
 
 res = http.get("https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js")
-p "cache-status: #{res.headers["x-httprb-cache-status"]}" # => miss
+pp "Cache-Status: #{res.headers["X-Httprb-Cache-Status"]}" # -> "Cache-Status: MISS"
 
 res = http.get("https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js")
-p "cache-status: #{res.headers["x-httprb-cache-status"]}" # => hit
+pp "Cache-Status: #{res.headers["X-Httprb-Cache-Status"]}" # -> "Cache-Status: HIT"
 
-res = http.get("https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js", headers: {"cache-control" => "no-cache"})
-p "cache-status: #{res.headers["x-httprb-cache-status"]}" # => revalidated
+res = http.get("https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js", headers: {"Cache-Control" => "no-cache"})
+pp "Cache-Status: #{res.headers["X-Httprb-Cache-Status"]}" # -> "Cache-Status: REVALIDATED"
 
-res = http.get("https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js", headers: {"cache-control" => "no-store"})
-p "cache-status: #{res.headers["x-httprb-cache-status"]}" # => uncacheable
+res = http.get("https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js", headers: {"Cache-Control" => "no-store"})
+pp "Cache-Status: #{res.headers["X-Httprb-Cache-Status"]}" # -> "Cache-Status: UNCACHEABLE"
 ```
 
 #### Private Cache
@@ -160,6 +160,30 @@ The following value is used in the `X-Httprb-Cache-Status` response header:
 * **EXPIRED**: found in cache but stale, revalidated failure, served from the origin server
 * **MISS**: not found in cache, served from the origin server
 * **UNCACHEABLE**: the request can not use cached response
+
+### Persistent Connections (Keep-Alive)
+
+```ruby
+http = HTTP.session(persistent: {
+  pools: {
+    "https://example.org" => false,
+    "https://httpbin.org" => {maxsize: 2},
+    "*" => true
+  }
+}).freeze
+
+# match host: "https://example.org"
+#   -> create a non-persistent connection
+http.get("https://example.org")
+
+# match host: "https://httpbin.org"
+#   -> create a connection pool with maxsize 2, and return a persistent connection
+http.get("https://httpbin.org/get")
+
+# match host: "*"
+#   -> create a connection pool with maxsize 5, and return a persistent connection
+http.get("https://github.com/")
+```
 
 ### HTTP::Features
 
