@@ -788,4 +788,100 @@ RSpec.describe HTTP::Session, vcr: true do
       end
     end
   end
+
+  describe "persistent" do
+    describe "Basic" do
+      it "opts - pools - host" do
+        sub = described_class.new(persistent: {
+          pools: {HTTP::URI.parse(httpbin("/")).origin => nil}
+        }).freeze
+        res = sub.get(httpbin("/anything"))
+        expect(res.code).to eq(200)
+        expect(res.headers["Connection"]).to eq("close")
+
+        sub = described_class.new(persistent: {
+          pools: {HTTP::URI.parse(httpbin("/")).origin => false}
+        }).freeze
+        res = sub.get(httpbin("/anything"))
+        expect(res.code).to eq(200)
+        expect(res.headers["Connection"]).to eq("close")
+
+        sub = described_class.new(persistent: {
+          pools: {HTTP::URI.parse(httpbin("/")).origin => true}
+        }).freeze
+        res = sub.get(httpbin("/anything"))
+        expect(res.code).to eq(200)
+        expect(res.headers["Connection"]).to eq("keep-alive")
+
+        sub = described_class.new(persistent: {
+          pools: {HTTP::URI.parse(httpbin("/")).origin => {}}
+        }).freeze
+        res = sub.get(httpbin("/anything"))
+        expect(res.code).to eq(200)
+        expect(res.headers["Connection"]).to eq("keep-alive")
+
+        sub = described_class.new(persistent: {
+          pools: {
+            HTTP::URI.parse(httpbin("/")).origin => false,
+            "*" => true
+          }
+        }).freeze
+        res = sub.get(httpbin("/anything"))
+        expect(res.code).to eq(200)
+        expect(res.headers["Connection"]).to eq("close")
+      end
+
+      it "opts - pools - *" do
+        sub = described_class.new(persistent: {
+          pools: {"*" => nil}
+        }).freeze
+        res = sub.get(httpbin("/anything"))
+        expect(res.code).to eq(200)
+        expect(res.headers["Connection"]).to eq("close")
+
+        sub = described_class.new(persistent: {
+          pools: {"*" => false}
+        }).freeze
+        res = sub.get(httpbin("/anything"))
+        expect(res.code).to eq(200)
+        expect(res.headers["Connection"]).to eq("close")
+
+        sub = described_class.new(persistent: {
+          pools: {"*" => true}
+        }).freeze
+        res = sub.get(httpbin("/anything"))
+        expect(res.code).to eq(200)
+        expect(res.headers["Connection"]).to eq("keep-alive")
+
+        sub = described_class.new(persistent: {
+          pools: {"*" => {}}
+        }).freeze
+        res = sub.get(httpbin("/anything"))
+        expect(res.code).to eq(200)
+        expect(res.headers["Connection"]).to eq("keep-alive")
+      end
+
+      it "thread safe" do
+        sub = described_class.new(persistent: {
+          pools: {
+            HTTP::URI.parse(httpbin("/")).origin => {maxsize: 2}
+          }
+        }).freeze
+
+        thrs = []
+        8.times do |i|
+          thrs << Thread.new do
+            res = sub.get(httpbin("/anything"), params: {i => i})
+            expect(res.code).to eq(200)
+            expect(res.headers["Connection"]).to eq("keep-alive")
+            expect(JSON.parse(res.body)["args"]).to eq({i.to_s => i.to_s})
+          end
+        end
+        thrs.each(&:join)
+      end
+    end
+
+    describe "Redirect" do
+    end
+  end
 end

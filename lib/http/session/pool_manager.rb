@@ -40,14 +40,23 @@ class HTTP::Session
     end
 
     def connection_pool_usable?(origin)
-      @options.connection.key?(origin)
+      opts = connection_pool_options_from_origin(origin)
+      return false if opts.nil?
+      return false if opts == false
+      true
+    end
+
+    def connection_pool_options_from_origin(origin)
+      return @options.pools[origin] if @options.pools.key?(origin)
+      @options.pools["*"]
     end
 
     def connection_pool_from_origin(origin)
       synchronize do
         return @pools[origin] if @pools.key?(origin)
 
-        opts = @options.connection.fetch(origin) || {}
+        opts = connection_pool_options_from_origin(origin).dup
+        opts = {} if opts == true
         opts[:host] = origin
         @pools[origin] = ConnectionPool.new(opts, &->(http_opts) {
           make_conn(http_opts)

@@ -3,17 +3,17 @@ class HTTP::Session
     class PersistentOption
       include Optionable
 
-      # @!attribute [r] connection
+      # @!attribute [r] pools
       #   @return [Hash]
-      attr_reader :connection
+      attr_reader :pools
 
       # @param [Hash] opts
-      # @option opts [Hash] :connection parameters used to create ConnectionPool
+      # @option opts [Hash] :pools parameters used to create ConnectionPool
       def initialize(opts)
         initialize_options(opts)
 
-        @connection =
-          @options.fetch(:connection, {})
+        @pools =
+          @options.fetch(:pools, {})
       end
     end
   end
