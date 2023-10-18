@@ -65,6 +65,20 @@ http = HTTP.session(cache: true)
 end
 ```
 
+### Persistent Connections (Keep-Alive)
+
+```ruby
+require "http-session"
+
+http = HTTP.session(persistent: true)
+  .follow
+  .timeout(8)
+  .freeze
+
+http.get("https://httpbin.org/get") # create a persistent connection
+http.get("https://httpbin.org/get") # reuse connection
+```
+
 ### Thread Safe
 
 The following **HTTP::Session** methods are thread-safe:

@@ -1,0 +1,83 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://httpbin.org/anything
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Connection:
+      - close
+      Host:
+      - httpbin.org
+      User-Agent:
+      - http.rb/5.1.1
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 18 Oct 2023 15:06:25 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '323'
+      Connection:
+      - close
+      Server:
+      - gunicorn/19.9.0
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Credentials:
+      - 'true'
+    body:
+      encoding: UTF-8
+      string: "{\n  \"args\": {}, \n  \"data\": \"\", \n  \"files\": {}, \n  \"form\":
+        {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"User-Agent\":
+        \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-652ff471-3acc5d663c3da2193cbc580f\"\n
+        \ }, \n  \"json\": null, \n  \"method\": \"GET\", \n  \"origin\": \"121.35.185.75\",
+        \n  \"url\": \"https://httpbin.org/anything\"\n}\n"
+  recorded_at: Wed, 18 Oct 2023 15:06:25 GMT
+- request:
+    method: get
+    uri: https://httpbin.org/anything
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Connection:
+      - close
+      Host:
+      - httpbin.org
+      User-Agent:
+      - http.rb/5.1.1
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 18 Oct 2023 15:06:26 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '323'
+      Connection:
+      - close
+      Server:
+      - gunicorn/19.9.0
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Credentials:
+      - 'true'
+    body:
+      encoding: UTF-8
+      string: "{\n  \"args\": {}, \n  \"data\": \"\", \n  \"files\": {}, \n  \"form\":
+        {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"User-Agent\":
+        \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-652ff472-6803710d56e193635012b0c0\"\n
+        \ }, \n  \"json\": null, \n  \"method\": \"GET\", \n  \"origin\": \"121.35.185.75\",
+        \n  \"url\": \"https://httpbin.org/anything\"\n}\n"
+  recorded_at: Wed, 18 Oct 2023 15:06:26 GMT
+recorded_with: VCR 6.2.0

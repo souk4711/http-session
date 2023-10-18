@@ -13,7 +13,7 @@ class HTTP::Session
         initialize_options(opts)
 
         @pools =
-          @options.fetch(:pools, {})
+          @options.fetch(:pools, {"*" => true})
       end
     end
   end

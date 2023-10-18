@@ -791,6 +791,25 @@ RSpec.describe HTTP::Session, vcr: true do
 
   describe "persistent" do
     describe "Basic" do
+      it "opts - nil/false" do
+        sub = described_class.new.freeze
+        res = sub.get(httpbin("/anything"))
+        expect(res.code).to eq(200)
+        expect(res.headers["Connection"]).to eq("close")
+
+        sub = described_class.new(persistent: false).freeze
+        res = sub.get(httpbin("/anything"))
+        expect(res.code).to eq(200)
+        expect(res.headers["Connection"]).to eq("close")
+      end
+
+      it "opts - true" do
+        sub = described_class.new(persistent: true).freeze
+        res = sub.get(httpbin("/anything"))
+        expect(res.code).to eq(200)
+        expect(res.headers["Connection"]).to eq("keep-alive")
+      end
+
       it "opts - pools - host" do
         sub = described_class.new(persistent: {
           pools: {HTTP::URI.parse(httpbin("/")).origin => nil}
