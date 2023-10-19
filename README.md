@@ -35,7 +35,7 @@ pp JSON.parse(r.body)["cookies"]  # -> {"mycookies"=>"abc"}
 
 ### Caching
 
-Use `cache: true` to enable this feature. Once enabled, the `cache-control`
+Use `cache: true` to enable this feature. Once enabled, the `Cache-Control`
 will be used to determine whether the response is cacheable or not.
 
 ```ruby
@@ -74,7 +74,7 @@ http.get("https://example.org")     # reuse connection#2
 
 ### Thread Safe
 
-It works by default.
+**It works by default.**
 
 
 ## Reference
@@ -180,7 +180,7 @@ http.get("https://httpbin.org/get")
 
 # match host: "*"
 #   -> create a connection pool with maxsize 5, and return a persistent connection
-http.get("https://github.com/")
+http.get("https://github.com")
 ```
 
 ### Thread Safe
