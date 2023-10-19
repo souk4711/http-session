@@ -19,7 +19,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 18 Oct 2023 15:06:27 GMT
+      - Thu, 19 Oct 2023 08:29:05 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -36,8 +36,8 @@ http_interactions:
       encoding: UTF-8
       string: "{\n  \"args\": {}, \n  \"data\": \"\", \n  \"files\": {}, \n  \"form\":
         {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"User-Agent\":
-        \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-652ff473-54fe4d385e81955a2b11e9b0\"\n
-        \ }, \n  \"json\": null, \n  \"method\": \"GET\", \n  \"origin\": \"121.35.185.75\",
+        \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6530e8d1-2d07e0433b8bca7a056417c3\"\n
+        \ }, \n  \"json\": null, \n  \"method\": \"GET\", \n  \"origin\": \"113.116.30.74\",
         \n  \"url\": \"https://httpbin.org/anything\"\n}\n"
-  recorded_at: Wed, 18 Oct 2023 15:06:27 GMT
+  recorded_at: Thu, 19 Oct 2023 08:29:06 GMT
 recorded_with: VCR 6.2.0

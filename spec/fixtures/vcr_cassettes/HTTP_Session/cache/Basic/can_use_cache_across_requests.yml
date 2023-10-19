@@ -19,19 +19,19 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 03 Oct 2023 07:13:18 GMT
+      - Thu, 19 Oct 2023 08:27:20 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '238'
+      - '237'
       Connection:
       - close
       Server:
       - gunicorn/19.9.0
       Last-Modified:
-      - Tue, 03 Oct 2023 07:13:18 GMT
+      - Thu, 19 Oct 2023 08:27:20 GMT
       Etag:
-      - d0ef7f51a89640b2bba7ff20fd9b954f
+      - 8bbf14c9b9ef4e5ea0e8bfe8bf7bb6e1
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Allow-Credentials:
@@ -39,9 +39,9 @@ http_interactions:
     body:
       encoding: UTF-8
       string: "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\",
-        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-651bbf0e-2c9f78c728313bc4560470e1\"\n
-        \ }, \n  \"origin\": \"121.35.187.183\", \n  \"url\": \"https://httpbin.org/cache\"\n}\n"
-  recorded_at: Tue, 03 Oct 2023 07:13:18 GMT
+        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6530e868-7421870f623c83211a57c537\"\n
+        \ }, \n  \"origin\": \"113.116.30.74\", \n  \"url\": \"https://httpbin.org/cache\"\n}\n"
+  recorded_at: Thu, 19 Oct 2023 08:27:21 GMT
 - request:
     method: get
     uri: https://httpbin.org/cache
@@ -56,16 +56,16 @@ http_interactions:
       User-Agent:
       - http.rb/5.1.1
       If-Modified-Since:
-      - Tue, 03 Oct 2023 07:13:18 GMT
+      - Thu, 19 Oct 2023 08:27:20 GMT
       If-None-Match:
-      - d0ef7f51a89640b2bba7ff20fd9b954f
+      - 8bbf14c9b9ef4e5ea0e8bfe8bf7bb6e1
   response:
     status:
       code: 304
       message: Not Modified
     headers:
       Date:
-      - Tue, 03 Oct 2023 07:13:19 GMT
+      - Thu, 19 Oct 2023 08:27:22 GMT
       Connection:
       - close
       Server:
@@ -77,5 +77,5 @@ http_interactions:
     body:
       encoding: ASCII-8BIT
       string: ''
-  recorded_at: Tue, 03 Oct 2023 07:13:19 GMT
+  recorded_at: Thu, 19 Oct 2023 08:27:22 GMT
 recorded_with: VCR 6.2.0

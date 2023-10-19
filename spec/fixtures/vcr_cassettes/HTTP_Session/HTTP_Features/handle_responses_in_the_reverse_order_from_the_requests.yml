@@ -8,7 +8,7 @@ http_interactions:
       string: ''
     headers:
       Connection:
-      - close
+      - Keep-Alive
       Host:
       - httpbin.org
       User-Agent:
@@ -19,19 +19,19 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Fri, 06 Oct 2023 17:42:53 GMT
+      - Thu, 19 Oct 2023 08:30:04 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '238'
+      - '237'
       Connection:
-      - close
+      - keep-alive
       Server:
       - gunicorn/19.9.0
       Last-Modified:
-      - Fri, 06 Oct 2023 17:42:53 GMT
+      - Thu, 19 Oct 2023 08:30:04 GMT
       Etag:
-      - 867204bba6e448fea202682a72fe2bd3
+      - 7ebf5d663d13415db16f01e3b937ba22
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Allow-Credentials:
@@ -39,7 +39,7 @@ http_interactions:
     body:
       encoding: UTF-8
       string: "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\",
-        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6520471d-4b4ead967afa823d16fd52c6\"\n
-        \ }, \n  \"origin\": \"121.34.202.128\", \n  \"url\": \"https://httpbin.org/cache\"\n}\n"
-  recorded_at: Fri, 06 Oct 2023 17:42:53 GMT
+        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6530e90c-60f387446097ddd41f46bcc9\"\n
+        \ }, \n  \"origin\": \"113.116.30.74\", \n  \"url\": \"https://httpbin.org/cache\"\n}\n"
+  recorded_at: Thu, 19 Oct 2023 08:30:04 GMT
 recorded_with: VCR 6.2.0

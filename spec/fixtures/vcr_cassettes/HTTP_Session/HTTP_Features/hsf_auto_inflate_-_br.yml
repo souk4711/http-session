@@ -10,7 +10,7 @@ http_interactions:
       Accept-Encoding:
       - br
       Connection:
-      - close
+      - Keep-Alive
       Host:
       - cdn.jsdelivr.net
       User-Agent:
@@ -21,13 +21,13 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Thu, 05 Oct 2023 10:43:38 GMT
+      - Thu, 19 Oct 2023 08:30:03 GMT
       Content-Type:
       - application/javascript; charset=utf-8
       Transfer-Encoding:
       - chunked
       Connection:
-      - close
+      - keep-alive
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Expose-Headers:
@@ -49,9 +49,9 @@ http_interactions:
       Etag:
       - W/"15ec3-7aRnR8cdOKiAvuRPmkOcOFi7j5k"
       X-Served-By:
-      - cache-fra-eddf8230058-FRA, cache-yyz4525-YYZ
+      - cache-fra-eddf8230058-FRA, cache-yyz4556-YYZ
       X-Cache:
-      - HIT, MISS
+      - MISS, MISS
       Vary:
       - Accept-Encoding
       Alt-Svc:
@@ -59,15 +59,15 @@ http_interactions:
       Cf-Cache-Status:
       - HIT
       Age:
-      - '5593064'
+      - '419214'
       Report-To:
-      - '{"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v3?s=jugoNxf%2BDaUjSVN0b0wv0nJA%2Fw%2B%2F1yUTaY4KwYLxqdgKqmbmRNoSz3jYODVwfWf27UoRzemv%2BTTx2Cxt78MyrZo%2Bkb%2BnohhnA0NIdRwIDUFVlqOdb9clQtS%2B0CwXNf%2FktR8M%2FFQXE9sC5qYEMXU%3D"}],"group":"cf-nel","max_age":604800}'
+      - '{"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v3?s=Cjf6ghogbwaXdD%2FzfiDxH6FeEf4jcXPMPkI89yez3vHcv9ZyRa3HthqWJNN0eaF1GcpcPHO08PXyUe%2FJozv69ucl1GTxNEeh9LxcjmaUeXCLFDc7jYeQE9huCdDHq4XC12iAQqk9uLd%2FRqSuKM0%3D"}],"group":"cf-nel","max_age":604800}'
       Nel:
       - '{"success_fraction":0.01,"report_to":"cf-nel","max_age":604800}'
       Server:
       - cloudflare
       Cf-Ray:
-      - 811510943eb197db-SJC
+      - 8187a829d94dcf05-SJC
       Content-Encoding:
       - br
     body:
@@ -785,5 +785,5 @@ http_interactions:
         k//TMO6ukxs9yc6NSMrXrcIc2veREkaY9wmcKKnP6a+lzou/R7ot/H16Hf4c
         6bZ4ttrqFRfO33rX9XarASq5LZ6Rrwk71W3xjH6OCCvqeHotL7r/3yPgekIV
         6ta2/8zb4hmtAdcTrP4f
-  recorded_at: Thu, 05 Oct 2023 10:43:38 GMT
+  recorded_at: Thu, 19 Oct 2023 08:30:03 GMT
 recorded_with: VCR 6.2.0

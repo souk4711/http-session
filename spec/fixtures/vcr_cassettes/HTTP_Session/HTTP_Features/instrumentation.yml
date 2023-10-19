@@ -8,7 +8,7 @@ http_interactions:
       string: ''
     headers:
       Connection:
-      - close
+      - Keep-Alive
       Host:
       - httpbin.org
       User-Agent:
@@ -19,19 +19,19 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 04 Oct 2023 16:28:59 GMT
+      - Thu, 19 Oct 2023 08:30:00 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '238'
+      - '237'
       Connection:
-      - close
+      - keep-alive
       Server:
       - gunicorn/19.9.0
       Last-Modified:
-      - Wed, 04 Oct 2023 16:28:59 GMT
+      - Thu, 19 Oct 2023 08:30:00 GMT
       Etag:
-      - b56b371cb88844b3b94f5679f96222a0
+      - a2eaa07eec9648b68120e2b785040896
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Allow-Credentials:
@@ -39,9 +39,9 @@ http_interactions:
     body:
       encoding: UTF-8
       string: "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\",
-        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-651d92cb-7d50f64b1d357c686cc0d8ff\"\n
-        \ }, \n  \"origin\": \"121.35.187.183\", \n  \"url\": \"https://httpbin.org/cache\"\n}\n"
-  recorded_at: Wed, 04 Oct 2023 16:29:04 GMT
+        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6530e908-2467956b450f86fa19727da8\"\n
+        \ }, \n  \"origin\": \"113.116.30.74\", \n  \"url\": \"https://httpbin.org/cache\"\n}\n"
+  recorded_at: Thu, 19 Oct 2023 08:30:00 GMT
 - request:
     method: get
     uri: https://httpbin.org/cache
@@ -50,24 +50,24 @@ http_interactions:
       string: ''
     headers:
       Connection:
-      - close
+      - Keep-Alive
       Host:
       - httpbin.org
       User-Agent:
       - http.rb/5.1.1
       If-Modified-Since:
-      - Wed, 04 Oct 2023 16:28:59 GMT
+      - Thu, 19 Oct 2023 08:30:00 GMT
       If-None-Match:
-      - b56b371cb88844b3b94f5679f96222a0
+      - a2eaa07eec9648b68120e2b785040896
   response:
     status:
       code: 304
       message: Not Modified
     headers:
       Date:
-      - Wed, 04 Oct 2023 16:29:05 GMT
+      - Thu, 19 Oct 2023 08:30:00 GMT
       Connection:
-      - close
+      - keep-alive
       Server:
       - gunicorn/19.9.0
       Access-Control-Allow-Origin:
@@ -77,5 +77,5 @@ http_interactions:
     body:
       encoding: ASCII-8BIT
       string: ''
-  recorded_at: Wed, 04 Oct 2023 16:29:05 GMT
+  recorded_at: Thu, 19 Oct 2023 08:30:01 GMT
 recorded_with: VCR 6.2.0

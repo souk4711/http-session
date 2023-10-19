@@ -19,11 +19,11 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Sat, 07 Oct 2023 04:12:52 GMT
+      - Thu, 19 Oct 2023 08:33:04 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '240'
+      - '239'
       Connection:
       - close
       Server:
@@ -37,129 +37,9 @@ http_interactions:
     body:
       encoding: UTF-8
       string: "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\",
-        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6520dac4-76da2e6f66a49a5817250688\"\n
-        \ }, \n  \"origin\": \"121.34.202.128\", \n  \"url\": \"https://httpbin.org/cache/0\"\n}\n"
-  recorded_at: Sat, 07 Oct 2023 04:12:52 GMT
-- request:
-    method: get
-    uri: https://httpbin.org/cache/360
-    body:
-      encoding: ASCII-8BIT
-      string: ''
-    headers:
-      Connection:
-      - close
-      Host:
-      - httpbin.org
-      User-Agent:
-      - http.rb/5.1.1
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Date:
-      - Sat, 07 Oct 2023 04:12:53 GMT
-      Content-Type:
-      - application/json
-      Content-Length:
-      - '242'
-      Connection:
-      - close
-      Server:
-      - gunicorn/19.9.0
-      Cache-Control:
-      - public, max-age=360
-      Access-Control-Allow-Origin:
-      - "*"
-      Access-Control-Allow-Credentials:
-      - 'true'
-    body:
-      encoding: UTF-8
-      string: "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\",
-        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6520dac5-1b39127d40fe1b9246b835d7\"\n
-        \ }, \n  \"origin\": \"121.34.202.128\", \n  \"url\": \"https://httpbin.org/cache/360\"\n}\n"
-  recorded_at: Sat, 07 Oct 2023 04:12:52 GMT
-- request:
-    method: get
-    uri: https://httpbin.org/cache/480
-    body:
-      encoding: ASCII-8BIT
-      string: ''
-    headers:
-      Connection:
-      - close
-      Host:
-      - httpbin.org
-      User-Agent:
-      - http.rb/5.1.1
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Date:
-      - Sat, 07 Oct 2023 04:12:53 GMT
-      Content-Type:
-      - application/json
-      Content-Length:
-      - '242'
-      Connection:
-      - close
-      Server:
-      - gunicorn/19.9.0
-      Cache-Control:
-      - public, max-age=480
-      Access-Control-Allow-Origin:
-      - "*"
-      Access-Control-Allow-Credentials:
-      - 'true'
-    body:
-      encoding: UTF-8
-      string: "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\",
-        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6520dac5-37fe76754b7064cb1eab75cc\"\n
-        \ }, \n  \"origin\": \"121.34.202.128\", \n  \"url\": \"https://httpbin.org/cache/480\"\n}\n"
-  recorded_at: Sat, 07 Oct 2023 04:12:52 GMT
-- request:
-    method: get
-    uri: https://httpbin.org/cache/240
-    body:
-      encoding: ASCII-8BIT
-      string: ''
-    headers:
-      Connection:
-      - close
-      Host:
-      - httpbin.org
-      User-Agent:
-      - http.rb/5.1.1
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Date:
-      - Sat, 07 Oct 2023 04:12:53 GMT
-      Content-Type:
-      - application/json
-      Content-Length:
-      - '242'
-      Connection:
-      - close
-      Server:
-      - gunicorn/19.9.0
-      Cache-Control:
-      - public, max-age=240
-      Access-Control-Allow-Origin:
-      - "*"
-      Access-Control-Allow-Credentials:
-      - 'true'
-    body:
-      encoding: UTF-8
-      string: "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\",
-        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6520dac5-0940741d62234cf35a2eac0b\"\n
-        \ }, \n  \"origin\": \"121.34.202.128\", \n  \"url\": \"https://httpbin.org/cache/240\"\n}\n"
-  recorded_at: Sat, 07 Oct 2023 04:12:52 GMT
+        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6530e9c0-72b6d27b611f4c395b2886e4\"\n
+        \ }, \n  \"origin\": \"113.116.30.74\", \n  \"url\": \"https://httpbin.org/cache/0\"\n}\n"
+  recorded_at: Thu, 19 Oct 2023 08:33:04 GMT
 - request:
     method: get
     uri: https://httpbin.org/cache/300
@@ -179,11 +59,11 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Sat, 07 Oct 2023 04:12:53 GMT
+      - Thu, 19 Oct 2023 08:33:05 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '242'
+      - '241'
       Connection:
       - close
       Server:
@@ -197,89 +77,9 @@ http_interactions:
     body:
       encoding: UTF-8
       string: "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\",
-        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6520dac5-6e49e06b6197c0be10339b7f\"\n
-        \ }, \n  \"origin\": \"121.34.202.128\", \n  \"url\": \"https://httpbin.org/cache/300\"\n}\n"
-  recorded_at: Sat, 07 Oct 2023 04:12:52 GMT
-- request:
-    method: get
-    uri: https://httpbin.org/cache/420
-    body:
-      encoding: ASCII-8BIT
-      string: ''
-    headers:
-      Connection:
-      - close
-      Host:
-      - httpbin.org
-      User-Agent:
-      - http.rb/5.1.1
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Date:
-      - Sat, 07 Oct 2023 04:12:53 GMT
-      Content-Type:
-      - application/json
-      Content-Length:
-      - '242'
-      Connection:
-      - close
-      Server:
-      - gunicorn/19.9.0
-      Cache-Control:
-      - public, max-age=420
-      Access-Control-Allow-Origin:
-      - "*"
-      Access-Control-Allow-Credentials:
-      - 'true'
-    body:
-      encoding: UTF-8
-      string: "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\",
-        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6520dac5-1df2a14356a6e0613448a47d\"\n
-        \ }, \n  \"origin\": \"121.34.202.128\", \n  \"url\": \"https://httpbin.org/cache/420\"\n}\n"
-  recorded_at: Sat, 07 Oct 2023 04:12:52 GMT
-- request:
-    method: get
-    uri: https://httpbin.org/cache/120
-    body:
-      encoding: ASCII-8BIT
-      string: ''
-    headers:
-      Connection:
-      - close
-      Host:
-      - httpbin.org
-      User-Agent:
-      - http.rb/5.1.1
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Date:
-      - Sat, 07 Oct 2023 04:12:53 GMT
-      Content-Type:
-      - application/json
-      Content-Length:
-      - '242'
-      Connection:
-      - close
-      Server:
-      - gunicorn/19.9.0
-      Cache-Control:
-      - public, max-age=120
-      Access-Control-Allow-Origin:
-      - "*"
-      Access-Control-Allow-Credentials:
-      - 'true'
-    body:
-      encoding: UTF-8
-      string: "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\",
-        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6520dac5-57f69b34583747c002a2f4e4\"\n
-        \ }, \n  \"origin\": \"121.34.202.128\", \n  \"url\": \"https://httpbin.org/cache/120\"\n}\n"
-  recorded_at: Sat, 07 Oct 2023 04:12:52 GMT
+        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6530e9c1-1bd2c9a969d92e3d2a59bc65\"\n
+        \ }, \n  \"origin\": \"113.116.30.74\", \n  \"url\": \"https://httpbin.org/cache/300\"\n}\n"
+  recorded_at: Thu, 19 Oct 2023 08:33:04 GMT
 - request:
     method: get
     uri: https://httpbin.org/cache/180
@@ -299,11 +99,11 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Sat, 07 Oct 2023 04:12:53 GMT
+      - Thu, 19 Oct 2023 08:33:05 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '242'
+      - '241'
       Connection:
       - close
       Server:
@@ -317,9 +117,49 @@ http_interactions:
     body:
       encoding: UTF-8
       string: "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\",
-        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6520dac5-27d656364c88f8883784c759\"\n
-        \ }, \n  \"origin\": \"121.34.202.128\", \n  \"url\": \"https://httpbin.org/cache/180\"\n}\n"
-  recorded_at: Sat, 07 Oct 2023 04:12:52 GMT
+        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6530e9c1-656bdf025900cddf6d422d1e\"\n
+        \ }, \n  \"origin\": \"113.116.30.74\", \n  \"url\": \"https://httpbin.org/cache/180\"\n}\n"
+  recorded_at: Thu, 19 Oct 2023 08:33:04 GMT
+- request:
+    method: get
+    uri: https://httpbin.org/cache/240
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Connection:
+      - close
+      Host:
+      - httpbin.org
+      User-Agent:
+      - http.rb/5.1.1
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Thu, 19 Oct 2023 08:33:05 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '241'
+      Connection:
+      - close
+      Server:
+      - gunicorn/19.9.0
+      Cache-Control:
+      - public, max-age=240
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Credentials:
+      - 'true'
+    body:
+      encoding: UTF-8
+      string: "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\",
+        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6530e9c1-69be428a7ba8c366424a3ac4\"\n
+        \ }, \n  \"origin\": \"113.116.30.74\", \n  \"url\": \"https://httpbin.org/cache/240\"\n}\n"
+  recorded_at: Thu, 19 Oct 2023 08:33:04 GMT
 - request:
     method: get
     uri: https://httpbin.org/cache/60
@@ -339,11 +179,11 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Sat, 07 Oct 2023 04:12:54 GMT
+      - Thu, 19 Oct 2023 08:33:05 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '241'
+      - '240'
       Connection:
       - close
       Server:
@@ -357,7 +197,167 @@ http_interactions:
     body:
       encoding: UTF-8
       string: "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\",
-        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6520dac5-5162e15247db9fe409bed859\"\n
-        \ }, \n  \"origin\": \"121.34.202.128\", \n  \"url\": \"https://httpbin.org/cache/60\"\n}\n"
-  recorded_at: Sat, 07 Oct 2023 04:12:52 GMT
+        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6530e9c1-27f642f0510ed4ba11a759a0\"\n
+        \ }, \n  \"origin\": \"113.116.30.74\", \n  \"url\": \"https://httpbin.org/cache/60\"\n}\n"
+  recorded_at: Thu, 19 Oct 2023 08:33:04 GMT
+- request:
+    method: get
+    uri: https://httpbin.org/cache/420
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Connection:
+      - close
+      Host:
+      - httpbin.org
+      User-Agent:
+      - http.rb/5.1.1
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Thu, 19 Oct 2023 08:33:05 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '241'
+      Connection:
+      - close
+      Server:
+      - gunicorn/19.9.0
+      Cache-Control:
+      - public, max-age=420
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Credentials:
+      - 'true'
+    body:
+      encoding: UTF-8
+      string: "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\",
+        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6530e9c1-74d265f31f36687f194d1a37\"\n
+        \ }, \n  \"origin\": \"113.116.30.74\", \n  \"url\": \"https://httpbin.org/cache/420\"\n}\n"
+  recorded_at: Thu, 19 Oct 2023 08:33:04 GMT
+- request:
+    method: get
+    uri: https://httpbin.org/cache/360
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Connection:
+      - close
+      Host:
+      - httpbin.org
+      User-Agent:
+      - http.rb/5.1.1
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Thu, 19 Oct 2023 08:33:05 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '241'
+      Connection:
+      - close
+      Server:
+      - gunicorn/19.9.0
+      Cache-Control:
+      - public, max-age=360
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Credentials:
+      - 'true'
+    body:
+      encoding: UTF-8
+      string: "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\",
+        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6530e9c1-5a6edd13752abe636468d0f6\"\n
+        \ }, \n  \"origin\": \"113.116.30.74\", \n  \"url\": \"https://httpbin.org/cache/360\"\n}\n"
+  recorded_at: Thu, 19 Oct 2023 08:33:04 GMT
+- request:
+    method: get
+    uri: https://httpbin.org/cache/120
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Connection:
+      - close
+      Host:
+      - httpbin.org
+      User-Agent:
+      - http.rb/5.1.1
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Thu, 19 Oct 2023 08:33:06 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '241'
+      Connection:
+      - close
+      Server:
+      - gunicorn/19.9.0
+      Cache-Control:
+      - public, max-age=120
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Credentials:
+      - 'true'
+    body:
+      encoding: UTF-8
+      string: "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\",
+        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6530e9c1-1a9ec47b0035b2bb504bce56\"\n
+        \ }, \n  \"origin\": \"113.116.30.74\", \n  \"url\": \"https://httpbin.org/cache/120\"\n}\n"
+  recorded_at: Thu, 19 Oct 2023 08:33:04 GMT
+- request:
+    method: get
+    uri: https://httpbin.org/cache/480
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Connection:
+      - close
+      Host:
+      - httpbin.org
+      User-Agent:
+      - http.rb/5.1.1
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Thu, 19 Oct 2023 08:33:07 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '241'
+      Connection:
+      - close
+      Server:
+      - gunicorn/19.9.0
+      Cache-Control:
+      - public, max-age=480
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Credentials:
+      - 'true'
+    body:
+      encoding: UTF-8
+      string: "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\",
+        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6530e9c3-1853aadf34b2fde33744420a\"\n
+        \ }, \n  \"origin\": \"113.116.30.74\", \n  \"url\": \"https://httpbin.org/cache/480\"\n}\n"
+  recorded_at: Thu, 19 Oct 2023 08:33:04 GMT
 recorded_with: VCR 6.2.0

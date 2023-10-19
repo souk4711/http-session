@@ -1,5 +1,7 @@
 RSpec.describe HTTP::Session::Response, vcr: true do
-  let(:subject) { HTTP::Session.new.freeze }
+  subject do
+    HTTP::Session.new.freeze
+  end
 
   describe "#history" do
     it "empty if no redirection" do

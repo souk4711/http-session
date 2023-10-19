@@ -1,5 +1,7 @@
 RSpec.describe HTTP::Session::Configurable do
-  let(:subject) { HTTP::Session.new }
+  subject do
+    HTTP::Session.new
+  end
 
   it "#timeout" do
     opts = subject.timeout(2).default_options

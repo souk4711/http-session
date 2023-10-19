@@ -3,20 +3,40 @@ RSpec.describe HTTP::Session, vcr: true do
     sub.cache_mgr.__send__(:store)
   end
 
-  describe "#request" do
-    let(:subject) { described_class.new.freeze }
+  matcher :be_cacheable_using_etag do |expected|
+    match do |actual|
+      expect(actual.code).to eq(200)
+      expect(actual.etag).to be_a(String)
+      expect(actual.last_modified).to be_a(String)
+      expect(actual.validateable?).to eq(true)
+    end
+  end
 
+  matcher :be_cacheable_using_maxage do |expected = {}|
+    match do |actual|
+      max_age = expected[:max_age] || 60
+      expect(actual.code).to eq(200)
+      expect(actual.max_age(shared: true)).to eq(max_age)
+      expect(actual.age).to eq(0)
+      expect(actual.fresh?(shared: true)).to eq(true)
+    end
+  end
+
+  describe "#request" do
     describe "opts" do
       it "override session options" do
-        res = subject.dup.follow(false).get(httpbin("/redirect/1"), follow: true)
+        sub = described_class.new.follow(false).freeze
+        res = sub.get(httpbin("/redirect/1"), follow: true)
         expect(res.code).to eq(200)
 
-        res = subject.dup.follow(true).get(httpbin("/redirect/1"), follow: false)
+        sub = described_class.new.follow(true).freeze
+        res = sub.get(httpbin("/redirect/1"), follow: false)
         expect(res.code).to eq(302)
       end
 
       it "merge session options" do
-        res = subject.dup.headers("A" => "A", "B" => "B").get(httpbin("/anything"), headers: {"B" => "b", "C" => "C"})
+        sub = described_class.new.headers("A" => "A", "B" => "B").freeze
+        res = sub.get(httpbin("/anything"), headers: {"B" => "b", "C" => "C"})
         expect(res.code).to eq(200)
         expect(res.request.headers["A"]).to eq("A")
         expect(res.request.headers["B"]).to eq("b")
@@ -26,7 +46,9 @@ RSpec.describe HTTP::Session, vcr: true do
 
     describe "return" do
       it "a HTTP::Session::Response" do
-        res = subject.get(httpbin("/anything"))
+        sub = described_class.new.freeze
+
+        res = sub.get(httpbin("/anything"))
         expect(res.code).to eq(200)
         expect(res).to be_an_instance_of(HTTP::Session::Response)
         expect(res.__getobj__).to be_an_instance_of(HTTP::Response)
@@ -34,7 +56,7 @@ RSpec.describe HTTP::Session, vcr: true do
         expect(res.request).to be_an_instance_of(HTTP::Session::Request)
         expect(res.request.__getobj__).to be_an_instance_of(HTTP::Request)
 
-        res = subject.get(httpbin("/redirect/1"), follow: true)
+        res = sub.get(httpbin("/redirect/1"), follow: true)
         expect(res.code).to eq(200)
         expect(res).to be_an_instance_of(HTTP::Session::Response)
         expect(res.__getobj__).to be_an_instance_of(HTTP::Response)
@@ -42,7 +64,7 @@ RSpec.describe HTTP::Session, vcr: true do
         expect(res.request).to be_an_instance_of(HTTP::Session::Request)
         expect(res.request.__getobj__).to be_an_instance_of(HTTP::Request)
 
-        res = subject.get(
+        res = sub.get(
           httpbin("/redirect/1"),
           follow: true,
           features: {logging: {logger: HTTP::Features::Logging::NullLogger.new}}
@@ -57,56 +79,12 @@ RSpec.describe HTTP::Session, vcr: true do
     end
   end
 
-  describe "redirect" do
-    let(:subject) { described_class.new.freeze }
-
-    it "redirect n times" do
-      cnt = 0
-      res = subject.get(httpbin("/redirect/4"), follow: {
-        on_redirect: ->(_, _) { cnt += 1 }
-      })
-      expect(res.code).to eq(200)
-      expect(cnt).to eq(4)
-    end
-  end
-
   describe "cache" do
-    matcher :be_cacheable_using_etag do |expected|
-      match do |actual|
-        expect(actual.code).to eq(200)
-        expect(actual.etag).to be_a(String)
-        expect(actual.last_modified).to be_a(String)
-        expect(actual.validateable?).to eq(true)
-      end
+    subject do
+      described_class.new(cache: true).freeze
     end
-
-    matcher :be_cacheable_using_maxage do |expected = {}|
-      match do |actual|
-        max_age = expected[:max_age] || 60
-        expect(actual.code).to eq(200)
-        expect(actual.max_age(shared: true)).to eq(max_age)
-        expect(actual.age).to eq(0)
-        expect(actual.fresh?(shared: true)).to eq(true)
-      end
-    end
-
-    let(:subject) { described_class.new(cache: true).freeze }
 
     describe "Basic" do
-      it "can use cache across requests" do
-        res1 = subject.get(httpbin("/cache"))
-        expect(res1).to be_cacheable_using_etag
-        expect(res1.headers["X-Httprb-Cache-Status"]).to eq("MISS")
-        expect(cache_store(subject).instance_variable_get("@data").size).to eq(1)
-
-        res2 = subject.get(httpbin("/cache"))
-        expect(res2.code).to eq(200)
-        expect(res2.from_cache?).to eq(true)
-        expect(res2.headers["X-Httprb-Cache-Status"]).to eq("REVALIDATED")
-        expect(res2.request.headers["If-None-Match"]).to eq(res1.etag)
-        expect(res2.request.headers["If-Modified-Since"]).to eq(res1.last_modified)
-      end
-
       it "can't use cache across requests when disabled" do
         sub = described_class.new.freeze
 
@@ -121,6 +99,20 @@ RSpec.describe HTTP::Session, vcr: true do
         expect(res2.headers["X-Httprb-Cache-Status"]).to eq(nil)
         expect(res2.request.headers["If-None-Match"]).to eq(nil)
         expect(res2.request.headers["If-Modified-Since"]).to eq(nil)
+      end
+
+      it "can use cache across requests" do
+        res1 = subject.get(httpbin("/cache"))
+        expect(res1).to be_cacheable_using_etag
+        expect(res1.headers["X-Httprb-Cache-Status"]).to eq("MISS")
+        expect(cache_store(subject).instance_variable_get("@data").size).to eq(1)
+
+        res2 = subject.get(httpbin("/cache"))
+        expect(res2.code).to eq(200)
+        expect(res2.from_cache?).to eq(true)
+        expect(res2.headers["X-Httprb-Cache-Status"]).to eq("REVALIDATED")
+        expect(res2.request.headers["If-None-Match"]).to eq(res1.etag)
+        expect(res2.request.headers["If-Modified-Since"]).to eq(res1.last_modified)
       end
 
       it "return a cached HTTP::Session::Response" do
@@ -158,33 +150,6 @@ RSpec.describe HTTP::Session, vcr: true do
         expect(res.code).to eq(200)
         expect(res.from_cache?).to eq(true)
         expect(Zlib::Inflate.new(32 + Zlib::MAX_WBITS).inflate(res.body)).to start_with("/*! jQuery v3.6.4 |")
-      end
-
-      it "thread safe" do
-        res = subject.get(httpbin("/cache/0"))
-        Timecop.freeze(res.date)
-
-        thrs = []
-        8.times do |i|
-          thrs << Thread.new do
-            res = subject.get(httpbin("/cache/#{60 * i + 60}"))
-            expect(res).to be_cacheable_using_maxage(max_age: 60 * i + 60)
-            expect(res.headers["X-Httprb-Cache-Status"]).to eq("MISS")
-          end
-        end
-        thrs.each(&:join)
-        expect(cache_store(subject).instance_variable_get("@data").size).to eq(8)
-
-        thrs = []
-        8.times do |i|
-          thrs << Thread.new do
-            res = subject.get(httpbin("/cache/#{60 * i + 60}"))
-            expect(res.code).to eq(200)
-            expect(res.from_cache?).to eq(true)
-            expect(res.headers["X-Httprb-Cache-Status"]).to eq("HIT")
-          end
-        end
-        thrs.each(&:join)
       end
     end
 
@@ -444,144 +409,14 @@ RSpec.describe HTTP::Session, vcr: true do
         expect(cache_store(subject).instance_variable_get("@data").size).to eq(0)
       end
     end
-
-    describe "HTTP::Features" do
-      it "logging" do
-        io = StringIO.new
-        sub = described_class.new(cache: true).use(logging: {logger: Logger.new(io)}).freeze
-
-        res1 = sub.get(httpbin("/cache"))
-        expect(res1).to be_cacheable_using_etag
-        expect(cache_store(sub).instance_variable_get("@data").size).to eq(1)
-
-        out1 = (io.rewind && io.read).tap { io.truncate(0) }
-        expect(out1.scan("< 200 OK").count).to eq(1)
-
-        res2 = sub.get(httpbin("/cache"))
-        expect(res2.code).to eq(200)
-        expect(res2.from_cache?).to eq(true)
-
-        out2 = (io.rewind && io.read).tap { io.truncate(0) }
-        expect(out2.scan("< 200 OK").count).to eq(1)
-      end
-
-      it "instrumentation" do
-        res_arr = []
-        ActiveSupport::Notifications.subscribe("request.http") do |name, start, finish, id, payload|
-          res_arr << payload[:response]
-        end
-
-        require "active_support/isolated_execution_state"
-        sub = described_class.new(cache: true).use(instrumentation: {instrumenter: ActiveSupport::Notifications.instrumenter}).freeze
-
-        res1 = sub.get(httpbin("/cache"))
-        expect(res1).to be_cacheable_using_etag
-        expect(res_arr).to eql([res1])
-        expect(cache_store(sub).instance_variable_get("@data").size).to eq(1)
-
-        res2 = sub.get(httpbin("/cache"))
-        expect(res2.code).to eq(200)
-        expect(res2.from_cache?).to eq(true)
-        expect(res_arr).to eql([res1, res2])
-      end
-
-      it "auto_inflate" do
-        expect {
-          described_class.new(cache: true).use(:auto_inflate).freeze
-        }.to raise_error(ArgumentError, /is not supported/)
-      end
-
-      it "hsf_auto_inflate" do
-        sub = described_class.new(cache: true).use(:hsf_auto_inflate).freeze
-        uri = jsdelivr("/npm/jquery@3.6.4/dist/jquery.min.js")
-
-        res = sub.get(uri)
-        expect(res.code).to eq(200)
-        expect(res.body.to_s).to start_with("/*! jQuery v3.6.4 |")
-
-        res = sub.get(uri)
-        expect(res.code).to eq(200)
-        expect(res.from_cache?).to eq(true)
-        expect(res.body.to_s).to start_with("/*! jQuery v3.6.4 |")
-
-        res = sub.get(uri, headers: {"Accept-Encoding" => "gzip"})
-        expect(res.code).to eq(200)
-        expect(res.body.to_s).to start_with("/*! jQuery v3.6.4 |")
-
-        res = sub.get(uri, headers: {"Accept-Encoding" => "gzip"})
-        expect(res.code).to eq(200)
-        expect(res.from_cache?).to eq(true)
-        expect(res.body.to_s).to start_with("/*! jQuery v3.6.4 |")
-      end
-
-      it "hsf_auto_inflate - br", skip: (RUBY_ENGINE == "jruby" && "gem 'brotli' not works in JRuby") do
-        sub = described_class.new(cache: true).use(hsf_auto_inflate: {br: true}).freeze
-        uri = jsdelivr("/npm/jquery@3.6.4/dist/jquery.min.js")
-
-        res = sub.get(uri, headers: {"Accept-Encoding" => "br"})
-        expect(res.code).to eq(200)
-        expect(res.body.to_s).to start_with("/*! jQuery v3.6.4 |")
-
-        res = sub.get(uri, headers: {"Accept-Encoding" => "br"})
-        expect(res.code).to eq(200)
-        expect(res.from_cache?).to eq(true)
-        expect(res.body.to_s).to start_with("/*! jQuery v3.6.4 |")
-      end
-
-      it "handle responses in the reverse order from the requests" do
-        feature_class_order =
-          Class.new(HTTP::Feature) do
-            @order = []
-
-            class << self
-              attr_reader :order
-            end
-
-            def initialize(id:)
-              @id = id
-            end
-
-            def wrap_request(req)
-              self.class.order << "request.#{@id}"
-              req
-            end
-
-            def wrap_response(res)
-              self.class.order << "response.#{@id}"
-              res
-            end
-          end
-        feature_instance_a = feature_class_order.new(id: "a")
-        feature_instance_b = feature_class_order.new(id: "b")
-        feature_instance_c = feature_class_order.new(id: "c")
-
-        sub = described_class.new(cache: true).use(
-          test_feature_a: feature_instance_a,
-          test_feature_b: feature_instance_b,
-          test_feature_c: feature_instance_c
-        ).freeze
-        sub.get(httpbin("/cache"))
-
-        expect(feature_class_order.order).to eq(
-          ["request.a", "request.b", "request.c", "response.c", "response.b", "response.a"]
-        )
-      end
-    end
   end
 
   describe "cookies" do
-    let(:subject) { described_class.new(cookies: true).freeze }
+    subject do
+      described_class.new(cookies: true).freeze
+    end
 
     describe "Basic" do
-      it "can use cookies across requests" do
-        res = subject.get(httpbin("/cookies/set/a/1"))
-        expect(res.code).to eq(302)
-
-        res = subject.get(httpbin("/anything"))
-        expect(res.code).to eq(200)
-        expect(res.request.headers["Cookie"]).to eq("a=1")
-      end
-
       it "can't use cookies across requests when disabled" do
         sub = described_class.new.freeze
 
@@ -593,21 +428,13 @@ RSpec.describe HTTP::Session, vcr: true do
         expect(res.request.headers["Cookie"]).to eq(nil)
       end
 
-      it "thread safe" do
-        sub = described_class.new(cookies: true).follow.freeze
+      it "can use cookies across requests" do
+        res = subject.get(httpbin("/cookies/set/a/1"))
+        expect(res.code).to eq(302)
 
-        thrs = []
-        8.times do |i|
-          thrs << Thread.new do
-            res = sub.get(httpbin("/cookies/set/#{i}/#{i * 2}"))
-            expect(res.code).to eq(200)
-          end
-        end
-        thrs.each(&:join)
-
-        res = sub.get(httpbin("/anything"))
+        res = subject.get(httpbin("/anything"))
         expect(res.code).to eq(200)
-        expect(res.request.headers["Cookie"]).to eq("0=0; 1=2; 2=4; 3=6; 4=8; 5=10; 6=12; 7=14")
+        expect(res.request.headers["Cookie"]).to eq("a=1")
       end
     end
 
@@ -625,25 +452,29 @@ RSpec.describe HTTP::Session, vcr: true do
       end
 
       it "Session#cookies" do
-        res = subject.dup.cookies(a: 1).get(httpbin("/anything"))
+        sub = subject.dup.cookies(a: 1).freeze
+        res = sub.get(httpbin("/anything"))
         expect(res.code).to eq(200)
         expect(res.request.headers["Cookie"]).to eq("a=1")
       end
 
       it "Session#headers" do
-        res = subject.dup.headers("Cookie" => "a=1").get(httpbin("/anything"))
+        sub = subject.dup.headers("Cookie" => "a=1").freeze
+        res = sub.get(httpbin("/anything"))
         expect(res.code).to eq(200)
         expect(res.request.headers["Cookie"]).to eq("a=1")
       end
 
       it "Session#cookies & :cookies" do
-        res = subject.dup.cookies(a: 1).get(httpbin("/anything"), cookies: {_: "b=2"})
+        sub = subject.dup.cookies(a: 1).freeze
+        res = sub.get(httpbin("/anything"), cookies: {_: "b=2"})
         expect(res.code).to eq(200)
         expect(res.request.headers["Cookie"]).to eq("b=2")
       end
 
       it "Session#headers & :headers" do
-        res = subject.dup.headers("Cookie" => "a=1").get(httpbin("/anything"), headers: {"Cookie" => "b=2"})
+        sub = subject.dup.headers("Cookie" => "a=1").freeze
+        res = sub.get(httpbin("/anything"), headers: {"Cookie" => "b=2"})
         expect(res.code).to eq(200)
         expect(res.request.headers["Cookie"]).to eq("b=2")
       end
@@ -721,7 +552,7 @@ RSpec.describe HTTP::Session, vcr: true do
       end
 
       it "Session#cookies & set" do
-        sub = subject.dup.cookies(b: 2)
+        sub = subject.dup.cookies(b: 2).freeze
 
         res = sub.get(httpbin("/cookies/set?a=1"))
         expect(res.code).to eq(302)
@@ -733,7 +564,7 @@ RSpec.describe HTTP::Session, vcr: true do
       end
 
       it "Session#headers & set" do
-        sub = subject.dup.headers("Cookie" => "b=2")
+        sub = subject.dup.headers("Cookie" => "b=2").freeze
 
         res = sub.get(httpbin("/cookies/set?a=1"))
         expect(res.code).to eq(302)
@@ -745,7 +576,7 @@ RSpec.describe HTTP::Session, vcr: true do
       end
 
       it "Session#cookies & :cookies & set" do
-        sub = subject.dup.cookies(b: 2)
+        sub = subject.dup.cookies(b: 2).freeze
 
         res = sub.get(httpbin("/cookies/set?a=1"), cookies: {_: "c=3"})
         expect(res.code).to eq(302)
@@ -761,7 +592,7 @@ RSpec.describe HTTP::Session, vcr: true do
       end
 
       it "Session#headers & :headers & set" do
-        sub = subject.dup.headers("Cookie" => "b=2")
+        sub = subject.dup.headers("Cookie" => "b=2").freeze
 
         res = sub.get(httpbin("/cookies/set?a=1"), headers: {"Cookie" => "c=3"})
         expect(res.code).to eq(302)
@@ -776,22 +607,15 @@ RSpec.describe HTTP::Session, vcr: true do
         expect(res.request.headers["Cookie"]).to eq("b=2; a=1")
       end
     end
-
-    describe "Redirect" do
-      it "keep Set-Cookie" do
-        res = subject.get(httpbin("/cookies/set/a/1"), follow: true)
-        expect(res.code).to eq(200)
-
-        res = subject.get(httpbin("/anything"))
-        expect(res.code).to eq(200)
-        expect(res.request.headers["Cookie"]).to eq("a=1")
-      end
-    end
   end
 
   describe "persistent" do
+    subject do
+      described_class.new(persistent: true).freeze
+    end
+
     describe "Basic" do
-      it "opts - nil/false" do
+      it "nil/false" do
         sub = described_class.new.freeze
         res = sub.get(httpbin("/anything"))
         expect(res.code).to eq(200)
@@ -803,14 +627,14 @@ RSpec.describe HTTP::Session, vcr: true do
         expect(res.headers["Connection"]).to eq("close")
       end
 
-      it "opts - true" do
+      it "true" do
         sub = described_class.new(persistent: true).freeze
         res = sub.get(httpbin("/anything"))
         expect(res.code).to eq(200)
         expect(res.headers["Connection"]).to eq("keep-alive")
       end
 
-      it "opts - pools - host" do
+      it "pools - host" do
         sub = described_class.new(persistent: {
           pools: {HTTP::URI.parse(httpbin("/")).origin => nil}
         }).freeze
@@ -857,7 +681,7 @@ RSpec.describe HTTP::Session, vcr: true do
         expect(res.headers["Connection"]).to eq("close")
       end
 
-      it "opts - pools - *" do
+      it "pools - *" do
         sub = described_class.new(persistent: {
           pools: {"*" => nil}
         }).freeze
@@ -886,38 +710,239 @@ RSpec.describe HTTP::Session, vcr: true do
         expect(res.code).to eq(200)
         expect(res.headers["Connection"]).to eq("keep-alive")
       end
+    end
 
-      it "multiple requests using same connection" do
-        sub = described_class.new(persistent: true).freeze
-
+    describe "Isolated" do
+      it "multiple requests using same connection without HTTP::StateError" do
         expect do
           16.times do |i|
-            sub.get(httpbin("/anything"), params: {i => i})
+            subject.get(httpbin("/anything"), params: {i => i})
           end
         end.to_not raise_error
       end
+    end
+  end
 
-      it "thread safe" do
-        sub = described_class.new(persistent: {
-          pools: {
-            HTTP::URI.parse(httpbin("/")).origin => {maxsize: 2}
-          }
-        }).freeze
-
-        thrs = []
-        8.times do |i|
-          thrs << Thread.new do
-            res = sub.get(httpbin("/anything"), params: {i => i})
-            expect(res.code).to eq(200)
-            expect(res.headers["Connection"]).to eq("keep-alive")
-            expect(JSON.parse(res.body)["args"]).to eq({i.to_s => i.to_s})
-          end
-        end
-        thrs.each(&:join)
-      end
+  describe "redirect" do
+    subject do
+      described_class.new.freeze
     end
 
-    describe "Redirect" do
+    it "redirect n times" do
+      cnt = 0
+      res = subject.get(httpbin("/redirect/4"), follow: {
+        on_redirect: ->(_, _) { cnt += 1 }
+      })
+      expect(res.code).to eq(200)
+      expect(cnt).to eq(4)
+    end
+
+    context "cookies: true" do
+      subject do
+        described_class.new(cookies: true).freeze
+      end
+
+      it "Set-Cookie" do
+        res = subject.get(httpbin("/cookies/set/a/1"), follow: true)
+        expect(res.code).to eq(200)
+
+        res = subject.get(httpbin("/anything"))
+        expect(res.code).to eq(200)
+        expect(res.request.headers["Cookie"]).to eq("a=1")
+      end
+    end
+  end
+
+  describe "thread safe" do
+    it "cache: true" do
+      sub = described_class.new(cache: true).follow.freeze
+      res = sub.get(httpbin("/cache/0"))
+      Timecop.freeze(res.date)
+
+      thrs = []
+      8.times do |i|
+        thrs << Thread.new do
+          res = sub.get(httpbin("/cache/#{60 * i + 60}"))
+          expect(res).to be_cacheable_using_maxage(max_age: 60 * i + 60)
+          expect(res.headers["X-Httprb-Cache-Status"]).to eq("MISS")
+        end
+      end
+      thrs.each(&:join)
+      expect(cache_store(sub).instance_variable_get("@data").size).to eq(8)
+
+      thrs = []
+      8.times do |i|
+        thrs << Thread.new do
+          res = sub.get(httpbin("/cache/#{60 * i + 60}"))
+          expect(res.code).to eq(200)
+          expect(res.from_cache?).to eq(true)
+          expect(res.headers["X-Httprb-Cache-Status"]).to eq("HIT")
+        end
+      end
+      thrs.each(&:join)
+    end
+
+    it "cookies: true" do
+      sub = described_class.new(cookies: true).follow.freeze
+
+      thrs = []
+      8.times do |i|
+        thrs << Thread.new do
+          res = sub.get(httpbin("/cookies/set/#{i}/#{i * 2}"))
+          expect(res.code).to eq(200)
+        end
+      end
+      thrs.each(&:join)
+
+      res = sub.get(httpbin("/anything"))
+      expect(res.code).to eq(200)
+      expect(res.request.headers["Cookie"]).to eq("0=0; 1=2; 2=4; 3=6; 4=8; 5=10; 6=12; 7=14")
+    end
+
+    it "persistent: true" do
+      sub = described_class.new(persistent: true).freeze
+
+      thrs = []
+      8.times do |i|
+        thrs << Thread.new do
+          res = sub.get(httpbin("/anything"), params: {i => i})
+          expect(res.code).to eq(200)
+          expect(res.headers["Connection"]).to eq("keep-alive")
+          expect(JSON.parse(res.body)["args"]).to eq({i.to_s => i.to_s})
+        end
+      end
+      thrs.each(&:join)
+    end
+  end
+
+  describe "HTTP::Features" do
+    subject do
+      described_class.new(
+        cache: true,
+        cookies: true,
+        persistent: true
+      ).freeze
+    end
+
+    it "logging" do
+      io = StringIO.new
+      sub = subject.dup.use(logging: {logger: Logger.new(io)}).freeze
+
+      res1 = sub.get(httpbin("/cache"))
+      expect(res1).to be_cacheable_using_etag
+      expect(cache_store(sub).instance_variable_get("@data").size).to eq(1)
+
+      out1 = (io.rewind && io.read).tap { io.truncate(0) }
+      expect(out1.scan("< 200 OK").count).to eq(1)
+
+      res2 = sub.get(httpbin("/cache"))
+      expect(res2.code).to eq(200)
+      expect(res2.from_cache?).to eq(true)
+
+      out2 = (io.rewind && io.read).tap { io.truncate(0) }
+      expect(out2.scan("< 200 OK").count).to eq(1)
+    end
+
+    it "instrumentation" do
+      res_arr = []
+      ActiveSupport::Notifications.subscribe("request.http") do |name, start, finish, id, payload|
+        res_arr << payload[:response]
+      end
+
+      require "active_support/isolated_execution_state"
+      sub = subject.dup.use(instrumentation: {instrumenter: ActiveSupport::Notifications.instrumenter}).freeze
+
+      res1 = sub.get(httpbin("/cache"))
+      expect(res1).to be_cacheable_using_etag
+      expect(res_arr).to eql([res1])
+      expect(cache_store(sub).instance_variable_get("@data").size).to eq(1)
+
+      res2 = sub.get(httpbin("/cache"))
+      expect(res2.code).to eq(200)
+      expect(res2.from_cache?).to eq(true)
+      expect(res_arr).to eql([res1, res2])
+    end
+
+    it "auto_inflate" do
+      expect {
+        subject.dup.use(:auto_inflate).freeze
+      }.to raise_error(ArgumentError, /is not supported/)
+    end
+
+    it "hsf_auto_inflate" do
+      sub = subject.dup.use(:hsf_auto_inflate).freeze
+      uri = jsdelivr("/npm/jquery@3.6.4/dist/jquery.min.js")
+
+      res = sub.get(uri)
+      expect(res.code).to eq(200)
+      expect(res.body.to_s).to start_with("/*! jQuery v3.6.4 |")
+
+      res = sub.get(uri)
+      expect(res.code).to eq(200)
+      expect(res.from_cache?).to eq(true)
+      expect(res.body.to_s).to start_with("/*! jQuery v3.6.4 |")
+
+      res = sub.get(uri, headers: {"Accept-Encoding" => "gzip"})
+      expect(res.code).to eq(200)
+      expect(res.body.to_s).to start_with("/*! jQuery v3.6.4 |")
+
+      res = sub.get(uri, headers: {"Accept-Encoding" => "gzip"})
+      expect(res.code).to eq(200)
+      expect(res.from_cache?).to eq(true)
+      expect(res.body.to_s).to start_with("/*! jQuery v3.6.4 |")
+    end
+
+    it "hsf_auto_inflate - br", skip: (RUBY_ENGINE == "jruby" && "gem 'brotli' not works in JRuby") do
+      sub = subject.dup.use(hsf_auto_inflate: {br: true}).freeze
+      uri = jsdelivr("/npm/jquery@3.6.4/dist/jquery.min.js")
+
+      res = sub.get(uri, headers: {"Accept-Encoding" => "br"})
+      expect(res.code).to eq(200)
+      expect(res.body.to_s).to start_with("/*! jQuery v3.6.4 |")
+
+      res = sub.get(uri, headers: {"Accept-Encoding" => "br"})
+      expect(res.code).to eq(200)
+      expect(res.from_cache?).to eq(true)
+      expect(res.body.to_s).to start_with("/*! jQuery v3.6.4 |")
+    end
+
+    it "handle responses in the reverse order from the requests" do
+      feature_class_order =
+        Class.new(HTTP::Feature) do
+          @order = []
+
+          class << self
+            attr_reader :order
+          end
+
+          def initialize(id:)
+            @id = id
+          end
+
+          def wrap_request(req)
+            self.class.order << "request.#{@id}"
+            req
+          end
+
+          def wrap_response(res)
+            self.class.order << "response.#{@id}"
+            res
+          end
+        end
+      feature_instance_a = feature_class_order.new(id: "a")
+      feature_instance_b = feature_class_order.new(id: "b")
+      feature_instance_c = feature_class_order.new(id: "c")
+
+      sub = subject.dup.use(
+        test_feature_a: feature_instance_a,
+        test_feature_b: feature_instance_b,
+        test_feature_c: feature_instance_c
+      ).freeze
+      sub.get(httpbin("/cache"))
+
+      expect(feature_class_order.order).to eq(
+        ["request.a", "request.b", "request.c", "response.c", "response.b", "response.a"]
+      )
     end
   end
 end
