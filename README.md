@@ -23,7 +23,6 @@ require "http-session"
 
 http = HTTP.session(cookies: true)
   .follow
-  .timeout(8)
   .freeze
 
 r = http.get("https://httpbin.org/cookies/set/mycookies/abc")
@@ -42,8 +41,6 @@ will be used to determine whether the response is cacheable or not.
 require "http-session"
 
 http = HTTP.session(cache: true)
-  .follow
-  .timeout(8)
   .freeze
 
 # takes only 1 time to deliver the request to the origin server
@@ -61,8 +58,6 @@ will be used to manage persistent connections.
 require "http-session"
 
 http = HTTP.session(persistent: true)
-  .follow
-  .timeout(8)
   .freeze
 
 http.get("https://httpbin.org/get") # create a persistent connection#1
@@ -107,8 +102,6 @@ cache unless explicitly allowed. Read [rfc9111#section-3.5] for more.
 
 ```ruby
 http = HTTP.session(cache: true) # or HTTP.session(cache: {shared: true})
-  .follow
-  .timeout(8)
   .freeze
 
 res = http.get("https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js")
@@ -131,8 +124,6 @@ component of a user agent.
 
 ```ruby
 http = HTTP.session(cache: {private: true})
-  .follow
-  .timeout(8)
   .freeze
 ```
 
@@ -144,8 +135,6 @@ can use ths `:store` option to set another store, e.g. `ActiveSupport::Cache::Me
 ```ruby
 store = ActiveSupport::Cache::MemCacheStore.new("localhost", "server-downstairs.localnetwork:8229")
 http = HTTP.session(cache: {store: store})
-  .follow
-  .timeout(8)
   .freeze
 ```
 
@@ -209,8 +198,6 @@ require "http-session"
 require "logger"
 
 http = HTTP.session(cache: true)
-  .follow
-  .timeout(8)
   .use(logging: { logger: Logger.new($stdout) })
   .freeze
 
@@ -239,8 +226,6 @@ ActiveSupport::Notifications.subscribe('request.http') do |name, start, finish, 
 end
 
 http = HTTP.session(cache: true)
-  .follow
-  .timeout(8)
   .use(instrumentation: { instrumenter: ActiveSupport::Notifications.instrumenter })
   .freeze
 
@@ -260,8 +245,6 @@ require "http-session"
 require "brotli"
 
 http = HTTP.session(cache: true)
-  .follow
-  .timeout(8)
   .use(hsf_auto_inflate: {br: true})
   .freeze
 
