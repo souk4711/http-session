@@ -725,7 +725,7 @@ RSpec.describe HTTP::Session, vcr: true do
 
   describe "redirect" do
     subject do
-      described_class.new.freeze
+      described_class.new.follow.freeze
     end
 
     it "redirect n times" do
@@ -737,18 +737,56 @@ RSpec.describe HTTP::Session, vcr: true do
       expect(cnt).to eq(4)
     end
 
+    it "redirect cross site" do
+      res = subject.get(httpbin("/redirect-to?url=https://example.com"))
+      expect(res.request.uri.to_s).to eq("https://example.com/")
+      expect(res.code).to eq(200)
+    end
+
+    it "absolute location" do
+      res = subject.get(httpbin("/absolute-redirect/1"))
+      expect(res.request.uri.to_s).to eq("http://httpbin.org/get")
+      expect(res.code).to eq(200)
+    end
+
+    it "relative location" do
+      res = subject.get(httpbin("/relative-redirect/1"))
+      expect(res.request.uri.to_s).to eq("https://httpbin.org/get")
+      expect(res.code).to eq(200)
+    end
+
+    it "too many hops" do
+      expect do
+        subject.get(httpbin("/redirect/4"), follow: {
+          max_hops: 3
+        })
+      end.to raise_error(HTTP::Session::Exceptions::RedirectError, "too many hops")
+    end
+
     context "cookies: true" do
       subject do
-        described_class.new(cookies: true).freeze
+        described_class.new(cookies: true).follow.freeze
       end
 
       it "Set-Cookie" do
-        res = subject.get(httpbin("/cookies/set/a/1"), follow: true)
+        res = subject.get(httpbin("/cookies/set/a/1"))
         expect(res.code).to eq(200)
 
         res = subject.get(httpbin("/anything"))
         expect(res.code).to eq(200)
         expect(res.request.headers["Cookie"]).to eq("a=1")
+      end
+    end
+
+    context "persistent: true" do
+      subject do
+        described_class.new(persistent: true).follow.freeze
+      end
+
+      it "redirect cross site" do
+        res = subject.get(httpbin("/redirect-to?url=https://example.com"))
+        expect(res.request.uri.to_s).to eq("https://example.com/")
+        expect(res.code).to eq(200)
       end
     end
   end

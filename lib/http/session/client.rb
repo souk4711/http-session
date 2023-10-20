@@ -27,46 +27,18 @@ class HTTP::Session
     # @return [Response]
     def _hs_request(verb, uri, opts)
       cookies = _hs_cookies_load
-      hist = []
 
       opts = @default_options.merge(opts)
       opts = _hs_handle_http_request_options_cookies(opts, cookies)
-      opts = _hs_handle_http_request_options_follow(opts, hist)
 
       req = build_request(verb, uri, opts)
-      res = perform(req, opts)
-      return res unless opts.follow
-
-      HTTP::Redirector.new(opts.follow).perform(req, res) do |request|
-        request = HTTP::Session::Request.new(request)
-        perform(request, opts)
-      end.tap do |res|
-        res.history = hist
-      end
+      perform(req, opts)
     end
 
     # Add session cookie to the request's :cookies.
     def _hs_handle_http_request_options_cookies(opts, cookies)
       return opts if cookies.nil?
       opts.with_cookies(cookies)
-    end
-
-    # Wrap the :on_redirect method in the request's :follow.
-    def _hs_handle_http_request_options_follow(opts, hist)
-      return opts unless opts.follow
-
-      follow = (opts.follow == true) ? {} : opts.follow
-      opts.with_follow(follow.merge(
-        on_redirect: _hs_handle_http_request_options_follow_hijack(follow[:on_redirect], hist)
-      ))
-    end
-
-    # Wrap the :on_redirect method.
-    def _hs_handle_http_request_options_follow_hijack(fn, hist)
-      lambda do |res, req|
-        hist << res
-        fn.call(res, req) if fn.respond_to?(:call)
-      end
     end
 
     # Load cookies.

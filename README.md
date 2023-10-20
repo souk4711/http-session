@@ -197,7 +197,7 @@ Log requests and responses.
 require "http-session"
 require "logger"
 
-http = HTTP.session(cache: true)
+http = HTTP.session
   .use(logging: { logger: Logger.new($stdout) })
   .freeze
 
@@ -225,7 +225,7 @@ ActiveSupport::Notifications.subscribe('request.http') do |name, start, finish, 
   pp start: start, req: payload[:request].inspect, res: payload[:response].inspect
 end
 
-http = HTTP.session(cache: true)
+http = HTTP.session
   .use(instrumentation: { instrumenter: ActiveSupport::Notifications.instrumenter })
   .freeze
 
@@ -244,7 +244,7 @@ Simlar to `auto_inflate`, used for automatically decompressing the response body
 require "http-session"
 require "brotli"
 
-http = HTTP.session(cache: true)
+http = HTTP.session
   .use(hsf_auto_inflate: {br: true})
   .freeze
 

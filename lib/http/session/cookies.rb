@@ -41,12 +41,9 @@ class HTTP::Session
     end
 
     def write_cookies(res)
-      all = ([] << res.history << res).flatten
-      all.each do |r|
-        req = r.request
-        r.headers.get(HTTP::Headers::SET_COOKIE).each do |header|
-          jar.parse(header, req.uri)
-        end
+      req = res.request
+      res.headers.get(HTTP::Headers::SET_COOKIE).each do |header|
+        jar.parse(header, req.uri)
       end
     end
 

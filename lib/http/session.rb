@@ -22,6 +22,7 @@ require_relative "session/response"
 require_relative "session/features/auto_inflate"
 require_relative "session/client/perform"
 require_relative "session/client"
+require_relative "session/redirector"
 require_relative "session/configurable"
 require_relative "session/requestable"
 require_relative "session/version"
@@ -59,6 +60,21 @@ class HTTP::Session
   # @param [Hash] opts
   # @return [Response]
   def request(verb, uri, opts = {})
+    http_opts = @default_options.http.merge(opts)
+    opts[:follow] = false
+
+    res = perform(verb, uri, opts)
+    return res unless http_opts.follow
+
+    redirector = HTTP::Session::Redirector.new(http_opts.follow)
+    redirector.perform(res) do |verb, uri|
+      perform(verb, uri, {})
+    end
+  end
+
+  private
+
+  def perform(verb, uri, opts)
     @pool_mgr.with(uri) do |c|
       c.request(verb, uri, opts)
     end
