@@ -1,0 +1,192 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://httpbin.org/cookies/set/a/1
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Connection:
+      - close
+      Host:
+      - httpbin.org
+      User-Agent:
+      - http.rb/5.1.1
+  response:
+    status:
+      code: 302
+      message: Found
+    headers:
+      Date:
+      - Fri, 20 Oct 2023 13:04:12 GMT
+      Content-Type:
+      - text/html; charset=utf-8
+      Content-Length:
+      - '223'
+      Connection:
+      - close
+      Server:
+      - gunicorn/19.9.0
+      Location:
+      - "/cookies"
+      Set-Cookie:
+      - a=1; Path=/
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Credentials:
+      - 'true'
+    body:
+      encoding: UTF-8
+      string: |-
+        <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+        <title>Redirecting...</title>
+        <h1>Redirecting...</h1>
+        <p>You should be redirected automatically to target URL: <a href="/cookies">/cookies</a>.  If not click the link.
+  recorded_at: Fri, 20 Oct 2023 13:04:13 GMT
+- request:
+    method: get
+    uri: https://httpbin.org/cookies
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Connection:
+      - close
+      Cookie:
+      - a=1
+      Host:
+      - httpbin.org
+      User-Agent:
+      - http.rb/5.1.1
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 20 Oct 2023 13:04:15 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '36'
+      Connection:
+      - close
+      Server:
+      - gunicorn/19.9.0
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Credentials:
+      - 'true'
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "cookies": {
+            "a": "1"
+          }
+        }
+  recorded_at: Fri, 20 Oct 2023 13:04:15 GMT
+- request:
+    method: get
+    uri: https://httpbin.org/redirect-to?url=https://example.com
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Connection:
+      - close
+      Cookie:
+      - a=1
+      Host:
+      - httpbin.org
+      User-Agent:
+      - http.rb/5.1.1
+  response:
+    status:
+      code: 302
+      message: Found
+    headers:
+      Date:
+      - Fri, 20 Oct 2023 13:04:16 GMT
+      Content-Type:
+      - text/html; charset=utf-8
+      Content-Length:
+      - '0'
+      Connection:
+      - close
+      Server:
+      - gunicorn/19.9.0
+      Location:
+      - https://example.com
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Credentials:
+      - 'true'
+    body:
+      encoding: UTF-8
+      string: ''
+  recorded_at: Fri, 20 Oct 2023 13:04:16 GMT
+- request:
+    method: get
+    uri: https://example.com/
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Connection:
+      - close
+      Host:
+      - example.com
+      User-Agent:
+      - http.rb/5.1.1
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Age:
+      - '214379'
+      Cache-Control:
+      - max-age=604800
+      Content-Type:
+      - text/html; charset=UTF-8
+      Date:
+      - Fri, 20 Oct 2023 13:04:18 GMT
+      Etag:
+      - '"3147526947+gzip+ident"'
+      Expires:
+      - Fri, 27 Oct 2023 13:04:18 GMT
+      Last-Modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
+      Server:
+      - ECS (sac/2555)
+      Vary:
+      - Accept-Encoding
+      X-Cache:
+      - HIT
+      Content-Length:
+      - '1256'
+      Connection:
+      - close
+    body:
+      encoding: UTF-8
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
+        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
+        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
+        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
+        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
+        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
+        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
+        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
+        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
+        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
+        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
+        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
+        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
+        \   <p>This domain is for use in illustrative examples in documents. You may
+        use this\n    domain in literature without prior coordination or asking for
+        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
+        information...</a></p>\n</div>\n</body>\n</html>\n"
+  recorded_at: Fri, 20 Oct 2023 13:04:19 GMT
+recorded_with: VCR 6.2.0

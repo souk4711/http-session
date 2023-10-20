@@ -17,7 +17,7 @@ class HTTP::Session
     # @return [Response]
     def request(verb, uri, opts)
       opts = default_options.merge(opts)
-      opts = _hs_handle_http_request_options_cookies(opts)
+      opts = _hs_handle_http_request_options_cookies(uri, opts)
 
       req = build_request(verb, uri, opts)
       res = perform(req, opts)
@@ -29,15 +29,15 @@ class HTTP::Session
     private
 
     # Add session cookies to the request's :cookies.
-    def _hs_handle_http_request_options_cookies(opts)
-      cookies = _hs_cookies_load
+    def _hs_handle_http_request_options_cookies(uri, opts)
+      cookies = _hs_cookies_load(uri)
       cookies.nil? ? opts : opts.with_cookies(cookies)
     end
 
     # Load cookies.
-    def _hs_cookies_load
+    def _hs_cookies_load(uri)
       return unless @session.cookies_mgr.enabled?
-      @session.cookies_mgr.read
+      @session.cookies_mgr.read(uri)
     end
 
     # Save cookies.

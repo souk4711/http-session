@@ -17,9 +17,9 @@ class HTTP::Session
     # Read cookies.
     #
     # @return [nil, Hash]
-    def read
+    def read(uri)
       synchronize do
-        read_cookies
+        read_cookies(uri)
       end
     end
 
@@ -35,9 +35,9 @@ class HTTP::Session
 
     private
 
-    def read_cookies
+    def read_cookies(uri)
       return if jar.empty?
-      jar.cookies.each_with_object({}) { |c, h| h[c.name] = c.value }
+      jar.cookies(uri).each_with_object({}) { |c, h| h[c.name] = c.value }
     end
 
     def write_cookies(res)

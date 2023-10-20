@@ -428,6 +428,15 @@ RSpec.describe HTTP::Session, vcr: true do
         expect(res.request.headers["Cookie"]).to eq(nil)
       end
 
+      it "can't use cookies cross site" do
+        res = subject.get(httpbin("/cookies/set/a/1"))
+        expect(res.code).to eq(302)
+
+        res = subject.get("https://example.com")
+        expect(res.code).to eq(200)
+        expect(res.request.headers["Cookie"]).to eq(nil)
+      end
+
       it "can use cookies across requests" do
         res = subject.get(httpbin("/cookies/set/a/1"))
         expect(res.code).to eq(302)
@@ -776,6 +785,16 @@ RSpec.describe HTTP::Session, vcr: true do
         expect(res.code).to eq(200)
         expect(res.request.headers["Cookie"]).to eq("a=1")
       end
+
+      it "redirect cross site without Cookie" do
+        res = subject.get(httpbin("/cookies/set/a/1"))
+        expect(res.code).to eq(200)
+
+        res = subject.get(httpbin("/redirect-to?url=https://example.com"))
+        expect(res.code).to eq(200)
+        expect(res.request.uri.to_s).to eq("https://example.com/")
+        expect(res.request.headers["Cookie"]).to eq(nil)
+      end
     end
 
     context "persistent: true" do
@@ -783,10 +802,10 @@ RSpec.describe HTTP::Session, vcr: true do
         described_class.new(persistent: true).follow.freeze
       end
 
-      it "redirect cross site" do
+      it "redirect cross site without HTTP::StateError" do
         res = subject.get(httpbin("/redirect-to?url=https://example.com"))
-        expect(res.request.uri.to_s).to eq("https://example.com/")
         expect(res.code).to eq(200)
+        expect(res.request.uri.to_s).to eq("https://example.com/")
       end
     end
   end

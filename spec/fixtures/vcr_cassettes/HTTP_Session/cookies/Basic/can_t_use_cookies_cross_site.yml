@@ -2,13 +2,13 @@
 http_interactions:
 - request:
     method: get
-    uri: https://httpbin.org/redirect-to?url=https://example.com
+    uri: https://httpbin.org/cookies/set/a/1
     body:
       encoding: ASCII-8BIT
       string: ''
     headers:
       Connection:
-      - Keep-Alive
+      - close
       Host:
       - httpbin.org
       User-Agent:
@@ -19,25 +19,31 @@ http_interactions:
       message: Found
     headers:
       Date:
-      - Thu, 19 Oct 2023 20:08:46 GMT
+      - Fri, 20 Oct 2023 13:04:04 GMT
       Content-Type:
       - text/html; charset=utf-8
       Content-Length:
-      - '0'
+      - '223'
       Connection:
-      - keep-alive
+      - close
       Server:
       - gunicorn/19.9.0
       Location:
-      - https://example.com
+      - "/cookies"
+      Set-Cookie:
+      - a=1; Path=/
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Allow-Credentials:
       - 'true'
     body:
       encoding: UTF-8
-      string: ''
-  recorded_at: Thu, 19 Oct 2023 20:08:46 GMT
+      string: |-
+        <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+        <title>Redirecting...</title>
+        <h1>Redirecting...</h1>
+        <p>You should be redirected automatically to target URL: <a href="/cookies">/cookies</a>.  If not click the link.
+  recorded_at: Fri, 20 Oct 2023 13:04:04 GMT
 - request:
     method: get
     uri: https://example.com/
@@ -46,7 +52,7 @@ http_interactions:
       string: ''
     headers:
       Connection:
-      - Keep-Alive
+      - close
       Host:
       - example.com
       User-Agent:
@@ -56,28 +62,32 @@ http_interactions:
       code: 200
       message: OK
     headers:
+      Accept-Ranges:
+      - bytes
       Age:
-      - '586869'
+      - '42986'
       Cache-Control:
       - max-age=604800
       Content-Type:
       - text/html; charset=UTF-8
       Date:
-      - Thu, 19 Oct 2023 20:08:48 GMT
+      - Fri, 20 Oct 2023 13:04:05 GMT
       Etag:
-      - '"3147526947+ident"'
+      - '"3147526947"'
       Expires:
-      - Thu, 26 Oct 2023 20:08:48 GMT
+      - Fri, 27 Oct 2023 13:04:05 GMT
       Last-Modified:
       - Thu, 17 Oct 2019 07:18:26 GMT
       Server:
-      - ECS (sac/2557)
+      - ECS (sac/2531)
       Vary:
       - Accept-Encoding
       X-Cache:
       - HIT
       Content-Length:
       - '1256'
+      Connection:
+      - close
     body:
       encoding: UTF-8
       string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
@@ -97,5 +107,5 @@ http_interactions:
         use this\n    domain in literature without prior coordination or asking for
         permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
         information...</a></p>\n</div>\n</body>\n</html>\n"
-  recorded_at: Thu, 19 Oct 2023 20:08:48 GMT
+  recorded_at: Fri, 20 Oct 2023 13:04:05 GMT
 recorded_with: VCR 6.2.0
