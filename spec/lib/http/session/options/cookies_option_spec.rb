@@ -11,7 +11,7 @@ RSpec.describe HTTP::Session::Options::CookiesOption do
     end
   end
 
-  it "#jar" do
+  it "#jar", skip: (RUBY_ENGINE == "jruby" && "gem 'sqlite3' not works in JRuby") do
     sub = described_class.new(nil)
     expect(sub.jar).to eq(nil)
 
@@ -24,6 +24,7 @@ RSpec.describe HTTP::Session::Options::CookiesOption do
     sub = described_class.new(jar: nil)
     expect(sub.jar).to be_a(HTTP::CookieJar)
 
+    Dir.mkdir("./tmp") unless Dir.exist?("./tmp")
     sub = described_class.new(jar: {store: :mozilla, filename: "./tmp/cookies.sqlite"})
     expect(sub.jar).to be_a(HTTP::CookieJar)
 

@@ -8,7 +8,7 @@ gemspec
 # optional dependencies
 gem "activesupport", "~> 7.0"
 gem "brotli", platforms: :ruby
-gem "sqlite3"
+gem "sqlite3", platforms: :ruby
 
 # rake
 gem "rake", "~> 13.0"
