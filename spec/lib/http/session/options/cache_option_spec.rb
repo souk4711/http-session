@@ -43,7 +43,10 @@ RSpec.describe HTTP::Session::Options::CacheOption do
     end
   end
 
-  it "#cache" do
+  it "#store" do
+    sub = described_class.new(nil)
+    expect(sub.store).to eq(nil)
+
     sub = described_class.new(enabled: false)
     expect(sub.store).to eq(nil)
 
