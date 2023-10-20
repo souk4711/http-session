@@ -793,7 +793,7 @@ RSpec.describe HTTP::Session, vcr: true do
 
   describe "thread safe" do
     it "cache: true" do
-      sub = described_class.new(cache: true).follow.freeze
+      sub = described_class.new(cache: true).freeze
       res = sub.get(httpbin("/cache/0"))
       Timecop.freeze(res.date)
 

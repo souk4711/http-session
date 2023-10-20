@@ -77,7 +77,7 @@ class HTTP::Session
       end
 
       def build_request(verb, uri, opts = {})
-        opts = @default_options.merge(opts)
+        opts = default_options.merge(opts)
         uri = make_request_uri(uri, opts)
         headers = make_request_headers(opts)
         body = make_request_body(opts, headers)

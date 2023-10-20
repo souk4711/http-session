@@ -9,36 +9,29 @@ class HTTP::Session
       @session = session
     end
 
+    # Make an HTTP request.
+    #
     # @param verb
     # @param uri
     # @param [Hash] opts
     # @return [Response]
     def request(verb, uri, opts)
-      _hs_request(verb, uri, opts).tap do |res|
-        _hs_cookies_save(res)
-      end
+      opts = default_options.merge(opts)
+      opts = _hs_handle_http_request_options_cookies(opts)
+
+      req = build_request(verb, uri, opts)
+      res = perform(req, opts)
+      _hs_cookies_save(res)
+
+      res
     end
 
     private
 
-    # @param verb
-    # @param uri
-    # @param [Hash] opts
-    # @return [Response]
-    def _hs_request(verb, uri, opts)
+    # Add session cookies to the request's :cookies.
+    def _hs_handle_http_request_options_cookies(opts)
       cookies = _hs_cookies_load
-
-      opts = @default_options.merge(opts)
-      opts = _hs_handle_http_request_options_cookies(opts, cookies)
-
-      req = build_request(verb, uri, opts)
-      perform(req, opts)
-    end
-
-    # Add session cookie to the request's :cookies.
-    def _hs_handle_http_request_options_cookies(opts, cookies)
-      return opts if cookies.nil?
-      opts.with_cookies(cookies)
+      cookies.nil? ? opts : opts.with_cookies(cookies)
     end
 
     # Load cookies.
@@ -53,7 +46,7 @@ class HTTP::Session
       @session.cookies_mgr.write(res)
     end
 
-    # Make an HTTP request.
+    # Perform a single HTTP request with features.
     #
     # @param [Request] req
     # @param [HTTP::Options] opts
@@ -63,7 +56,7 @@ class HTTP::Session
       wrap_response(_hs_perform(req, opts), opts)
     end
 
-    # Make an HTTP request using cache.
+    # Perform a single HTTP request.
     def _hs_perform(req, opts)
       if @session.cache_mgr.enabled?
         req.cacheable? ? _hs_cache_lookup(req, opts) : _hs_cache_pass(req, opts)
