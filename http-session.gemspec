@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.authors = ["John Doe"]
   spec.email = ["johndoe@example.com"]
 
-  spec.summary = "HTTP::Session - a session abstraction for http.rb in order to support cookies and caching."
-  spec.description = "HTTP::Session - a session abstraction for http.rb in order to support cookies and caching."
+  spec.summary = "HTTP::Session - a session abstraction for http.rb in order to support Cookies and Caching."
+  spec.description = "HTTP::Session - a session abstraction for http.rb in order to support Cookies and Caching."
   spec.homepage = "https://github.com/souk4711/http-session"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 2.6.0"

@@ -1,6 +1,23 @@
 # HTTP::Session
 
-HTTP::Session - a session abstraction for [http.rb] in order to support **cookies** and **caching**.
+HTTP::Session - a session abstraction for [http.rb] in order to support **Cookies** and **Caching**.
+
+```ruby
+require "http-session"
+require "logger"
+
+http = HTTP.session(
+  cookies: true,
+  cache: {private: true, store: [:file_store, "./tmp/cache"]},
+  persistent: {pools: {"https://httpbin.org" => true}}
+)
+  .timeout(8)
+  .follow
+  .use(logging: {logger: Logger.new($stdout)})
+  .freeze
+
+http.get("https://httpbin.org/get")
+```
 
 
 ## Quickstart
@@ -66,10 +83,6 @@ http.get("https://httpbin.org/get") # reuse connection#1
 http.get("https://example.org")     # create a persistent connection#2
 http.get("https://example.org")     # reuse connection#2
 ```
-
-### Thread Safe
-
-**It works by default.**
 
 
 ## Reference
