@@ -16,6 +16,13 @@ class HTTP::Session
           normalize_pools(@options.fetch(:pools, {"*" => true}))
       end
 
+      # @!visibility private
+      def freeze
+        super.tap do
+          pools.freeze
+        end
+      end
+
       private
 
       def normalize_pools(pools)

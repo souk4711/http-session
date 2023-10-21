@@ -20,6 +20,11 @@ class HTTP::Session
           end
       end
 
+      # @!visibility private
+      def freeze
+        super
+      end
+
       private
 
       def lookup_jar(jar)

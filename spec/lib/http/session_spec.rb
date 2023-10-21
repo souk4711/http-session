@@ -461,28 +461,28 @@ RSpec.describe HTTP::Session, vcr: true do
       end
 
       it "Session#cookies" do
-        sub = subject.dup.cookies(a: 1).freeze
+        sub = described_class.new(cookies: true).cookies(a: 1).freeze
         res = sub.get(httpbin("/anything"))
         expect(res.code).to eq(200)
         expect(res.request.headers["Cookie"]).to eq("a=1")
       end
 
       it "Session#headers" do
-        sub = subject.dup.headers("Cookie" => "a=1").freeze
+        sub = described_class.new(cookies: true).headers("Cookie" => "a=1").freeze
         res = sub.get(httpbin("/anything"))
         expect(res.code).to eq(200)
         expect(res.request.headers["Cookie"]).to eq("a=1")
       end
 
       it "Session#cookies & :cookies" do
-        sub = subject.dup.cookies(a: 1).freeze
+        sub = described_class.new(cookies: true).cookies(a: 1).freeze
         res = sub.get(httpbin("/anything"), cookies: {_: "b=2"})
         expect(res.code).to eq(200)
         expect(res.request.headers["Cookie"]).to eq("b=2")
       end
 
       it "Session#headers & :headers" do
-        sub = subject.dup.headers("Cookie" => "a=1").freeze
+        sub = described_class.new(cookies: true).headers("Cookie" => "a=1").freeze
         res = sub.get(httpbin("/anything"), headers: {"Cookie" => "b=2"})
         expect(res.code).to eq(200)
         expect(res.request.headers["Cookie"]).to eq("b=2")
@@ -561,7 +561,7 @@ RSpec.describe HTTP::Session, vcr: true do
       end
 
       it "Session#cookies & set" do
-        sub = subject.dup.cookies(b: 2).freeze
+        sub = described_class.new(cookies: true).cookies(b: 2).freeze
 
         res = sub.get(httpbin("/cookies/set?a=1"))
         expect(res.code).to eq(302)
@@ -573,7 +573,7 @@ RSpec.describe HTTP::Session, vcr: true do
       end
 
       it "Session#headers & set" do
-        sub = subject.dup.headers("Cookie" => "b=2").freeze
+        sub = described_class.new(cookies: true).headers("Cookie" => "b=2").freeze
 
         res = sub.get(httpbin("/cookies/set?a=1"))
         expect(res.code).to eq(302)
@@ -585,7 +585,7 @@ RSpec.describe HTTP::Session, vcr: true do
       end
 
       it "Session#cookies & :cookies & set" do
-        sub = subject.dup.cookies(b: 2).freeze
+        sub = described_class.new(cookies: true).cookies(b: 2).freeze
 
         res = sub.get(httpbin("/cookies/set?a=1"), cookies: {_: "c=3"})
         expect(res.code).to eq(302)
@@ -601,7 +601,7 @@ RSpec.describe HTTP::Session, vcr: true do
       end
 
       it "Session#headers & :headers & set" do
-        sub = subject.dup.headers("Cookie" => "b=2").freeze
+        sub = described_class.new(cookies: true).headers("Cookie" => "b=2").freeze
 
         res = sub.get(httpbin("/cookies/set?a=1"), headers: {"Cookie" => "c=3"})
         expect(res.code).to eq(302)
@@ -878,12 +878,12 @@ RSpec.describe HTTP::Session, vcr: true do
         cache: true,
         cookies: true,
         persistent: true
-      ).freeze
+      )
     end
 
     it "logging" do
       io = StringIO.new
-      sub = subject.dup.use(logging: {logger: Logger.new(io)}).freeze
+      sub = subject.use(logging: {logger: Logger.new(io)}).freeze
 
       res1 = sub.get(httpbin("/cache"))
       expect(res1).to be_cacheable_using_etag
@@ -907,7 +907,7 @@ RSpec.describe HTTP::Session, vcr: true do
       end
 
       require "active_support/isolated_execution_state"
-      sub = subject.dup.use(instrumentation: {instrumenter: ActiveSupport::Notifications.instrumenter}).freeze
+      sub = subject.use(instrumentation: {instrumenter: ActiveSupport::Notifications.instrumenter}).freeze
 
       res1 = sub.get(httpbin("/cache"))
       expect(res1).to be_cacheable_using_etag
@@ -922,12 +922,12 @@ RSpec.describe HTTP::Session, vcr: true do
 
     it "auto_inflate" do
       expect {
-        subject.dup.use(:auto_inflate).freeze
+        subject.use(:auto_inflate).freeze
       }.to raise_error(ArgumentError, /is not supported/)
     end
 
     it "hsf_auto_inflate" do
-      sub = subject.dup.use(:hsf_auto_inflate).freeze
+      sub = subject.use(:hsf_auto_inflate).freeze
       uri = jsdelivr("/npm/jquery@3.6.4/dist/jquery.min.js")
 
       res = sub.get(uri)
@@ -950,7 +950,7 @@ RSpec.describe HTTP::Session, vcr: true do
     end
 
     it "hsf_auto_inflate - br", skip: (RUBY_ENGINE == "jruby" && "gem 'brotli' not works in JRuby") do
-      sub = subject.dup.use(hsf_auto_inflate: {br: true}).freeze
+      sub = subject.use(hsf_auto_inflate: {br: true}).freeze
       uri = jsdelivr("/npm/jquery@3.6.4/dist/jquery.min.js")
 
       res = sub.get(uri, headers: {"Accept-Encoding" => "br"})
@@ -990,7 +990,7 @@ RSpec.describe HTTP::Session, vcr: true do
       feature_instance_b = feature_class_order.new(id: "b")
       feature_instance_c = feature_class_order.new(id: "c")
 
-      sub = subject.dup.use(
+      sub = subject.use(
         test_feature_a: feature_instance_a,
         test_feature_b: feature_instance_b,
         test_feature_c: feature_instance_c

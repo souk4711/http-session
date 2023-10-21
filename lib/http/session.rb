@@ -72,6 +72,13 @@ class HTTP::Session
     end
   end
 
+  # @!visibility private
+  def freeze
+    super.tap do
+      default_options.freeze
+    end
+  end
+
   private
 
   def perform(verb, uri, opts)

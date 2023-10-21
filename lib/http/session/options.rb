@@ -81,5 +81,15 @@ class HTTP::Session
     def with_proxy(proxy)
       tap { @http = @http.with_proxy(proxy) }
     end
+
+    # @!visibility private
+    def freeze
+      super.tap do
+        cookies.freeze
+        cache.freeze
+        persistent.freeze
+        http.freeze
+      end
+    end
   end
 end

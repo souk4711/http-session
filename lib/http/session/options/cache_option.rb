@@ -53,6 +53,11 @@ class HTTP::Session
         !shared_cache?
       end
 
+      # @!visibility private
+      def freeze
+        super
+      end
+
       private
 
       def lookup_store(store)
