@@ -66,16 +66,18 @@ RSpec.describe HTTP::Session::ConnectionPool do
 
       thrs = []
       thrs << Thread.new { pool.with { |conn| sleep 1 } } # conn#1
-      thrs << Thread.new { pool.with { |conn| sleep 2 } } # conn#2
-      thrs.each(&:join)
+      thrs << Thread.new { sleep(0.5) && pool.with { |conn| sleep 1.5 } } # conn#2
+      sleep 2.5
 
       # 0.0 ->  obtain conn#1
-      # 0.0 ->  obtain conn#2
+      # 0.5 ->  obtain conn#2
       # 1.0 -> release conn#1
       # 2.0 -> release conn#2
       # 2.5 ->  obtain conn#2
       # 2.5 -> release conn#2
       pool.with { |conn| expect(conn.id).to eq(2) } # conn#2
+    ensure
+      thrs.each(&:join)
     end
 
     it "timeout" do
