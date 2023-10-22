@@ -1,0 +1,83 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://httpbin.org/redirect/1?q=1
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Connection:
+      - close
+      Host:
+      - httpbin.org
+      User-Agent:
+      - http.rb/5.1.1
+  response:
+    status:
+      code: 302
+      message: Found
+    headers:
+      Date:
+      - Sun, 22 Oct 2023 11:02:43 GMT
+      Content-Type:
+      - text/html; charset=utf-8
+      Content-Length:
+      - '215'
+      Connection:
+      - close
+      Server:
+      - gunicorn/19.9.0
+      Location:
+      - "/get"
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Credentials:
+      - 'true'
+    body:
+      encoding: UTF-8
+      string: |-
+        <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+        <title>Redirecting...</title>
+        <h1>Redirecting...</h1>
+        <p>You should be redirected automatically to target URL: <a href="/get">/get</a>.  If not click the link.
+  recorded_at: Sun, 22 Oct 2023 11:02:43 GMT
+- request:
+    method: get
+    uri: https://httpbin.org/get
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Connection:
+      - close
+      Host:
+      - httpbin.org
+      User-Agent:
+      - http.rb/5.1.1
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Sun, 22 Oct 2023 11:02:44 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '237'
+      Connection:
+      - close
+      Server:
+      - gunicorn/19.9.0
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Credentials:
+      - 'true'
+    body:
+      encoding: UTF-8
+      string: "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\",
+        \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\": \"Root=1-65350154-5e09b8294c93252d21fdfbcc\"\n
+        \ }, \n  \"origin\": \"113.118.113.226\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
+  recorded_at: Sun, 22 Oct 2023 11:02:45 GMT
+recorded_with: VCR 6.2.0

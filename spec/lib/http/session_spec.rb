@@ -737,35 +737,6 @@ RSpec.describe HTTP::Session, vcr: true do
       described_class.new.follow.freeze
     end
 
-    it "redirect n times" do
-      cnt = 0
-      res = subject.get(httpbin("/redirect/4"), follow: {
-        on_redirect: ->(_, _) { cnt += 1 }
-      })
-      expect(res.code).to eq(200)
-      expect(cnt).to eq(4)
-    end
-
-    it "redirect cross site" do
-      res = subject.get(httpbin("/redirect-to?url=https://example.com"))
-      expect(res.request.uri.to_s).to eq("https://example.com/")
-      expect(res.code).to eq(200)
-    end
-
-    it "redirect cross site - remove Authorization header" do
-      sub = described_class.new.headers(Authorization: "Basic <credentials>").follow.freeze
-      res = sub.get(httpbin("/redirect-to?url=https://example.com"))
-
-      expect(res.history[0].request.headers["Authorization"]).to eq("Basic <credentials>")
-      expect(res.history[0].request.headers["Host"]).to eq("httpbin.org")
-      expect(res.history[0].code).to eq(302)
-
-      expect(res.request.uri.to_s).to eq("https://example.com/")
-      expect(res.request.headers["Authorization"]).to eq(nil)
-      expect(res.request.headers["Host"]).to eq("example.com")
-      expect(res.code).to eq(200)
-    end
-
     it "absolute location" do
       res = subject.get(httpbin("/absolute-redirect/1"))
       expect(res.request.uri.to_s).to eq("http://httpbin.org/get")
@@ -778,11 +749,46 @@ RSpec.describe HTTP::Session, vcr: true do
       expect(res.code).to eq(200)
     end
 
+    it "redirect n times" do
+      cnt = 0
+      res = subject.get(httpbin("/redirect/4"), follow: {on_redirect: ->(_, _) { cnt += 1 }})
+      expect(res.code).to eq(200)
+      expect(cnt).to eq(4)
+    end
+
+    it "redirect without query string" do
+      res = subject.get(httpbin("/redirect/1"), params: {q: 1})
+      expect(res.request.uri.to_s).to eq("https://httpbin.org/get")
+      expect(res.code).to eq(200)
+    end
+
+    it "redirect cross site" do
+      res = subject.get(httpbin("/redirect-to?url=https://example.com"))
+      expect(res.request.uri.to_s).to eq("https://example.com/")
+      expect(res.code).to eq(200)
+    end
+
+    it "redirect cross site - remove Authorization header" do
+      sub1 = described_class.new.headers(Authorization: "Basic <credentials>").follow.freeze
+      res1 = sub1.get(httpbin("/redirect-to?url=https://example.com"))
+
+      sub2 = described_class.new.follow.freeze
+      res2 = sub2.get(httpbin("/redirect-to?url=https://example.com"), headers: {Authorization: "Basic <credentials>"})
+
+      [res1, res2].each do |res|
+        expect(res.history[0].request.headers["Authorization"]).to eq("Basic <credentials>")
+        expect(res.history[0].request.headers["Host"]).to eq("httpbin.org")
+        expect(res.history[0].code).to eq(302)
+        expect(res.request.uri.to_s).to eq("https://example.com/")
+        expect(res.request.headers["Authorization"]).to eq(nil)
+        expect(res.request.headers["Host"]).to eq("example.com")
+        expect(res.code).to eq(200)
+      end
+    end
+
     it "too many hops" do
       expect do
-        subject.get(httpbin("/redirect/4"), follow: {
-          max_hops: 3
-        })
+        subject.get(httpbin("/redirect/4"), follow: {max_hops: 3})
       end.to raise_error(HTTP::Session::Exceptions::RedirectError, "too many hops")
     end
 
@@ -804,10 +810,23 @@ RSpec.describe HTTP::Session, vcr: true do
         res = subject.get(httpbin("/cookies/set/a/1"))
         expect(res.code).to eq(200)
 
-        res = subject.get(httpbin("/redirect-to?url=https://example.com"))
+        res = subject.get(httpbin("/redirect-to?url=https://github.com"))
         expect(res.code).to eq(200)
-        expect(res.request.uri.to_s).to eq("https://example.com/")
+        expect(res.request.uri.to_s).to eq("https://github.com/")
         expect(res.request.headers["Cookie"]).to eq(nil)
+      end
+
+      it "redirect cross site with same-origin Cookie" do
+        res = subject.get(httpbin("/cookies/set/a/1"))
+        expect(res.code).to eq(200)
+
+        res = subject.get("https://github.com")
+        expect(res.code).to eq(200)
+
+        res = subject.get(httpbin("/redirect-to?url=https://github.com"))
+        expect(res.code).to eq(200)
+        expect(res.request.uri.to_s).to eq("https://github.com/")
+        expect(res.request.headers["Cookie"]).to include("_gh_sess=")
       end
     end
 

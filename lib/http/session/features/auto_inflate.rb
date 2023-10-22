@@ -51,8 +51,6 @@ class HTTP::Session
       ensure
         zstream.close
       end
-
-      HTTP::Options.register_feature(:hsf_auto_inflate, self)
     end
   end
 end

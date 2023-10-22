@@ -40,7 +40,7 @@ class HTTP::Session
 
         verb = make_redirect_to_verb(response, request)
         uri = make_redirect_to_uri(response, request, location)
-        ctx = make_redirect_to_ctx(response, request)
+        ctx = make_redirect_to_ctx(response, request, verb, uri)
 
         @on_redirect.call(response, request) if @on_redirect.respond_to?(:call)
         response = blk.call(verb, uri, ctx)
@@ -80,8 +80,10 @@ class HTTP::Session
       request.uri.join(location)
     end
 
-    def make_redirect_to_ctx(response, request)
-      {follow: {prev: request}}
+    def make_redirect_to_ctx(response, request, verb, uri)
+      HTTP::Session::Context::FollowContext.new(
+        request: request, verb: verb, uri: uri
+      )
     end
   end
 end

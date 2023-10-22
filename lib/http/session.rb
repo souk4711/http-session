@@ -20,6 +20,9 @@ require_relative "session/request"
 require_relative "session/response/string_body"
 require_relative "session/response"
 require_relative "session/features/auto_inflate"
+require_relative "session/features"
+require_relative "session/context/follow_context"
+require_relative "session/context"
 require_relative "session/client/perform"
 require_relative "session/client"
 require_relative "session/redirector"
@@ -67,8 +70,10 @@ class HTTP::Session
     return res unless http_opts.follow
 
     redirector = HTTP::Session::Redirector.new(http_opts.follow)
-    redirector.perform(res) do |verb, uri, ctx|
-      perform(verb, uri, {}, ctx)
+    redirector.perform(res) do |new_verb, new_uri, follow_ctx|
+      new_opts = follow_ctx.same_origin? ? opts : {}
+      ctx = HTTP::Session::Context.new(follow: follow_ctx)
+      perform(new_verb, new_uri, new_opts, ctx)
     end
   end
 
@@ -81,7 +86,7 @@ class HTTP::Session
 
   private
 
-  def perform(verb, uri, opts, ctx = {})
+  def perform(verb, uri, opts, ctx = nil)
     @pool_mgr.with(uri) do |c|
       c.request(verb, uri, opts, ctx)
     end

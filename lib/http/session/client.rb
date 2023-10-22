@@ -14,14 +14,14 @@ class HTTP::Session
     # @param verb
     # @param uri
     # @param [Hash] opts
-    # @param [Hash] ctx
+    # @param [nil, Context] ctx
     # @return [Response]
     def request(verb, uri, opts, ctx)
       opts = default_options.merge(opts)
       opts = _hs_handle_http_request_options_cookies(uri, opts)
 
-      req = build_request(verb, uri, opts)
-      res = perform(req, opts, ctx)
+      req = _hs_build_request(verb, uri, opts, ctx)
+      res = _hs_perform(req, opts)
       _hs_cookies_save(res)
 
       res
@@ -47,33 +47,47 @@ class HTTP::Session
       @session.cookies_mgr.write(res)
     end
 
-    # Perform a single HTTP request with features.
-    #
-    # @param [Request] req
-    # @param [HTTP::Options] opts
-    # @param [Hash] ctx
-    # @return [Response]
-    def perform(req, opts, ctx)
-      req = wrap_request(req, opts)
-      _hs_perform_before_action_handle_follow(req, ctx)
-
-      res = _hs_perform(req, opts)
-      wrap_response(res, opts)
+    # Build a HTTP request.
+    def _hs_build_request(verb, uri, opts, ctx)
+      return build_request(verb, uri, opts) unless ctx&.follow
+      _hs_build_redirection_request(verb, uri, opts, ctx.follow)
     end
 
-    # .
-    def _hs_perform_before_action_handle_follow(req, ctx)
-      return unless ctx.key?(:follow)
+    # Build a HTTP request for redirection.
+    def _hs_build_redirection_request(verb, uri, opts, ctx)
+      opts = default_options.merge(opts)
+      headers = make_request_headers(opts)
+      body = make_request_body(opts, headers)
 
       # Remove Authorization header when rediecting cross site.
-      prev = ctx[:follow][:prev]
-      if prev.uri.origin != req.uri.origin
-        req.headers.delete(HTTP::Headers::AUTHORIZATION)
+      if ctx.cross_origin?
+        headers.delete(HTTP::Headers::AUTHORIZATION)
       end
+
+      # Build a request.
+      req = HTTP::Request.new(
+        verb: verb,
+        uri: uri,
+        uri_normalizer: opts.feature(:normalize_uri)&.normalizer,
+        proxy: opts.proxy,
+        headers: headers,
+        body: body
+      )
+      HTTP::Session::Request.new(req)
     end
 
     # Perform a single HTTP request.
+    #
+    # @param [Request] req
+    # @param [HTTP::Options] opts
+    # @return [Response]
     def _hs_perform(req, opts)
+      req = wrap_request(req, opts)
+      wrap_response(_hs_perform_no_features(req, opts), opts)
+    end
+
+    # Perform a single HTTP request without any features.
+    def _hs_perform_no_features(req, opts)
       if @session.cache_mgr.enabled?
         req.cacheable? ? _hs_cache_lookup(req, opts) : _hs_cache_pass(req, opts)
       else
