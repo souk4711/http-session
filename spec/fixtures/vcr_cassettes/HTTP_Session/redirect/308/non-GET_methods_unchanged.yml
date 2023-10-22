@@ -1,0 +1,81 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://httpbin.org/redirect-to?status_code=308&url=/post
+    body:
+      encoding: ASCII-8BIT
+      string: mybody
+    headers:
+      Connection:
+      - close
+      Host:
+      - httpbin.org
+      User-Agent:
+      - http.rb/5.1.1
+  response:
+    status:
+      code: 308
+      message: Permanent Redirect
+    headers:
+      Date:
+      - Sun, 22 Oct 2023 13:42:27 GMT
+      Content-Type:
+      - text/html; charset=utf-8
+      Content-Length:
+      - '0'
+      Connection:
+      - close
+      Server:
+      - gunicorn/19.9.0
+      Location:
+      - "/post"
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Credentials:
+      - 'true'
+    body:
+      encoding: UTF-8
+      string: ''
+  recorded_at: Sun, 22 Oct 2023 13:42:27 GMT
+- request:
+    method: post
+    uri: https://httpbin.org/post
+    body:
+      encoding: ASCII-8BIT
+      string: mybody
+    headers:
+      Connection:
+      - close
+      Host:
+      - httpbin.org
+      User-Agent:
+      - http.rb/5.1.1
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Sun, 22 Oct 2023 13:42:28 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '335'
+      Connection:
+      - close
+      Server:
+      - gunicorn/19.9.0
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Credentials:
+      - 'true'
+    body:
+      encoding: UTF-8
+      string: "{\n  \"args\": {}, \n  \"data\": \"mybody\", \n  \"files\": {}, \n
+        \ \"form\": {}, \n  \"headers\": {\n    \"Content-Length\": \"6\", \n    \"Host\":
+        \"httpbin.org\", \n    \"User-Agent\": \"http.rb/5.1.1\", \n    \"X-Amzn-Trace-Id\":
+        \"Root=1-653526c4-5c002a7f2c7043227f4a54a3\"\n  }, \n  \"json\": null, \n
+        \ \"origin\": \"113.118.113.226\", \n  \"url\": \"https://httpbin.org/post\"\n}\n"
+  recorded_at: Sun, 22 Oct 2023 13:42:29 GMT
+recorded_with: VCR 6.2.0

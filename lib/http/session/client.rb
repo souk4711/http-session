@@ -59,6 +59,13 @@ class HTTP::Session
       headers = make_request_headers(opts)
       body = make_request_body(opts, headers)
 
+      # Drop body when non-GET methods changed to GET.
+      if ctx.should_drop_body?
+        body = nil
+        headers.delete(HTTP::Headers::CONTENT_TYPE)
+        headers.delete(HTTP::Headers::CONTENT_LENGTH)
+      end
+
       # Remove Authorization header when rediecting cross site.
       if ctx.cross_origin?
         headers.delete(HTTP::Headers::AUTHORIZATION)

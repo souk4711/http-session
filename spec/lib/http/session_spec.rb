@@ -792,6 +792,99 @@ RSpec.describe HTTP::Session, vcr: true do
       end.to raise_error(HTTP::Session::Exceptions::RedirectError, "too many hops")
     end
 
+    context "301" do
+      it "GET methods unchanged" do
+        res = subject.get(httpbin("/redirect-to?url=/get&status_code=301"), body: "mybody")
+        expect(res.code).to eq(200)
+        expect(res.request.uri.to_s).to eq(httpbin("/get"))
+        expect(res.request.verb).to eq(:get)
+        expect(res.request.body.source).to eq("mybody")
+      end
+
+      it "non-GET methods changed to GET (body lost)" do
+        sub = described_class.new.follow(strict: false).freeze
+        res = sub.post(httpbin("/redirect-to?url=/get&status_code=301"), body: "mybody")
+        expect(res.code).to eq(200)
+        expect(res.request.uri.to_s).to eq(httpbin("/get"))
+        expect(res.request.verb).to eq(:get)
+        expect(res.request.body.source).to eq(nil)
+      end
+    end
+
+    context "302" do
+      it "GET methods unchanged" do
+        res = subject.get(httpbin("/redirect-to?url=/get&status_code=302"), body: "mybody")
+        expect(res.code).to eq(200)
+        expect(res.request.uri.to_s).to eq(httpbin("/get"))
+        expect(res.request.verb).to eq(:get)
+        expect(res.request.body.source).to eq("mybody")
+      end
+
+      it "non-GET methods changed to GET (body lost)" do
+        sub = described_class.new.follow(strict: false).freeze
+        res = sub.post(httpbin("/redirect-to?url=/get&status_code=302"), body: "mybody")
+        expect(res.code).to eq(200)
+        expect(res.request.uri.to_s).to eq(httpbin("/get"))
+        expect(res.request.verb).to eq(:get)
+        expect(res.request.body.source).to eq(nil)
+      end
+    end
+
+    context "303" do
+      it "GET methods unchanged" do
+        res = subject.get(httpbin("/redirect-to?url=/get&status_code=303"), body: "mybody")
+        expect(res.code).to eq(200)
+        expect(res.request.uri.to_s).to eq(httpbin("/get"))
+        expect(res.request.verb).to eq(:get)
+        expect(res.request.body.source).to eq("mybody")
+      end
+
+      it "non-GET methods changed to GET (body lost)" do
+        sub = described_class.new.follow(strict: false).freeze
+        res = sub.post(httpbin("/redirect-to?url=/get&status_code=303"), body: "mybody")
+        expect(res.code).to eq(200)
+        expect(res.request.uri.to_s).to eq(httpbin("/get"))
+        expect(res.request.verb).to eq(:get)
+        expect(res.request.body.source).to eq(nil)
+      end
+    end
+
+    context "307" do
+      it "GET methods unchanged" do
+        res = subject.get(httpbin("/redirect-to?url=/get&status_code=307"), body: "mybody")
+        expect(res.code).to eq(200)
+        expect(res.request.uri.to_s).to eq(httpbin("/get"))
+        expect(res.request.verb).to eq(:get)
+        expect(res.request.body.source).to eq("mybody")
+      end
+
+      it "non-GET methods unchanged" do
+        res = subject.post(httpbin("/redirect-to?url=/post&status_code=307"), body: "mybody")
+        expect(res.code).to eq(200)
+        expect(res.request.uri.to_s).to eq(httpbin("/post"))
+        expect(res.request.verb).to eq(:post)
+        expect(res.request.body.source).to eq("mybody")
+      end
+    end
+
+    context "308" do
+      it "GET methods unchanged" do
+        res = subject.get(httpbin("/redirect-to?url=/get&status_code=308"), body: "mybody")
+        expect(res.code).to eq(200)
+        expect(res.request.uri.to_s).to eq(httpbin("/get"))
+        expect(res.request.verb).to eq(:get)
+        expect(res.request.body.source).to eq("mybody")
+      end
+
+      it "non-GET methods unchanged" do
+        res = subject.post(httpbin("/redirect-to?url=/post&status_code=308"), body: "mybody")
+        expect(res.code).to eq(200)
+        expect(res.request.uri.to_s).to eq(httpbin("/post"))
+        expect(res.request.verb).to eq(:post)
+        expect(res.request.body.source).to eq("mybody")
+      end
+    end
+
     context "cookies: true" do
       subject do
         described_class.new(cookies: true).follow.freeze

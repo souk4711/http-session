@@ -14,6 +14,11 @@ class HTTP::Session
       def cross_origin?
         !same_origin?
       end
+
+      def should_drop_body?
+        @verb == :get &&
+          HTTP::Session::Redirector::UNSAFE_VERBS.include?(@request.verb)
+      end
     end
   end
 end

@@ -1,0 +1,80 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://httpbin.org/redirect-to?status_code=301&url=/get
+    body:
+      encoding: ASCII-8BIT
+      string: mybody
+    headers:
+      Connection:
+      - close
+      Host:
+      - httpbin.org
+      User-Agent:
+      - http.rb/5.1.1
+  response:
+    status:
+      code: 301
+      message: Moved Permanently
+    headers:
+      Date:
+      - Sun, 22 Oct 2023 13:42:05 GMT
+      Content-Type:
+      - text/html; charset=utf-8
+      Content-Length:
+      - '0'
+      Connection:
+      - close
+      Server:
+      - gunicorn/19.9.0
+      Location:
+      - "/get"
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Credentials:
+      - 'true'
+    body:
+      encoding: UTF-8
+      string: ''
+  recorded_at: Sun, 22 Oct 2023 13:42:05 GMT
+- request:
+    method: get
+    uri: https://httpbin.org/get
+    body:
+      encoding: ASCII-8BIT
+      string: mybody
+    headers:
+      Connection:
+      - close
+      Host:
+      - httpbin.org
+      User-Agent:
+      - http.rb/5.1.1
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Sun, 22 Oct 2023 13:42:06 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '265'
+      Connection:
+      - close
+      Server:
+      - gunicorn/19.9.0
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Credentials:
+      - 'true'
+    body:
+      encoding: UTF-8
+      string: "{\n  \"args\": {}, \n  \"headers\": {\n    \"Content-Length\": \"6\",
+        \n    \"Host\": \"httpbin.org\", \n    \"User-Agent\": \"http.rb/5.1.1\",
+        \n    \"X-Amzn-Trace-Id\": \"Root=1-653526ae-0e19d78a5ab3bdcf7315ab76\"\n
+        \ }, \n  \"origin\": \"113.118.113.226\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
+  recorded_at: Sun, 22 Oct 2023 13:42:07 GMT
+recorded_with: VCR 6.2.0
