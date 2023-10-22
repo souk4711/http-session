@@ -39,10 +39,9 @@ automatically set each time a request is made.
 require "http-session"
 
 http = HTTP.session(cookies: true)
-  .follow
   .freeze
 
-r = http.get("https://httpbin.org/cookies/set/mycookies/abc")
+r = http.get("https://httpbin.org/cookies/set/mycookies/abc", follow: true)
 pp JSON.parse(r.body)["cookies"]  # -> {"mycookies"=>"abc"}
 
 r = http.get("https://httpbin.org/cookies")
