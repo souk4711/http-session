@@ -20,6 +20,7 @@ class HTTP::Session
       def freeze
         super.tap do
           pools.freeze
+          pools.each_value(&:freeze)
         end
       end
 
