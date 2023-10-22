@@ -752,6 +752,20 @@ RSpec.describe HTTP::Session, vcr: true do
       expect(res.code).to eq(200)
     end
 
+    it "redirect cross site - remove Authorization header" do
+      sub = described_class.new.headers(Authorization: "Basic <credentials>").follow.freeze
+      res = sub.get(httpbin("/redirect-to?url=https://example.com"))
+
+      expect(res.history[0].request.headers["Authorization"]).to eq("Basic <credentials>")
+      expect(res.history[0].request.headers["Host"]).to eq("httpbin.org")
+      expect(res.history[0].code).to eq(302)
+
+      expect(res.request.uri.to_s).to eq("https://example.com/")
+      expect(res.request.headers["Authorization"]).to eq(nil)
+      expect(res.request.headers["Host"]).to eq("example.com")
+      expect(res.code).to eq(200)
+    end
+
     it "absolute location" do
       res = subject.get(httpbin("/absolute-redirect/1"))
       expect(res.request.uri.to_s).to eq("http://httpbin.org/get")

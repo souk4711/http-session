@@ -25,48 +25,48 @@ class HTTP::Session
     end
 
     def perform(response, &blk)
-      @response = response
-      @request = response.request
-      @visited = []
-      @history = []
+      request = response.request
+      visited = []
+      history = []
 
-      while REDIRECT_CODES.include?(@response.status.code)
-        @history << @response
-        @visited << "#{@request.verb} #{@request.uri}"
-        raise HTTP::Session::Exceptions::RedirectError, "too many hops" if too_many_hops?
-        raise HTTP::Session::Exceptions::RedirectError, "endless loop" if endless_loop?
+      while REDIRECT_CODES.include?(response.status.code)
+        history << response
+        visited << "#{request.verb} #{request.uri}"
+        raise HTTP::Session::Exceptions::RedirectError, "too many hops" if too_many_hops?(visited)
+        raise HTTP::Session::Exceptions::RedirectError, "endless loop" if endless_loop?(visited)
 
-        location = @response.headers.get(HTTP::Headers::LOCATION).inject(:+)
+        location = response.headers.get(HTTP::Headers::LOCATION).inject(:+)
         raise HTTP::Session::Exceptions::RedirectError, "no Location header in redirect" unless location
 
-        verb = make_redirect_to_verb
-        uri = make_redirect_to_uri(location)
+        verb = make_redirect_to_verb(response, request)
+        uri = make_redirect_to_uri(response, request, location)
+        ctx = make_redirect_to_ctx(response, request)
 
-        @on_redirect.call(@response, @request) if @on_redirect.respond_to?(:call)
-        @response = blk.call(verb, uri)
-        @request = @response.request
+        @on_redirect.call(response, request) if @on_redirect.respond_to?(:call)
+        response = blk.call(verb, uri, ctx)
+        request = response.request
       end
 
-      @response.history = @history
-      @response
+      response.history = history
+      response
     end
 
     private
 
-    def too_many_hops?
-      @max_hops >= 1 && @max_hops < @visited.count
+    def too_many_hops?(visited)
+      @max_hops >= 1 && @max_hops < visited.count
     end
 
-    def endless_loop?
-      @visited.count(@visited.last) >= 2
+    def endless_loop?(visited)
+      visited.count(visited.last) >= 2
     end
 
-    def make_redirect_to_verb
-      verb = @request.verb
-      code = @response.status.code
+    def make_redirect_to_verb(response, request)
+      verb = request.verb
+      code = response.status.code
 
       if UNSAFE_VERBS.include?(verb) && STRICT_SENSITIVE_CODES.include?(code)
-        raise HTTP::Session::Exceptions::RedirectError, "can't follow #{@response.status} redirect" if @strict
+        raise HTTP::Session::Exceptions::RedirectError, "can't follow #{response.status} redirect" if @strict
         verb = :get
       end
       if !SEE_OTHER_ALLOWED_VERBS.include?(verb) && code == 303
@@ -76,8 +76,12 @@ class HTTP::Session
       verb
     end
 
-    def make_redirect_to_uri(location)
-      @request.uri.join(location)
+    def make_redirect_to_uri(response, request, location)
+      request.uri.join(location)
+    end
+
+    def make_redirect_to_ctx(response, request)
+      {follow: {prev: request}}
     end
   end
 end

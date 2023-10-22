@@ -14,13 +14,14 @@ class HTTP::Session
     # @param verb
     # @param uri
     # @param [Hash] opts
+    # @param [Hash] ctx
     # @return [Response]
-    def request(verb, uri, opts)
+    def request(verb, uri, opts, ctx)
       opts = default_options.merge(opts)
       opts = _hs_handle_http_request_options_cookies(uri, opts)
 
       req = build_request(verb, uri, opts)
-      res = perform(req, opts)
+      res = perform(req, opts, ctx)
       _hs_cookies_save(res)
 
       res
@@ -50,10 +51,25 @@ class HTTP::Session
     #
     # @param [Request] req
     # @param [HTTP::Options] opts
+    # @param [Hash] ctx
     # @return [Response]
-    def perform(req, opts)
+    def perform(req, opts, ctx)
       req = wrap_request(req, opts)
-      wrap_response(_hs_perform(req, opts), opts)
+      _hs_perform_before_action_handle_follow(req, ctx)
+
+      res = _hs_perform(req, opts)
+      wrap_response(res, opts)
+    end
+
+    # .
+    def _hs_perform_before_action_handle_follow(req, ctx)
+      return unless ctx.key?(:follow)
+
+      # Remove Authorization header when rediecting cross site.
+      prev = ctx[:follow][:prev]
+      if prev.uri.origin != req.uri.origin
+        req.headers.delete(HTTP::Headers::AUTHORIZATION)
+      end
     end
 
     # Perform a single HTTP request.

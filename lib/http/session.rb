@@ -67,8 +67,8 @@ class HTTP::Session
     return res unless http_opts.follow
 
     redirector = HTTP::Session::Redirector.new(http_opts.follow)
-    redirector.perform(res) do |verb, uri|
-      perform(verb, uri, {})
+    redirector.perform(res) do |verb, uri, ctx|
+      perform(verb, uri, {}, ctx)
     end
   end
 
@@ -81,9 +81,9 @@ class HTTP::Session
 
   private
 
-  def perform(verb, uri, opts)
+  def perform(verb, uri, opts, ctx = {})
     @pool_mgr.with(uri) do |c|
-      c.request(verb, uri, opts)
+      c.request(verb, uri, opts, ctx)
     end
   end
 end

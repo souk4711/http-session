@@ -58,8 +58,8 @@ class HTTP::Session
         opts = connection_pool_options_from_origin(origin).dup
         opts = {} if opts == true
         opts[:host] = origin
-        @pools[origin] = ConnectionPool.new(opts, &->(http_opts) {
-          make_conn(http_opts)
+        @pools[origin] = ConnectionPool.new(opts, &->(conn_opts) {
+          make_conn(conn_opts)
         })
       end
     end
